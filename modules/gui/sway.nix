@@ -1,0 +1,65 @@
+{ config, pkgs, ... }:
+
+
+{
+
+  ###
+  ### Sway
+  ###
+  programs.sway = {
+    enable = true;
+    wrapperFeatures.gtk = true; # necessary for GTK app scaling/theming
+    #extraOptions = [ "--unsupported-gpu" ];  # only if using nvidia
+    extraPackages = with pkgs; [
+      swaylock-effects
+      swayidle
+	  swaybg
+    ];
+  };
+
+  # Required for screen locking (System level only)
+  security.pam.services.swaylock = {};
+
+  # Sway usually sets these, but keeping them here ensures
+  # XDG portals choose the correct "Sway" backend.
+  environment.sessionVariables = {
+    XDG_CURRENT_DESKTOP         = "sway";
+    XDG_SESSION_DESKTOP         = "sway";
+  };
+
+
+  fonts.packages = with pkgs; [
+    nerd-fonts.jetbrains-mono
+    nerd-fonts.ubuntu
+    nerd-fonts.symbols-only
+  ];
+
+
+  environment.systemPackages = with pkgs; [
+    # Terminal & UI
+    foot
+    waybar
+    fuzzel
+    tofi
+    wmenu
+
+    # Notifications (Pick one: SwayNC is more modern)
+    mako
+    swaynotificationcenter
+    libnotify # Provides 'notify-send'
+
+    # Clipboard & Screenshots
+    wl-clipboard
+    cliphist
+    grim
+    slurp
+    wf-recorder
+
+    # System Utilities
+    kanshi        # Auto-configures monitors when plugged in
+    brightnessctl
+    papirus-icon-theme
+    iwmenu        # Wifi menu for TTY/Wayland
+    procps        # Provides 'ps', 'uptime', etc.
+  ];
+}
