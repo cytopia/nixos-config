@@ -1,0 +1,512 @@
+# Disable Xwayland
+xwayland disable
+
+##########################################################################################
+#
+# Hardware
+#
+##########################################################################################
+
+# swaymsg -t get_outputs
+output eDP-1 scale 1.5
+#output * bg /run/current-system/sw/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
+output * bg /home/cytopia/Pictures/wallpapers/current fill
+
+# swaymsg -t get_inputs
+input type:touchpad {
+  dwt enabled
+  tap enabled
+  natural_scroll enabled
+  middle_emulation enabled
+  accel_profile adaptive
+  pointer_accel 0.1
+  scroll_factor 1.0
+}
+
+input type:keyboard {
+  repeat_delay 250
+  repeat_rate 50
+}
+
+
+
+##########################################################################################
+#
+# Default Tools
+#
+##########################################################################################
+
+# Your preferred terminal emulator
+set $term foot
+
+# Your preferred application launcher
+set $menu wmenu-run
+
+# Screen lock
+set $lock swaylock --screenshots --effect-pixelate 50 --indicator-caps-lock --daemonize
+
+# Mute command
+set $mute wpctl set-mute \@DEFAULT_AUDIO_SINK@ 1
+
+
+
+##########################################################################################
+#
+# Modifier Keys / Variables
+#
+##########################################################################################
+
+# Mod4 = Super key
+# Mod1 = Alt key
+set $mod Mod1
+set $alt Mod4
+set $ctrl Control
+
+# Home row direction keys, like vim
+set $up k
+set $down j
+set $left h
+set $right l
+
+# Assign workspace variables
+set $WS1 1  chat
+set $WS2 2  tty
+set $WS3 3  web
+set $WS4 4  dev
+set $WS5 5  mail
+set $WS6 6  x
+set $WS7 7  files
+set $WS8 8  x
+set $WS9 9  x
+set $WS10 10  tmp
+
+
+
+############################################################################################
+#
+# Theming
+#
+############################################################################################
+
+# No title bar
+default_border pixel
+
+
+
+############################################################################################
+#
+# Status Bar
+#
+############################################################################################
+
+# Read `man 5 sway-bar` for more information about this section.
+#bar {
+#  position top
+#
+#  # When the status_command prints a new line to stdout, swaybar updates.
+#  # The default just shows the current date and time.
+#  status_command while date +'%Y-%m-%d %X'; do sleep 1; done
+#
+#  colors {
+#    statusline #ffffff
+#    background #323232
+#    inactive_workspace #32323200 #32323200 #5c5c5c
+#  }
+#}
+
+
+
+############################################################################################
+#
+# Floating
+#
+############################################################################################
+
+# Drag floating windows by holding down $mod and left mouse button.
+# Resize them with right mouse button + $mod.
+# Despite the name, also works for non-floating windows.
+# Change normal to inverse to use left mouse button for resizing and right
+# mouse button for dragging.
+floating_modifier $mod normal
+
+# toggle tiling / floating
+bindsym $mod+Shift+space floating toggle
+
+# change focus between tiling / floating windows
+#bindsym $mod+space focus mode_toggle
+
+
+
+############################################################################################
+#
+# Tiling (Splitting/Focus/Layout)
+#
+############################################################################################
+
+# split in horizontal/vertical orientation
+bindsym $mod+g splith
+bindsym $mod+v splitv
+bindsym $mod+t split toggle
+
+# change container layout (stacked, tabbed, toggle split)
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+
+# focus the parent container
+bindsym $mod+a focus parent
+
+# focus between the tiling area and the floating area
+#bindsym $mod+space focus mode_toggle
+
+# Make the current focus fullscreen
+bindsym $mod+f fullscreen
+
+
+
+############################################################################################
+#
+# Scratch Pad
+#
+############################################################################################
+
+############################################################
+# Scratch Pad
+############################################################
+
+# Make the currently focused window a scratchpad
+# move the currently focused window to the scratchpad
+bindsym $mod+Shift+minus move scratchpad
+
+# Show the next scratchpad window or hide the focused scratchpad window.
+# If there are multiple scratchpad windows, this command cycles through them.
+bindsym $mod+minus scratchpad show
+
+
+############################################################
+# Default Scratch Pad
+############################################################
+for_window [app_id="scratchterm"] move scratchpad
+bindsym $mod+grave [app_id="scratchterm"] scratchpad show
+
+
+
+############################################################################################
+#
+# Resizing
+#
+############################################################################################
+
+# Key to enter resize mode
+bindsym $mod+r mode "resize"
+
+# resize window (you can also use the mouse for that)
+mode "resize" {
+  # left will shrink the containers width
+  # right will grow the containers width
+  # up will shrink the containers height
+  # down will grow the containers height
+  bindsym $left  resize shrink width  10px
+  bindsym $down  resize grow   height 10px
+  bindsym $up    resize shrink height 10px
+  bindsym $right resize grow   width  10px
+
+  # Ditto, with arrow keys
+  bindsym Left  resize shrink width  10px
+  bindsym Down  resize grow   height 10px
+  bindsym Up    resize shrink height 10px
+  bindsym Right resize grow   width  10px
+
+  # Return to default mode
+  bindsym Return mode "default"
+  bindsym Escape mode "default"
+}
+
+
+
+############################################################################################
+#
+# Navigation (inside one workspace)
+#
+############################################################################################
+
+############################################################
+# Change Focus
+############################################################
+
+# change focus
+bindsym $mod+$left  focus left
+bindsym $mod+$down  focus down
+bindsym $mod+$up    focus up
+bindsym $mod+$right focus right
+
+# alternatively, you can use the cursor keys:
+bindsym $mod+Left   focus left
+bindsym $mod+Down   focus down
+bindsym $mod+Up     focus up
+bindsym $mod+Right  focus right
+
+
+############################################################
+# Move/snap Window
+############################################################
+
+# Move focused Window
+bindsym $alt+$left  move left
+bindsym $alt+$down  move down
+bindsym $alt+$up    move up
+bindsym $alt+$right move right
+
+# Alternatively, you can use the cursor keys:
+bindsym $alt+Left   move left
+bindsym $alt+Down   move down
+bindsym $alt+Up     move up
+bindsym $alt+Right  move right
+
+
+
+############################################################################################
+#
+# Navigation (workspaces)
+#
+############################################################################################
+
+############################################################
+# Go to workspace
+############################################################
+
+# Switch to workspace by number
+bindsym $mod+1 workspace number $WS1
+bindsym $mod+2 workspace number $WS2
+bindsym $mod+3 workspace number $WS3
+bindsym $mod+4 workspace number $WS4
+bindsym $mod+5 workspace number $WS5
+bindsym $mod+6 workspace number $WS6
+bindsym $mod+7 workspace number $WS7
+bindsym $mod+8 workspace number $WS8
+bindsym $mod+9 workspace number $WS9
+bindsym $mod+0 workspace number $WS10
+
+# Cycle through Workspaces (on current monitor)
+bindsym $ctrl+$mod+Left   workspace prev_on_output
+bindsym $ctrl+$mod+Right  workspace next_on_output
+bindsym $ctrl+$mod+$left  workspace prev_on_output
+bindsym $ctrl+$mod+$right workspace next_on_output
+
+# For instance: Assume you are on workspace "1: www" and switch to "2: IM"
+# using mod+2 because somebody sent you a message.
+# You don’t need to remember where you came from now,
+# you can just press $mod+2 again to switch back to "1: www".
+workspace_auto_back_and_forth yes
+
+# Use alt+tab to switch between workspaces back and forth
+bindsym $mod+Tab workspace back_and_forth
+
+
+############################################################
+# Move container to workspace
+############################################################
+
+# Move focused container to workspace
+bindsym $mod+Shift+1 move container to workspace number $WS1
+bindsym $mod+Shift+2 move container to workspace number $WS2
+bindsym $mod+Shift+3 move container to workspace number $WS3
+bindsym $mod+Shift+4 move container to workspace number $WS4
+bindsym $mod+Shift+5 move container to workspace number $WS5
+bindsym $mod+Shift+6 move container to workspace number $WS6
+bindsym $mod+Shift+7 move container to workspace number $WS7
+bindsym $mod+Shift+8 move container to workspace number $WS8
+bindsym $mod+Shift+9 move container to workspace number $WS9
+bindsym $mod+Shift+0 move container to workspace number $WS10
+
+# Go to Workspace with next/prev window (Shift+Alt)
+#bindsym $mod+Shift+Left   exec "~/.config/i3/bin/wsmove.py prev"
+#bindsym $mod+Shift+Right  exec "~/.config/i3/bin/wsmove.py next"
+#bindsym $mod+Shift+$left  exec "~/.config/i3/bin/wsmove.py prev"
+#bindsym $mod+Shift+$right exec "~/.config/i3/bin/wsmove.py next"
+
+
+
+############################################################################################
+#
+# Navigation (monitors)
+#
+############################################################################################
+
+# Move workspace (virtual desktop) to top|down|right|left monitor
+
+#move workspace to output <<left|right|down|up>|<output>>
+#move container to output <<left|right|down|up>|<output>>
+bindsym $mod+$alt+$up    move workspace to output up
+bindsym $mod+$alt+$down  move workspace to output down
+bindsym $mod+$alt+$right move workspace to output right
+bindsym $mod+$alt+$left  move workspace to output left
+
+bindsym $mod+$alt+Up     move workspace to output up
+bindsym $mod+$alt+Down   move workspace to output down
+bindsym $mod+$alt+Right  move workspace to output right
+bindsym $mod+$alt+Left   move workspace to output left
+
+
+
+############################################################################################
+#
+# Program Hotkeys
+#
+############################################################################################
+
+############################################################
+# System
+############################################################
+
+# Lock, Logout, Suspend, Hibernat, Reboot, Poweroff
+set $mode_system System (l) lock, (e) logout, (s) suspend, (h) hibernate, (r) reboot, (p) poweroff
+mode "$mode_system" {
+  bindsym l exec --no-startup-id '$mute; $lock', mode "default"
+  bindsym e exec --no-startup-id swaymsg exit,  mode "default"
+  bindsym s exec --no-startup-id '$mute; $lock; systemctl suspend',   mode "default"
+  bindsym h exec --no-startup-id '$mute; $lock; systemctl hibernate', mode "default"
+  bindsym r exec --no-startup-id 'systemctl reboot',   mode "default"
+  bindsym p exec --no-startup-id 'systemctl poweroff', mode "default"
+
+  # back to normal: Enter or Escape
+  bindsym Return mode "default"
+  bindsym Escape mode "default"
+}
+
+# Show exit menu
+bindsym $mod+Shift+e mode "$mode_system"
+
+# Reload the configuration file
+bindsym $mod+Shift+r reload
+
+# Kill focused window
+bindsym $mod+q kill
+
+
+############################################################
+# Special Keyboard keys
+############################################################
+
+###
+### Volume
+###
+
+# Volume: toggle mute
+bindsym --locked XF86AudioMute exec wpctl set-mute \@DEFAULT_AUDIO_SINK@ toggle \
+  && (wpctl get-volume \@DEFAULT_AUDIO_SINK@ | grep -q '[MUTED]' \
+    && notify-send -a "System" \
+      -h int:value:0 \
+      -h string:x-canonical-private-synchronous:volume \
+      -i audio-volume-muted "Volume" "Muted" \
+    || notify-send -a "System" \
+      -h int:value:"$(wpctl get-volume \@DEFAULT_AUDIO_SINK@ | awk '{print int($2 * 100)}')" \
+      -h string:x-canonical-private-synchronous:volume \
+      -i audio-volume-high "Volume" "Unmuted $(wpctl get-volume \@DEFAULT_AUDIO_SINK@ | awk '{print int($2 * 100)}')%" \
+  )
+
+# Volume: raise
+bindsym --locked XF86AudioRaiseVolume exec wpctl set-volume \@DEFAULT_AUDIO_SINK@ 5%+ \
+  && wpctl set-mute \@DEFAULT_AUDIO_SINK@ 0 \
+  && notify-send -a "System" \
+    -h int:value:"$(wpctl get-volume \@DEFAULT_AUDIO_SINK@ | awk '{print int($2 * 100)}')" \
+    -h string:x-canonical-private-synchronous:volume \
+    -i audio-volume-high "Volume" "$(wpctl get-volume \@DEFAULT_AUDIO_SINK@ | awk '{print int($2 * 100)}')%" 
+
+# Volume: lower
+bindsym --locked XF86AudioLowerVolume exec wpctl set-volume \@DEFAULT_AUDIO_SINK@ 5%- \
+  && wpctl set-mute \@DEFAULT_AUDIO_SINK@ 0 \
+  && notify-send -a "System" \
+    -h int:value:"$(wpctl get-volume \@DEFAULT_AUDIO_SINK@ | awk '{print int($2 * 100)}')" \
+    -h string:x-canonical-private-synchronous:volume \
+    -i audio-volume-low "Volume" "$(wpctl get-volume \@DEFAULT_AUDIO_SINK@ | awk '{print int($2 * 100)}')%" 
+
+
+###
+### Microphone
+###
+
+# Microphone: toggle mute
+bindsym --locked XF86AudioMicMute exec wpctl set-mute \@DEFAULT_AUDIO_SOURCE@ toggle \
+  && (wpctl get-volume \@DEFAULT_AUDIO_SOURCE@ | grep -q '[MUTED]' \
+    && notify-send -a "System" \
+      -h string:x-canonical-private-synchronous:microphone \
+      -i microphone-volume-muted "Microphone" "Muted" \
+    || notify-send -a "System" \
+      -h string:x-canonical-private-synchronous:microphone \
+      -i microphone-volume-muted "Microphone" "Unmuted" \
+  )
+
+
+###
+### Brightness
+###
+
+# Brightness: increase
+bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+ \
+      && notify-send -a "System" \
+        -h int:value:"$((brightnessctl get && brightnessctl max) | awk 'NR==1{val=$1} NR==2{printf "%.0f\n", (val/$1)*100}')" \
+        -h string:x-canonical-private-synchronous:brightness \
+        -i display-brightness "Screen" "$((brightnessctl get && brightnessctl max) | awk 'NR==1{val=$1} NR==2{printf "%.0f\n", (val/$1)*100}')%" 
+
+# Brightness: decrease
+bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%- \
+  && notify-send -a "System" \
+    -h int:value:"$((brightnessctl get && brightnessctl max) | awk 'NR==1{val=$1} NR==2{printf "%.0f\n", (val/$1)*100}')" \
+    -h string:x-canonical-private-synchronous:brightness \
+    -i display-brightness "Screen" "$((brightnessctl get && brightnessctl max) | awk 'NR==1{val=$1} NR==2{printf "%.0f\n", (val/$1)*100}')%" 
+
+###
+### Screenshot
+###
+
+# Screenshot: whole screen
+bindsym Print exec grim -t png ~/Desktop/screenshot-$(date +%Y-%m-%d__%H-%M-%S)-full.png
+
+# Screenshot: selection
+bindsym $mod+Print exec grim -t png -g "$(slurp)" ~/Desktop/screenshot-$(date +%Y-%m-%d__%H-%M-%S)-selection.png
+
+
+############################################################
+# Apps
+############################################################
+
+# Start a terminal
+bindsym $mod+Return exec --no-startup-id exec $term tmux
+
+# Start your launcher
+bindsym $mod+d exec 'exec $menu'
+bindsym $mod+space exec 'exec fuzzel'
+
+# Notification
+bindsym $ctrl+space exec makoctl dismiss
+bindsym $ctrl+Shift+space exec makoctl dismiss -a
+bindsym $ctrl+grave exec makoctl restore
+
+
+
+##########################################################################################
+#
+# Autostart
+#
+##########################################################################################
+
+exec $term --app-id=scratchterm tmux
+
+exec_always pkill waybar; waybar
+
+exec swayidle -w \
+  timeout 300 '$mute; $lock;' \
+  timeout 600 'systemctl suspend' \
+  resume 'swaymsg "output * power on"' \
+  before-sleep '$mute; $lock;'
+
+
+
+##########################################################################################
+#
+# Additional Configuration
+#
+##########################################################################################
+
+include /etc/sway/config.d/*
