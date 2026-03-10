@@ -89,8 +89,30 @@ set $WS10 10  tmp
 ############################################################################################
 
 # No title bar
-default_border pixel
+default_border pixel 3
 
+# Force borders and title bar for all chromium-based windows
+#for_window [app_id="chromium"] border normal
+#for_window [class="Chromium-browser"] border normal
+
+# client.<class>        <border> <bg>    <text>  [<indicator> [<child_border>]]
+client.focused          #da2263  #d70a53 #ffffff #eb709b
+client.focused_inactive #565656  #444444 #ffffff #666666
+client.unfocused        #373737  #222222 #888888 #444444
+client.urgent           #ec7ea4  #eb709b #ffffff #eb709b
+
+
+
+#font [pango:]<font>
+#
+#Sets font to use for the title bars. To enable support for pango markup, preface the font name with pango:. For example, monospace 10 is the default font. To enable support for pango markup, pango:monospace 10 should be used instead. Regardless of whether pango markup is enabled, font should be specified as a pango font description. For more information on pango font descriptions, see https://docs.gtk.org/Pango/type_func.FontDescription.from_string.html#description
+#
+#titlebar_border_thickness <thickness>
+#
+#Thickness of the titlebar border in pixels
+#titlebar_padding <horizontal> [<vertical>]
+#
+#Padding of the text in the titlebar. horizontal value affects horizontal padding of the text while vertical value affects vertical padding (space above and below text). Padding includes titlebar borders so their value should be greater than titlebar_border_thickness. If vertical value is not specified it is set to the horizontal value.
 
 
 ############################################################################################
@@ -100,19 +122,39 @@ default_border pixel
 ############################################################################################
 
 # Read `man 5 sway-bar` for more information about this section.
-#bar {
-#  position top
-#
-#  # When the status_command prints a new line to stdout, swaybar updates.
-#  # The default just shows the current date and time.
-#  status_command while date +'%Y-%m-%d %X'; do sleep 1; done
-#
-#  colors {
-#    statusline #ffffff
-#    background #323232
-#    inactive_workspace #32323200 #32323200 #5c5c5c
-#  }
-#}
+bar {
+  position top
+
+  status_command i3status-rs
+
+  colors {
+    statusline #ffffff
+    background #323232
+    inactive_workspace #32323200 #32323200 #5c5c5c
+  }
+
+  colors {
+    # <bar>
+    background  #222222
+    separator   #444444
+    statusline  #666666
+
+    # <workclass>       <border> <bg>   <text>
+    focused_workspace   #da2263 #d70a53 #ffffff
+    active_workspace    #565656 #444444 #ffffff
+    inactive_workspace  #373737 #222222 #888888
+    urgent_workspace    #ec7ea4 #eb709b #ffffff
+  }
+
+  # tray_output none|primary|<output>
+  tray_output primary
+
+  mode dock
+
+  # separator between bar sections
+  separator_symbol "|"
+
+}
 
 
 
@@ -364,7 +406,7 @@ set $mode_system System (l) lock, (e) logout, (s) suspend, (h) hibernate, (r) re
 mode "$mode_system" {
   bindsym l exec --no-startup-id '$mute; $lock', mode "default"
   bindsym e exec --no-startup-id swaymsg exit,  mode "default"
-  bindsym s exec --no-startup-id '$mute; $lock; systemctl suspend',   mode "default"
+  bindsym s exec --no-startup-id '$mute; $lock; systemctl suspend-then-hibernate',   mode "default"
   bindsym h exec --no-startup-id '$mute; $lock; systemctl hibernate', mode "default"
   bindsym r exec --no-startup-id 'systemctl reboot',   mode "default"
   bindsym p exec --no-startup-id 'systemctl poweroff', mode "default"
@@ -493,13 +535,25 @@ bindsym $ctrl+grave exec makoctl restore
 
 exec $term --app-id=scratchterm tmux
 
-exec_always pkill waybar; waybar
+#exec_always pkill waybar; waybar
 
 exec swayidle -w \
   timeout 300 '$mute; $lock;' \
-  timeout 600 'systemctl suspend' \
-  resume 'swaymsg "output * power on"' \
-  before-sleep '$mute; $lock;'
+  timeout 310 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
+  timeout 600 'systemctl suspend-then-hibernate' \
+  before-sleep '$mute; $lock;' \
+  lock '$mute; $lock;'
+
+# EXPLAINING THE COMMANDS:
+# 1. exec swayidle -w : Starts the idle daemon. '-w' (wait) ensures commands finish.
+# 2. timeout 300 : After 5 mins of no input, lock the screen (Safety first).
+# 3. timeout 310 : After 5 mins 10sec of no input, turn off the screen
+# 3. timeout 600 : After 10 mins, trigger the hardware sleep.
+#    Note: This is shorter than logind (30m) so Sway 'wins' for faster power saving.
+# 4. resume : Turns the screen back on
+# 5. before-sleep : CRITICAL. This is the 'Lid Close' hook or whaterver should happen before sleep.
+#    If you close the lid, this line runs IMMEDIATELY before power is cut.
+# 6. lock : If you manually run 'loginctl lock-session', this ensures audio is also muted.
 
 
 

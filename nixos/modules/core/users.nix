@@ -6,7 +6,14 @@
   users.users.cytopia = {
     isNormalUser = true;
     description = "cytopia";
-    extraGroups = [ "networkmanager" "wheel" "audio" ];
+    extraGroups = [
+      "audio"
+      "input"
+      "networkmanager"
+      "render"
+      "video"
+      "wheel"
+    ];
     packages = with pkgs; [];
   };
 }

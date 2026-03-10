@@ -1,0 +1,57 @@
+[theme]
+theme = "native"
+
+[icons]
+icons = "awesome6"
+
+[[block]]
+block = "cpu"
+interval = 1
+format = "  $frequency ($utilization) "
+
+[[block]]
+block = "temperature"
+format = "  $max "
+
+[[block]]
+block = "memory"
+format = " $icon $mem_used.eng(w:3, p:G) ($mem_used_percents) "
+
+[[block]]
+block = "disk_space"
+path = "/"
+format = " $icon $used.eng(w:2)/$available.eng(w:2) "
+
+[[block]]
+block = "custom"
+command = "echo '\uf0ac ' `curl ip-api.com/line/?fields=query`"
+interval = 60
+
+[[block]]
+block = "net"
+# If 'wlan0' fails, comment out the device line to auto-detect
+device = "wlan0"
+format = "   $ssid ($signal_strength) "
+
+[[block]]
+block = "backlight"
+
+[[block]]
+block = "sound"
+
+[[block]]
+block = "battery"
+driver = "sysfs"
+interval = 10
+format = " $icon $percentage {$time_remaining} $power "
+full_format = " $icon $percentage {$time_remaining.dur(hms:true, min_unit:m) |}"
+
+[[block]]
+block = "time"
+interval = 1
+format = "  $timestamp.datetime(f:'(%V) %a, %d.%m.%Y') "
+
+[[block]]
+block = "time"
+interval = 1
+format = "  $timestamp.datetime(f:'%R') "

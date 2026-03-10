@@ -13,12 +13,16 @@
     extraPackages = with pkgs; [
       swaylock-effects
       swayidle
-	  swaybg
+      swaybg
     ];
   };
 
   # Required for screen locking (System level only)
   security.pam.services.swaylock = {};
+
+  # Check if required
+  services.dbus.enable = true;
+  security.polkit.enable = true;
 
   # Sway usually sets these, but keeping them here ensures
   # XDG portals choose the correct "Sway" backend.
@@ -39,6 +43,8 @@
     # Terminal & UI
     foot
     waybar
+    ironbar
+    i3status-rust
     fuzzel
     tofi
     wmenu

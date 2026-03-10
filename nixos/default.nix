@@ -2,14 +2,17 @@
 
 {
   imports = [
+    # --- NixOS ---
+    ./modules/nixos/nix.nix
+
     # --- Core modules ---
-    ./modules/core/nixos.nix
     ./modules/core/network.nix
     ./modules/core/time-locale.nix
     ./modules/core/keyboard.nix
     ./modules/core/users.nix
     ./modules/core/gpu-intel.nix
     ./modules/core/sound.nix
+    ./modules/core/power-management.nix
 
     # --- GUI modules ---
     ./modules/gui/login-manager.nix
@@ -19,5 +22,7 @@
     # --- Programs ---
     ./modules/programs/_default.nix
     ./modules/programs/chromium.nix
+    ./modules/programs/thunar.nix
+    ./modules/programs/obs.nix
   ];
 }
