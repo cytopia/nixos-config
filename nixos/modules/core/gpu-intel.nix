@@ -41,7 +41,7 @@
   ###
   environment.sessionVariables = {
     # Tell the system to prefer the modern Intel driver for video
-	LIBVA_DRIVER_NAME = "iHD";
+    LIBVA_DRIVER_NAME = "iHD";
   };
 
 
