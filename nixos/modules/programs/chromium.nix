@@ -92,7 +92,7 @@ in
   #  })}"
   #];
 # 1. This places the JSON file on your actual filesystem
-  # THIS IS THE MISSING PIECE: 
+  # THIS IS THE MISSING PIECE:
     # We manually place the descriptor in the directory Chromium scans on startup.
   #environment.etc."chromium/extensions/pafkbggmedjldkkjmbifoocdbcaenjjg.json".text = builtins.toJSON {
   #  external_crx = "${chromium-web-store-crx}";

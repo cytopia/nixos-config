@@ -6,7 +6,27 @@
     enableCompletion = true;
 
     shellAliases = {
-      ll = "ls -l";
+      # Listings
+      ll = "ls --color=always --group-directories-first --classify -al";
+      ls = "ls --color=always --group-directories-first --classify";
+      la = "ls --color=always --group-directories-first --classify -a";
+      l = "ls --color=always --group-directories-first --classify -l";
+
+      # Safeguards
+      cp = "cp -i";
+      mv = "mv -i";
+      rm = "rm -i";
+      ln = "ln -i";
+
+      # Navigation
+      ".." = "cd ..";
+      "..." = "cd ../..";
+      "...." = "cd ../../..";
+      "....." = "cd ../../../..";
+      "......" = "cd ../../../../..";
+
+      # Default args
+      grep = "grep --color=auto --binary-file=without-match";
     };
 
     sessionVariables = {

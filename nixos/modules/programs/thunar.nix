@@ -6,10 +6,10 @@
     enable = true;
 
     plugins = with pkgs.xfce; [
-      thunar-volman
       thunar-archive-plugin
-      thunar-vcs-plugin
       thunar-media-tags-plugin
+      thunar-vcs-plugin
+      thunar-volman
     ];
   };
 
