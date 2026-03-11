@@ -453,7 +453,7 @@ bindsym --locked XF86AudioRaiseVolume exec wpctl set-volume \@DEFAULT_AUDIO_SINK
   && notify-send -a "System" \
     -h int:value:"$(wpctl get-volume \@DEFAULT_AUDIO_SINK@ | awk '{print int($2 * 100)}')" \
     -h string:x-canonical-private-synchronous:volume \
-    -i audio-volume-high "Volume" "$(wpctl get-volume \@DEFAULT_AUDIO_SINK@ | awk '{print int($2 * 100)}')%" 
+    -i audio-volume-high "Volume" "$(wpctl get-volume \@DEFAULT_AUDIO_SINK@ | awk '{print int($2 * 100)}')%"
 
 # Volume: lower
 bindsym --locked XF86AudioLowerVolume exec wpctl set-volume \@DEFAULT_AUDIO_SINK@ 5%- \
@@ -461,7 +461,7 @@ bindsym --locked XF86AudioLowerVolume exec wpctl set-volume \@DEFAULT_AUDIO_SINK
   && notify-send -a "System" \
     -h int:value:"$(wpctl get-volume \@DEFAULT_AUDIO_SINK@ | awk '{print int($2 * 100)}')" \
     -h string:x-canonical-private-synchronous:volume \
-    -i audio-volume-low "Volume" "$(wpctl get-volume \@DEFAULT_AUDIO_SINK@ | awk '{print int($2 * 100)}')%" 
+    -i audio-volume-low "Volume" "$(wpctl get-volume \@DEFAULT_AUDIO_SINK@ | awk '{print int($2 * 100)}')%"
 
 
 ###
@@ -489,14 +489,14 @@ bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+ \
       && notify-send -a "System" \
         -h int:value:"$((brightnessctl get && brightnessctl max) | awk 'NR==1{val=$1} NR==2{printf "%.0f\n", (val/$1)*100}')" \
         -h string:x-canonical-private-synchronous:brightness \
-        -i display-brightness "Screen" "$((brightnessctl get && brightnessctl max) | awk 'NR==1{val=$1} NR==2{printf "%.0f\n", (val/$1)*100}')%" 
+        -i display-brightness "Screen" "$((brightnessctl get && brightnessctl max) | awk 'NR==1{val=$1} NR==2{printf "%.0f\n", (val/$1)*100}')%"
 
 # Brightness: decrease
 bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%- \
   && notify-send -a "System" \
     -h int:value:"$((brightnessctl get && brightnessctl max) | awk 'NR==1{val=$1} NR==2{printf "%.0f\n", (val/$1)*100}')" \
     -h string:x-canonical-private-synchronous:brightness \
-    -i display-brightness "Screen" "$((brightnessctl get && brightnessctl max) | awk 'NR==1{val=$1} NR==2{printf "%.0f\n", (val/$1)*100}')%" 
+    -i display-brightness "Screen" "$((brightnessctl get && brightnessctl max) | awk 'NR==1{val=$1} NR==2{printf "%.0f\n", (val/$1)*100}')%"
 
 ###
 ### Screenshot

@@ -11,13 +11,15 @@
     file
     procps
     killall
+    unixtools.netstat
+    unixtools.ifconfig
+    curl
+    wget
 
     # Essentials
     vim
     git
-    curl
-    wget
-    fastfetch
     tmux
+    #fastfetch
   ];
 }
