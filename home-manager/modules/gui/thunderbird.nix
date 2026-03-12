@@ -9,6 +9,7 @@
       "privacy.donottrackheader.enabled" = true;
 	  #"general.useragent.override" = "";
     };
+	profiles = {};
   };
 }
 

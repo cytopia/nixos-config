@@ -32,6 +32,7 @@ block = "net"
 # If 'wlan0' fails, comment out the device line to auto-detect
 device = "wlan0"
 format = "   $ssid ($signal_strength) "
+format_alt = "   $ip "
 
 [[block]]
 block = "backlight"

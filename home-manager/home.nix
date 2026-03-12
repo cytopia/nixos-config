@@ -32,6 +32,7 @@
     #./modules/gui/telegram.nix
 
     # --- gui: others ---
+    #./modules/gui/chromium.nix
     ./modules/gui/keepassxc.nix
     ./modules/gui/thunderbird.nix
   ];

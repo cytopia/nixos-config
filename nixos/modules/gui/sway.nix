@@ -66,5 +66,10 @@
     brightnessctl
     iwmenu        # Wifi menu for TTY/Wayland
     procps        # Provides 'ps', 'uptime', etc.
+
+    # tray icons
+    #libappindicator-gtk3  # check if this is needed
+    networkmanagerapplet
+    blueman
   ];
 }

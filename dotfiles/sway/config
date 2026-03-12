@@ -146,8 +146,9 @@ bar {
     urgent_workspace    #ec7ea4 #eb709b #ffffff
   }
 
-  # tray_output none|primary|<output>
-  tray_output primary
+  # tray_output none|<output>|*
+  tray_output *
+  #tray_output primary
 
   mode dock
 
@@ -514,7 +515,7 @@ bindsym $mod+Print exec grim -t png -g "$(slurp)" ~/Desktop/screenshot-$(date +%
 ############################################################
 
 # Start a terminal
-bindsym $mod+Return exec --no-startup-id exec $term tmux
+bindsym $mod+Return exec --no-startup-id exec $term
 
 # Start your launcher
 bindsym $mod+d exec 'exec $menu'
@@ -533,7 +534,7 @@ bindsym $ctrl+grave exec makoctl restore
 #
 ##########################################################################################
 
-exec $term --app-id=scratchterm tmux
+exec $term --app-id=scratchterm
 
 #exec_always pkill waybar; waybar
 
