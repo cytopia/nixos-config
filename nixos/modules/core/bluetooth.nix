@@ -24,4 +24,6 @@
     };
 	disabledPlugins = [];
   };
+
+  services.blueman.enable = true;
 }

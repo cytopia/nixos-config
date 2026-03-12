@@ -10,3 +10,7 @@ all_monitors = false
 type = "script"
 cmd = "i3status-rs ~/.config/i3status-rust/config.toml"
 interval = 0 # 0 means it stays open and listens to the stream
+
+# ADD THIS BLOCK BELOW
+[[end]]
+type = "tray"

@@ -35,6 +35,7 @@
     catppuccin-cursors
     catppuccin-papirus-folders
     #papirus-icon-theme
+    gtk4-layer-shell
   ];
 }
 
