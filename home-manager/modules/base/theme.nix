@@ -8,11 +8,13 @@
     gtk4.enable = true;
 
     theme = {
-      name = "catppuccin-frappe-blue-standard";
+      name = "Arc";
+      #name = "catppuccin-frappe-blue-standard";
       #package = "";
     };
     iconTheme = {
-      name = "breeze-dark";
+      #name = "Papirus-Dark";
+      name = "breeze";
       #package = "";
     };
     cursorTheme = {
@@ -26,15 +28,28 @@
       #package = "";
     };
     colorScheme = "dark";  # or light
-
   };
 
   home.packages = with pkgs; [
     catppuccin
     catppuccin-gtk
     catppuccin-cursors
-    catppuccin-papirus-folders
     #papirus-icon-theme
+	catppuccin-papirus-folders # Icon theme, e.g. for Thunar
+
+    numix-gtk-theme
+	numix-icon-theme
+	numix-cursor-theme
+
+	arc-theme
+	arc-icon-theme
+
+    adwaita-icon-theme  # The standard fallback
+    hicolor-icon-theme  # The mandatory base theme
+    #papirus-icon-theme  # A high-coverage theme for testing
+
+    librsvg # This provides the SVG loader for gdk-pixbuf
+
     gtk4-layer-shell
   ];
 }

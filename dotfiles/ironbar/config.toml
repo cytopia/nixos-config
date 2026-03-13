@@ -1,16 +1,30 @@
-monitor_exclusive = true
 position = "top"
-height = 32
+height = 24
 
 [[start]]
 type = "workspaces"
-all_monitors = false
+
+[[center]]
+type = "focused"
+icon_size = 16
 
 [[end]]
-type = "script"
-cmd = "i3status-rs ~/.config/i3status-rust/config.toml"
-interval = 0 # 0 means it stays open and listens to the stream
+type = "battery"
+show_if = "ls /sys/class/power_supply/ | grep --quiet '^BAT'"
 
-# ADD THIS BLOCK BELOW
+[[end]]
+type = "sys_info"
+format = [
+    "{cpu_percent}% ",
+    "{memory_percent}% ",
+]
+
+[end.interval]
+cpu = 1
+
 [[end]]
 type = "tray"
+
+[[end]]
+type = "clock"
+

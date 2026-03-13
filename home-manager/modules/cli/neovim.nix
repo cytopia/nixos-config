@@ -6,7 +6,7 @@
     defaultEditor = true;
 
     # aliases
-    viAlias = true;
+    viAlias = false;
     vimAlias = true;
     vimdiffAlias = true;
 

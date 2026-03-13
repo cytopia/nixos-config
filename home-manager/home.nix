@@ -19,17 +19,19 @@
   };
 
   imports = [
+    # --- base: theming ---
+    ./modules/base/xdg.nix
+    ./modules/base/theme.nix
+
     # --- cli ---
     ./modules/cli/bash.nix
+    ./modules/cli/zsh.nix
     ./modules/cli/neovim.nix
-
-    # --- gui: theming ---
-    ./modules/gui/theme.nix
 
     # --- gui: messenger ---
     ./modules/gui/signal.nix
     ./modules/gui/slack.nix
-    #./modules/gui/telegram.nix
+    ./modules/gui/telegram.nix
 
     # --- gui: others ---
     #./modules/gui/chromium.nix

@@ -13,15 +13,16 @@
     ];
   };
 
+  # Required as we are not running XFCE
+  # For Thunar-specific settings (list view, hidden files, etc.)
   programs.xfconf.enable = true;
 
-  services.udisks2.enable = true;
-  services.gvfs.enable = true; # Mount, trash, and other functionalities
-  services.tumbler.enable = true; # Thumbnail support for images
+  # Required as we are not running XFCE
+  # For general GTK settings and file dialogs
+  programs.dconf.enable = true;
 
-# 1. Ensure gvfs is explicitly in system packages
-  #environment.systemPackages = with pkgs; [
-  #  gvfs
-  #];
+  services.gvfs.enable = true;    # Mount, trash, and other functionalities
+  services.udisks2.enable = true; # The Hardware Backend (Mounting/Ejecting)
+  services.tumbler.enable = true; # Thumbnail support for images
 }
 

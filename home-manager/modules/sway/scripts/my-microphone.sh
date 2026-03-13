@@ -118,7 +118,7 @@ fi
 
 if [ "${MUTE}" = "muted" ]; then
 	notify-send "Microphone" "Muted" \
-		-i microphone-sensitivity-muted-symbolic \
+		-i microphone-sensitivity-muted \
 		-h string:x-canonical-private-synchronous:mic \
 		-h int:value:0 \
 		-u low \
@@ -126,7 +126,7 @@ if [ "${MUTE}" = "muted" ]; then
 
 elif [ "${MUTE}" = "unmuted" ]; then
 	notify-send "Microphone" "Unmuted" \
-		-i microphone-sensitivity-high-symbolic \
+		-i microphone-sensitivity-high \
 		-h string:x-canonical-private-synchronous:mic \
 		-h int:value:100 \
 		-u low \

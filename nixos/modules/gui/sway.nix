@@ -1,6 +1,8 @@
 { config, pkgs, ... }:
 
-
+let
+  unstable = import <unstable> { config = config.nixpkgs.config; };
+in
 {
 
   ###
@@ -35,8 +37,8 @@
     # Terminal & UI
     foot
     waybar
-    ironbar
-    i3status-rust
+    unstable.ironbar
+    unstable.i3status-rust
     fuzzel
     tofi
     wmenu
@@ -63,7 +65,7 @@
     procps        # Provides 'ps', 'uptime', etc.
 
     # tray icons
-    #libappindicator-gtk3  # check if this is needed
+    libappindicator-gtk3  # check if this is needed
     networkmanagerapplet
     blueman
   ];
