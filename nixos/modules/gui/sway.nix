@@ -27,17 +27,9 @@
   # Sway usually sets these, but keeping them here ensures
   # XDG portals choose the correct "Sway" backend.
   environment.sessionVariables = {
-    XDG_CURRENT_DESKTOP         = "sway";
-    XDG_SESSION_DESKTOP         = "sway";
+    XDG_CURRENT_DESKTOP = "sway";
+    XDG_SESSION_DESKTOP = "sway";
   };
-
-
-  #fonts.packages = with pkgs; [
-  #  nerd-fonts.jetbrains-mono
-  #  nerd-fonts.ubuntu
-  #  nerd-fonts.symbols-only
-  #];
-
 
   environment.systemPackages = with pkgs; [
     # Terminal & UI
@@ -53,6 +45,9 @@
     mako
     swaynotificationcenter
     libnotify # Provides 'notify-send'
+
+    # image viewer
+	swayimg
 
     # Clipboard & Screenshots
     wl-clipboard

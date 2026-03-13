@@ -13,14 +13,21 @@ output eDP-1 scale 1.5
 output * bg /home/cytopia/Pictures/wallpapers/current fill
 
 # swaymsg -t get_inputs
-input type:touchpad {
-  dwt enabled
+input "type:touchpad" {
+  # Basic Interaction
   tap enabled
+  dwt enabled
   natural_scroll enabled
   middle_emulation enabled
+
+  # Precision & Movement
   accel_profile adaptive
   pointer_accel 0.1
   scroll_factor 1.0
+
+  # 'clickfinger' allows 2-finger tap for right click, 3-finger for middle.
+  # 'button_areas' uses the physical bottom-right of the pad for right click.
+  click_method clickfinger
 }
 
 input type:keyboard {
@@ -46,7 +53,7 @@ set $menu wmenu-run
 set $lock swaylock --screenshots --effect-pixelate 50 --indicator-caps-lock --daemonize
 
 # Mute command
-set $mute wpctl set-mute \@DEFAULT_AUDIO_SINK@ 1
+set $mute my-volume -c mute; my-microphone -c mute
 
 
 
@@ -436,53 +443,22 @@ bindsym $mod+q kill
 ###
 
 # Volume: toggle mute
-bindsym --locked XF86AudioMute exec wpctl set-mute \@DEFAULT_AUDIO_SINK@ toggle \
-  && (wpctl get-volume \@DEFAULT_AUDIO_SINK@ | grep -q '[MUTED]' \
-    && notify-send -a "System" \
-      -h int:value:0 \
-      -h string:x-canonical-private-synchronous:volume \
-      -i audio-volume-muted "Volume" "Muted" \
-    || notify-send -a "System" \
-      -h int:value:"$(wpctl get-volume \@DEFAULT_AUDIO_SINK@ | awk '{print int($2 * 100)}')" \
-      -h string:x-canonical-private-synchronous:volume \
-      -i audio-volume-high "Volume" "Unmuted $(wpctl get-volume \@DEFAULT_AUDIO_SINK@ | awk '{print int($2 * 100)}')%" \
-  )
-
+bindsym --locked XF86AudioMute exec my-volume -c toggle
 # Volume: raise
-bindsym --locked XF86AudioRaiseVolume exec wpctl set-volume \@DEFAULT_AUDIO_SINK@ 5%+ \
-  && wpctl set-mute \@DEFAULT_AUDIO_SINK@ 0 \
-  && notify-send -a "System" \
-    -h int:value:"$(wpctl get-volume \@DEFAULT_AUDIO_SINK@ | awk '{print int($2 * 100)}')" \
-    -h string:x-canonical-private-synchronous:volume \
-    -i audio-volume-high "Volume" "$(wpctl get-volume \@DEFAULT_AUDIO_SINK@ | awk '{print int($2 * 100)}')%"
-
+bindsym --locked XF86AudioRaiseVolume exec my-volume -c up
 # Volume: lower
-bindsym --locked XF86AudioLowerVolume exec wpctl set-volume \@DEFAULT_AUDIO_SINK@ 5%- \
-  && wpctl set-mute \@DEFAULT_AUDIO_SINK@ 0 \
-  && notify-send -a "System" \
-    -h int:value:"$(wpctl get-volume \@DEFAULT_AUDIO_SINK@ | awk '{print int($2 * 100)}')" \
-    -h string:x-canonical-private-synchronous:volume \
-    -i audio-volume-low "Volume" "$(wpctl get-volume \@DEFAULT_AUDIO_SINK@ | awk '{print int($2 * 100)}')%"
-
+bindsym --locked XF86AudioLowerVolume exec my-volume -c down
 
 ###
 ### Microphone
 ###
 
 # Microphone: toggle mute
-bindsym --locked XF86AudioMicMute exec wpctl set-mute \@DEFAULT_AUDIO_SOURCE@ toggle \
-  && (wpctl get-volume \@DEFAULT_AUDIO_SOURCE@ | grep -q '[MUTED]' \
-    && notify-send -a "System" \
-      -h string:x-canonical-private-synchronous:microphone \
-      -i microphone-volume-muted "Microphone" "Muted" \
-    || notify-send -a "System" \
-      -h string:x-canonical-private-synchronous:microphone \
-      -i microphone-volume-muted "Microphone" "Unmuted" \
-  )
+bindsym --locked XF86AudioMicMute exec my-microphone -c toggle
 
 
 ###
-### Brightness
+### Screen
 ###
 
 # Brightness: increase
@@ -534,17 +510,10 @@ bindsym $ctrl+grave exec makoctl restore
 #
 ##########################################################################################
 
+# Quake like console for terminal
 exec $term --app-id=scratchterm
 
-#exec_always pkill waybar; waybar
-
-exec swayidle -w \
-  timeout 300 '$mute; $lock;' \
-  timeout 310 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
-  timeout 600 'systemctl suspend-then-hibernate' \
-  before-sleep '$mute; $lock;' \
-  lock '$mute; $lock;'
-
+# IDLE manager
 # EXPLAINING THE COMMANDS:
 # 1. exec swayidle -w : Starts the idle daemon. '-w' (wait) ensures commands finish.
 # 2. timeout 300 : After 5 mins of no input, lock the screen (Safety first).
@@ -555,6 +524,22 @@ exec swayidle -w \
 # 5. before-sleep : CRITICAL. This is the 'Lid Close' hook or whaterver should happen before sleep.
 #    If you close the lid, this line runs IMMEDIATELY before power is cut.
 # 6. lock : If you manually run 'loginctl lock-session', this ensures audio is also muted.
+exec swayidle -w \
+  timeout 300 '$mute; $lock;' \
+  timeout 310 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
+  timeout 600 'systemctl suspend-then-hibernate' \
+  before-sleep '$mute; $lock;' \
+  lock '$mute; $lock;'
+
+# Clipboard manager
+exec wl-paste --type text --watch cliphist store
+exec wl-paste --type image --watch cliphist store
+
+# Open Clipboard history
+bindsym $mod+c exec cliphist list | fuzzel --dmenu --width 100 | cliphist decode | wl-copy
+
+# Wipe Clipboard history
+bindsym $mod+Shift+c exec cliphist wipe
 
 
 

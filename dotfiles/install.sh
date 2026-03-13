@@ -30,6 +30,7 @@ symlink() {
 }
 
 
+symlink "${MY_SRC}/foot"          "${MY_DST}/foot"
 symlink "${MY_SRC}/tmux"          "${MY_DST}/tmux"
 symlink "${MY_SRC}/fuzzel"        "${MY_DST}/fuzzel"
 symlink "${MY_SRC}/sway"          "${MY_DST}/sway"

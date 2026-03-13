@@ -61,9 +61,8 @@
             exec tmux -2 -u attach-session -t "$SESS_ID"
           fi
         fi
-      fi
 
-      echo "Welcome back! Wayland environment synced to tmux."
+      fi
     '';
   };
 
