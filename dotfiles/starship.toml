@@ -1,0 +1,98 @@
+# Get a nerd font for these symbols to work (e.g., JetBrainsMono Nerd Font)
+format = """
+[░▒▓](#7aa2f7)\
+$os\
+$username\
+$custom\tmux\
+[](bg:#3b4252 fg:#7aa2f7)\
+$directory\
+[](fg:#3b4252 bg:#e0af68)\
+$git_branch\
+$git_status\
+[](fg:#e0af68 bg:#2e3440)\
+$nix_shell\
+$kubernetes\
+$terraform\
+$aws\
+$fill\
+$cmd_duration\
+$jobs\
+$battery\
+$time\
+[ ](fg:#2e3440)\
+\n$character"""
+
+# Move the rest of the prompt to the right
+fill = { symbol = " " }
+
+[directory]
+style = "bg:#3b4252 fg:#e0af68"
+format = "[ $path ]($style)"
+truncation_length = 3
+truncation_symbol = "…/"
+
+[os]
+disabled = false
+style = "bg:#7aa2f7 fg:#1d2021"
+symbols = { NixOS = " " }
+
+[username]
+show_always = true
+style_user = "bg:#7aa2f7 fg:#1d2021"
+format = '[$user]($style)'
+
+[git_branch]
+symbol = " "
+style = "bg:#e0af68 fg:#1d2021"
+format = '[ $symbol$branch ]($style)'
+
+[git_status]
+style = "bg:#e0af68 fg:#1d2021"
+format = '[$all_status$ahead_behind ]($style)'
+
+[nix_shell]
+symbol = "󱄅 "
+style = "fg:#7ebae4"
+format = 'via [$symbol\($name\)]($style) '
+
+[kubernetes]
+symbol = "󱃾 "
+disabled = false
+style = "fg:#326ce5"
+format = 'at [$symbol$context\($namespace\)]($style) '
+[kubernetes.context_aliases]
+"gke_.*_us-central1-a_prod-cluster" = "gke-prod"
+"dev-cluster-01.k8s.local" = "dev-local"
+
+[terraform]
+symbol = "󱁢 "
+style = "fg:#844fba"
+format = 'via [$symbol$workspace]($style) '
+
+[aws]
+symbol = "󰸏 "
+style = "fg:#ff9900"
+format = 'on [$symbol$profile(\($region\))]($style) '
+
+[cmd_duration]
+min_time = 500
+style = "fg:#f1fa8c"
+format = "took [$duration]($style) "
+
+[time]
+disabled = false
+time_format = "%R" # 24hr time
+style = "fg:#6272a4"
+format = "[[ $time ]($style)]"
+
+[character]
+success_symbol = "[➜](bold green)"
+error_symbol = "[➜](bold red)"
+
+[custom.tmux]
+description = "Check if inside a tmux session"
+# Checks if $TMUX is set; if so, it prints the icon and session name
+command = 'echo "  $(tmux display-message -p "#S")"'
+when = 'test -n "$TMUX"'
+style = "bg:#7aa2f7 fg:#1d2021"
+format = "[$output]($style)"

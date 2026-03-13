@@ -23,8 +23,13 @@ border-radius=15
 
 # Icons
 icons=1
-max-icon-size=64
-icon-path=/run/current-system/sw/share/icons/
+#max-icon-size=64
+#icon-path=/run/current-system/sw/share/icons/
+#icon-path=/run/current-system/sw/share/icons/hicolor:/run/current-system/sw/share/icons/Adwaita
+
+
+
+icon-path=/home/cytopia/.nix-profile/share/icons/Arc/:/home/cytopia/.nix-profile/share/icons/Moka/:/home/cytopia/.nix-profile/share/icons/Numix/:/home/cytopia/.nix-profile/share/icons/Numix-Cursor/:/home/cytopia/.nix-profile/share/icons/Numix-Cursor-Light/:/home/cytopia/.nix-profile/share/icons/Numix-Light/:/home/cytopia/.nix-profile/share/icons/Papirus/:/home/cytopia/.nix-profile/share/icons/Papirus-Dark/:/home/cytopia/.nix-profile/share/icons/Papirus-Light/:/home/cytopia/.nix-profile/share/icons/breeze/:/home/cytopia/.nix-profile/share/icons/gnome/:/home/cytopia/.nix-profile/share/icons/hicolor/:/home/cytopia/.nix-profile/share/icons/Adwaita/:/home/cytopia/.nix-profile/share/icons/HighContrast
 
 
 [urgency=low]

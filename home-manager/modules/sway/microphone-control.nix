@@ -1,8 +1,10 @@
 { pkgs, ... }:
-
+let
+  scriptName = "my-microphone";
+in
 {
   home.packages = [
-    (pkgs.writeShellScriptBin "my-microphone" (builtins.readFile ./scripts/my-microphone.sh))
+    (pkgs.writeShellScriptBin scriptName (builtins.readFile ./scripts/my-microphone.sh))
 	pkgs.libnotify  # Provides 'notify-send'
   ];
 }

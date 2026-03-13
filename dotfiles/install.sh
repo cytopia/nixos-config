@@ -37,5 +37,6 @@ symlink "${MY_SRC}/sway"          "${MY_DST}/sway"
 symlink "${MY_SRC}/mako"          "${MY_DST}/mako"
 symlink "${MY_SRC}/ironbar"       "${MY_DST}/ironbar"
 symlink "${MY_SRC}/i3status-rust" "${MY_DST}/i3status-rust"
+symlink "${MY_SRC}/starship.toml" "${MY_DST}/starship.toml"
 
 

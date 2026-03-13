@@ -2,16 +2,16 @@
 theme = "native"
 
 [icons]
-icons = "awesome6"
+icons = "material-nf"
 
 [[block]]
 block = "cpu"
 interval = 1
-format = "  $frequency ($utilization) "
+format = " $icon $frequency ($utilization) "
 
 [[block]]
 block = "temperature"
-format = "  $max "
+format = " $icon $max "
 
 [[block]]
 block = "memory"
@@ -31,19 +31,28 @@ interval = 60
 block = "net"
 # If 'wlan0' fails, comment out the device line to auto-detect
 device = "wlan0"
-format = "   $ssid ($signal_strength) "
-format_alt = "   $ip "
+format = " $icon $ssid ($signal_strength) "
+format_alt = " $icon $ip "
 
 [[block]]
 block = "backlight"
 
 [[block]]
 block = "sound"
+[block.theme_overrides]
+#idle_bg = "#123456"
+#warning_fg = "#88B090"
+warning_fg = "#A86F6F"
+#good_bg = "#123456"
+#critical_bg = "#123456"
+#info_bg = "#123456"
 
 [[block]]
 block = "sound"
 driver = "pulseaudio"
 device_kind = "source"    # This targets your microphone
+[block.theme_overrides]
+warning_fg = "#A86F6F"
 
 [[block]]
 block = "battery"
@@ -54,10 +63,10 @@ full_format = " $icon $percentage {$time_remaining.dur(hms:true, min_unit:m) |}"
 
 [[block]]
 block = "time"
-interval = 1
+interval = 60
 format = "  $timestamp.datetime(f:'(%V) %a, %d.%m.%Y') "
 
 [[block]]
 block = "time"
-interval = 1
-format = "  $timestamp.datetime(f:'%R') "
+interval = 60
+format = " $timestamp.datetime(f:'%R') "

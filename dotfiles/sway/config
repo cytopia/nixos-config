@@ -130,15 +130,16 @@ client.urgent           #ec7ea4  #eb709b #ffffff #eb709b
 
 # Read `man 5 sway-bar` for more information about this section.
 bar {
+  font pango:Dejavu Sans Mono 8
   position top
 
-  status_command i3status-rs
+  # tray_output none|<output>|*
+  tray_output *
+  mode dock
 
-  colors {
-    statusline #ffffff
-    background #323232
-    inactive_workspace #32323200 #32323200 #5c5c5c
-  }
+  # separator between bar sections
+  separator_symbol "|"
+  status_command i3status-rs
 
   colors {
     # <bar>
@@ -152,16 +153,6 @@ bar {
     inactive_workspace  #373737 #222222 #888888
     urgent_workspace    #ec7ea4 #eb709b #ffffff
   }
-
-  # tray_output none|<output>|*
-  tray_output *
-  #tray_output primary
-
-  mode dock
-
-  # separator between bar sections
-  separator_symbol "|"
-
 }
 
 
