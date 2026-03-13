@@ -26,8 +26,7 @@
 
     # --- Programs ---
     ./modules/programs/_default.nix
-    #./modules/programs/chromium.nix
-    ./modules/programs/chromium2.nix
+    ./modules/programs/chromium.nix
     ./modules/programs/thunar.nix
     ./modules/programs/obs.nix
   ];

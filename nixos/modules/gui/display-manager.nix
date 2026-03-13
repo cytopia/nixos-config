@@ -22,16 +22,6 @@
 
 
   ###
-  ### Keyboard Layout
-  ###
-  # Only required if using XWayland
-  #services.xserver.xkb = {
-  #  layout = "us";
-  #  variant = "";
-  #};
-
-
-  ###
   ### Extra Packages
   ###
   environment.systemPackages = with pkgs; [

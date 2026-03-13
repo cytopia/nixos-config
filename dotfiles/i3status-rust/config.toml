@@ -41,6 +41,11 @@ block = "backlight"
 block = "sound"
 
 [[block]]
+block = "sound"
+driver = "pulseaudio"
+device_kind = "source"    # This targets your microphone
+
+[[block]]
 block = "battery"
 driver = "sysfs"
 interval = 10

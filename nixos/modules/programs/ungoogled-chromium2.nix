@@ -53,15 +53,19 @@ let
   #ublockPolicies = import ./ublock-policies.nix { };
 in
 {
+  environment.systemPackages = with pkgs; [
+    ungoogled-chromium
+  ];
+
   programs.chromium = {
     enable = true;
 
     # Extensions
     extensions = [
-      "dbepggeogbaibhgnhhndojpepiihcmeb" # vimium
-      "cjpalhdlnbpafiamejdnhcphjbkeiagm" # ublock origin
-      "doojmbjmlfjjnbmnoijecmcbfeoakpjm" # noscript
-      "pflnpcinjbcfefgbejjfanemlgcfjbna" # tab numbers
+      #"dbepggeogbaibhgnhhndojpepiihcmeb" # vimium
+      #"cjpalhdlnbpafiamejdnhcphjbkeiagm" # ublock origin
+      #"doojmbjmlfjjnbmnoijecmcbfeoakpjm" # noscript
+      #"pflnpcinjbcfefgbejjfanemlgcfjbna" # tab numbers
     ];
 
     defaultSearchProviderEnabled = true;
@@ -84,7 +88,7 @@ in
               config.programs.chromium.extensions
               ++ [
                 "ocaahdebbfolfmndjeplogmgcagdmblk" # chromium web store
-                "oladmjdebphlnjjcnomfhhbfdldiimaf" # libredirect
+                #"oladmjdebphlnjjcnomfhhbfdldiimaf" # libredirect
               ]
             )
         ))
@@ -94,16 +98,16 @@ in
             blocked_install_message = "Add in nixos module!";
           };
 
-          # Pin ublock
-          "cjpalhdlnbpafiamejdnhcphjbkeiagm" = {
-            installation_mode = "allowed";
-            "toolbar_pin" = "force_pinned";
-          };
-          # Pin noscript
-          "doojmbjmlfjjnbmnoijecmcbfeoakpjm" = {
-            installation_mode = "allowed";
-            "toolbar_pin" = "force_pinned";
-          };
+          ## Pin ublock
+          #"cjpalhdlnbpafiamejdnhcphjbkeiagm" = {
+          #  installation_mode = "allowed";
+          #  "toolbar_pin" = "force_pinned";
+          #};
+          ## Pin noscript
+          #"doojmbjmlfjjnbmnoijecmcbfeoakpjm" = {
+          #  installation_mode = "allowed";
+          #  "toolbar_pin" = "force_pinned";
+          #};
         };
 
       #"3rdparty" = {
@@ -139,15 +143,14 @@ in
     initialPrefs = {
       "first_run_tabs" = (map chromeWebstoreCrxUrl config.programs.chromium.extensions) ++ [
         "https://github.com/NeverDecaf/chromium-web-store/releases/latest/download/Chromium.Web.Store.crx"
-        "https://github.com/libredirect/browser_extension/releases/download/v3.1.0/libredirect-3.1.0.crx"
       ];
     };
   };
 
   nixpkgs.overlays = [
     (self: super: {
-      ungoogled-chromium = (
-        super.ungoogled-chromium.override {
+      chromium = pkgs.ungoogled-chromium;
+      ungoogled-chromium = super.ungoogled-chromium.override {
           commandLineArgs = [
             "--enable-incognito-themes"
             "--extension-mime-request-handling=always-prompt-for-install"
@@ -158,10 +161,10 @@ in
             "--enable-features=EnableFingerprintingProtectionFilter:activation_level/enabled/enable_console_logging/true,EnableFingerprintingProtectionFilterInIncognito:activation_level/enabled/enable_console_logging/true,TabstripDeclutter,DevToolsPrivacyUI,ImprovedSettingsUIOnDesktop,MultiTabOrganization,OneTimePermission,TabOrganization,TabOrganizationSettingsVisibility,TabReorganization,TabReorganizationDivider,TabSearchPositionSetting,TabstripDedupe,TaskManagerDesktopRefresh"
             "--disable-features=EnableTabMuting"
           ];
-        }
-      );
+      };
     })
   ];
+
 
   #systemd.services.deleteChromiumFirstRun = {
   #  script = deleteFirstRunFiles;

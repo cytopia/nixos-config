@@ -35,5 +35,9 @@
     #./modules/gui/chromium.nix
     ./modules/gui/keepassxc.nix
     ./modules/gui/thunderbird.nix
+
+    ./modules/sway/volume-control.nix
+    ./modules/sway/microphone-control.nix
+
   ];
 }
