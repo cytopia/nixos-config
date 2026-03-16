@@ -27,7 +27,7 @@ print_usage() {
 	print_usage_head
 
 	printf "\nThis script is a wrapper for wpctl that will change the volume\n"
-	printf "and send those changes to a notification daemine.\n\n"
+	printf "and send those changes to a notification daemon.\n\n"
 
 	printf "COMMAND:\n"
 	printf "  -c up           Increase volume.\n"

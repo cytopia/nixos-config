@@ -27,15 +27,12 @@
 
       # Default args
       grep = "grep --color=auto --binary-file=without-match";
+
+      open = "xdg-open";
     };
 
-    bashrcExtra = ''
-      git-ident-show() {
-        printf "user   %s\n" "$(git config --get user.name)"
-        printf "mail   %s\n" "$(git config --get user.email)"
-        printf "key    %s\n" "$(git config --get user.signingkey)"
-      }
-	'';
+    # Extra functions to be added to bashrc
+    bashrcExtra = builtins.readFile ./scripts/shell-functions.sh;
 
     # This is where your custom shell logic goes
     initExtra = ''

@@ -18,6 +18,25 @@
     #  XDG_WORK_DIR = "${home}/Work";
     #};
   };
+
+  xdg.mime = {
+	enable = true;
+  };
+
+  xdg.mimeApps = {
+	enable = true;
+
+    # Default applications
+    defaultApplications = {
+      "image/*" = [
+        "swayimg.desktop"
+        "gimp.desktop"
+      ];
+    };
+    # Additional application associations
+    #addedAssociations = {
+    #};
+  };
 }
 
 
