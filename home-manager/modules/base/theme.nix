@@ -35,14 +35,14 @@
     catppuccin-gtk
     catppuccin-cursors
     #papirus-icon-theme
-	catppuccin-papirus-folders # Icon theme, e.g. for Thunar
+    catppuccin-papirus-folders # Icon theme, e.g. for Thunar
 
     numix-gtk-theme
-	numix-icon-theme
-	numix-cursor-theme
+    numix-icon-theme
+    numix-cursor-theme
 
-	arc-theme
-	arc-icon-theme
+    arc-theme
+    arc-icon-theme
 
     adwaita-icon-theme  # The standard fallback
     hicolor-icon-theme  # The mandatory base theme

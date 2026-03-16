@@ -3,7 +3,7 @@ format = """
 [░▒▓](#7aa2f7)\
 $os\
 $username\
-$custom\tmux\
+${custom.tmux}\
 [](bg:#3b4252 fg:#7aa2f7)\
 $directory\
 [](fg:#3b4252 bg:#e0af68)\
@@ -83,7 +83,8 @@ format = "took [$duration]($style) "
 disabled = false
 time_format = "%R" # 24hr time
 style = "fg:#6272a4"
-format = "[[ $time ]($style)]"
+#format = "[[ $time ]($style)]"
+format = '\[[ $time ]($style)\]'
 
 [character]
 success_symbol = "[➜](bold green)"
@@ -92,7 +93,7 @@ error_symbol = "[➜](bold red)"
 [custom.tmux]
 description = "Check if inside a tmux session"
 # Checks if $TMUX is set; if so, it prints the icon and session name
-command = 'echo "  $(tmux display-message -p "#S")"'
+command = 'tmux display-message -p "  #S"'
 when = 'test -n "$TMUX"'
 style = "bg:#7aa2f7 fg:#1d2021"
 format = "[$output]($style)"

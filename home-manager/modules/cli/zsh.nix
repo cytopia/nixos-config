@@ -77,7 +77,7 @@
 
   home.packages = with pkgs; [
     bat
-	eza
+    eza
   ];
 
 }
