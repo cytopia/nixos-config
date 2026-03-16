@@ -3,6 +3,8 @@
 # https://gist.github.com/SilentQQS/b23c28889cb957088ecf382400ad4325
 
 
+
+
 # TODO:
 # Make sure chromium uses the system DNS by
 # Disabling 'Secure DNS'
@@ -111,6 +113,7 @@ in
     };
 
     # https://chromeenterprise.google/policies/
+    # Examples: https://github.com/SenseiDeElite/chromium-policies.json
     extraOpts = {
       "BrowserSignin" = 0;
       "SyncDisabled" = true;
