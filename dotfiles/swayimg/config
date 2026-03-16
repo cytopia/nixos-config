@@ -1,0 +1,200 @@
+################################################################################
+# General configuration
+################################################################################
+[general]
+# Mode at startup (viewer/slideshow/gallery)
+mode = viewer
+
+position = auto
+# 'parent' tells swayimg to match the exact size and position of your active terminal
+#position = parent
+overlay = no
+decoration = no
+# Use window decoration (borders and title), no by default for clean ricing
+decoration = no
+app_id = swayimg
+
+
+################################################################################
+# Viewer mode configuration
+################################################################################
+[viewer]
+window = #000000ee
+scale = optimal
+antialiasing = mks13
+position = center
+loop = yes
+# Number of previously viewed images to store in cache
+history = 2
+# Number of preloaded images (read ahead)
+preload = 2
+
+
+################################################################################
+# Gallery mode configuration
+################################################################################
+[gallery]
+# Size of the thumbnails in pixels
+size = 200
+selected_scale = 1,15
+padding = 5
+# Background color of the selected tile (RGBA)
+select = #404040ff
+# Background color of non-selected tiles (RGBA)
+background = #202020ff
+# Border color of the selected tile (RGBA)
+border_color = #aaaaaaff
+# Border width of the selected tile (pixels)
+border_width = 5
+# Background color of the window (RGBA)
+window = #000000ee
+# Max number of invisible thumbnails stored in memory cache
+cache = 100
+# Load not only visible but also adjacent thumbnails
+preload = no
+# Enable/disable storing thumbnails in persistent storage (yes/no)
+pstore = no
+# Anti-aliasing mode for thumbnails (none/box/bilinear/bicubic/mks13)
+antialiasing = mks13
+
+
+################################################################################
+# Image list configuration
+################################################################################
+[list]
+all = yes
+order = alpha
+recursive = no
+reverse = no
+
+
+################################################################################
+# Font configuration
+################################################################################
+[font]
+# Font used for the info overlay (press 'i' to toggle info)
+name = monospace
+size = 14
+color = #ccccccff
+background = #00000080
+shadow = #00000000
+
+
+################################################################################
+# Image meta info scheme (format, size, EXIF, etc.)
+################################################################################
+[info]
+show = yes
+padding = 10
+info_timeout = 5
+status_timeout = 3
+
+# Display scheme for viewer mode (position = content)
+[info.viewer]
+top_left = +name,+format,+filesize,+imagesize,+exif
+top_right = index
+bottom_left = scale,frame
+bottom_right = status
+
+# Display scheme for gallery mode (position = content)
+[info.gallery]
+top_left = none
+top_right = index
+bottom_left = none
+bottom_right = name,status
+
+################################################################################
+# Viewer mode key binding configuration: key = action [parameters]
+################################################################################
+[keys.viewer]
+F1 = help
+Home = first_file
+End = last_file
+Prior = prev_file
+Next = next_file
+Space = next_file
+Shift+r = rand_file
+Shift+d = prev_dir
+d = next_dir
+Shift+o = prev_frame
+o = next_frame
+c = skip_file
+s = mode slideshow
+n = animation
+f = fullscreen
+Return = mode gallery
+Left = step_left 10
+Right = step_right 10
+Up = step_up 10
+Down = step_down 10
+Equal = zoom +10
+Plus = zoom +10
+Minus = zoom -10
+w = zoom width
+Shift+w = zoom height
+z = zoom fit
+Shift+z = zoom fill
+0 = zoom real
+BackSpace = zoom optimal
+k = zoom keep
+Alt+s = zoom
+Alt+p = position
+bracketleft = rotate_left
+bracketright = rotate_right
+m = flip_vertical
+Shift+m = flip_horizontal
+a = antialiasing
+r = reload
+i = info
+Shift+Delete = exec rm -f '%' && echo "File removed: %"; skip_file
+Escape = exit
+q = exit
+# Mouse related
+ScrollLeft = step_right 5
+ScrollRight = step_left 5
+ScrollUp = step_up 5
+ScrollDown = step_down 5
+Ctrl+ScrollUp = zoom +10 mouse
+Ctrl+ScrollDown = zoom -10 mouse
+Shift+ScrollUp = prev_file
+Shift+ScrollDown = next_file
+Alt+ScrollUp = prev_frame
+Alt+ScrollDown = next_frame
+MouseLeft = drag
+MouseSide = prev_file
+MouseExtra = next_file
+
+################################################################################
+# Gallery mode key binding configuration: key = action [parameters]
+################################################################################
+[keys.gallery]
+F1 = help
+Home = first_file
+End = last_file
+Left = step_left
+Right = step_right
+Up = step_up
+Down = step_down
+Prior = page_up
+Next = page_down
+c = skip_file
+s = mode slideshow
+f = fullscreen
+Return = mode viewer
+a = antialiasing
+r = reload
+i = info
+Equal = thumb +20
+Plus = thumb +20
+Minus = thumb -20
+Shift+Delete = exec rm -f '%' && echo "File removed: %"; skip_file
+Escape = exit
+q = exit
+# Mouse related
+ScrollLeft = step_right
+ScrollRight = step_left
+ScrollUp = step_up
+ScrollDown = step_down
+Ctrl+ScrollUp = thumb +20
+Ctrl+ScrollDown = thumb -20
+MouseLeft = mode viewer
