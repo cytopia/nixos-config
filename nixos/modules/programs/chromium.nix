@@ -118,6 +118,30 @@ in
       "BrowserSignin" = 0;
       "SyncDisabled" = true;
 
+	  "TranslatorAPIAllowed" = false;
+	  "UserFeedbackAllowed" = false;
+
+	  "BuiltInAIAPIsEnabled" = false;
+
+	  "ChromeVariations" = 2;
+	  "EnhancedNetworkVoicesInSelectToSpeakAllowed" = false;
+	  "ListenToThisPageEnabled" = false;
+	  "AccessibilityImageLabelsEnabled" = false;
+	  "BrowserNetworkTimeQueriesEnabled" = false;
+	  "CloudExtensionRequestEnabled" = false;
+	  "CloudProfileReportingEnabled" = false;
+	  "CloudReportingEnabled" = false;
+
+	  "UserSecurityAuthenticatedReporting" = false;
+	  "UserSecuritySignalsReporting" = false;
+
+	  "GeminiActOnWebSettings" = 1;
+	  "GenAILocalFoundationalModelSettings" = 1;
+	  "GenAiDefaultSettings" = 2;
+
+	  "GoogleSearchSidePanelEnabled" = false;
+	  "LiveTranslateEnabled" = false;
+
       # Metrics send to google
       "MetricsReportingEnabled" = false;
       "DomainReliabilityAllowed" = false;
@@ -126,6 +150,11 @@ in
       "UrlKeyedAnonymizedDataCollectionEnabled" = false;
       "DeviceMetricsReportingEnabled" = false;
       "PluginVmDataCollectionAllowed" = false;
+	  "WebRtcEventLogCollectionAllowed" = false;
+	  "WebRtcTextLogCollectionAllowed" = false;
+
+	  "IntranetRedirectBehavior" = 1;
+	  "MediaRecommendationsEnabled" = false;
 
       "DeviceActivityHeartbeatEnabled" = false;
       "ReportDeviceActivityTimes" = false;
@@ -140,6 +169,9 @@ in
 
       "PasswordManagerEnabled" = false;
       "PasswordLeakDetectionEnabled" = false;
+	  "PasswordProtectionWarningTrigger" = 0;
+
+	  "SpellCheckServiceEnabled" = false;
 
       "SafeBrowsingEnabled" = false;
       "SafeBrowsingProtectionLevel" = 0;
