@@ -48,9 +48,6 @@ in
     swaynotificationcenter
     libnotify # Provides 'notify-send'
 
-    # image viewer
-	swayimg
-
     # Clipboard & Screenshots
     wl-clipboard
     cliphist
@@ -66,7 +63,7 @@ in
 
     # tray icons
     libappindicator-gtk3  # check if this is needed
-    networkmanagerapplet
+    #networkmanagerapplet
     blueman
   ];
 }
