@@ -66,3 +66,37 @@ notes() {
 	# Unlock
 	rm -f "${lock}"
 }
+
+create-nix-dev-shell() {
+cat << 'EOF' > flake.nix
+{
+  description = "Nix development shell";
+
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+  };
+
+  outputs = { self, nixpkgs }:
+    let
+      projectName = "My Nix Dev Shell";
+      system = "x86_64-linux";
+      pkgs = nixpkgs.legacyPackages.${system};
+    in
+    {
+      devShells.${system}.default = pkgs.mkShell {
+        # 1. Packages to be added to the $PATH
+        packages = with pkgs; [
+          python311
+        ];
+
+        # 2. Environment Variables
+        shellHook = ''
+          export PROJECT_NAME="${projectName}"
+          echo "Welcome to $PROJECT_NAME!"
+        '';
+      };
+    };
+}
+EOF
+	nix develop
+}

@@ -19,6 +19,8 @@
   };
 
   imports = [
+    ./modules/default.nix
+
     # --- base: theming ---
     ./modules/base/xdg.nix
     ./modules/base/theme.nix
