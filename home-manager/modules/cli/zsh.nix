@@ -6,7 +6,7 @@
     syntaxHighlighting.enable = true;
 
     # Performance optimizations
-    initExtra = ''
+    initContent = ''
       # Fast-syntax-highlighting is often smoother than the default
       # ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE is key for performance in large repos
       export ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
@@ -47,6 +47,8 @@
 
       # Default args
       grep = "grep --color=auto --binary-file=without-match";
+
+      open = "xdg-open";
     };
 
     # Essential plugins for DevOps/Platform

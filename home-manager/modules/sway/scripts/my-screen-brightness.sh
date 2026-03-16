@@ -8,7 +8,7 @@
 ################################################################################
 
 ACTION=
-SINK="@DEFAULT_AUDIO_SOURCE@"
+INTERVAL="5"
 
 
 
@@ -25,15 +25,16 @@ print_usage_head() {
 print_usage() {
 	print_usage_head
 
-	printf "\nThis script is a wrapper for wpctl that will change the microphone volume\n"
-	printf "and send those changes to a notification daemon.\n\n"
+	printf "\nThis script is a wrapper for brightnessctl that will change the brightness\n"
+	printf "of the screen and send those changes to a notification daemon.\n\n"
 
 	printf "COMMAND:\n"
-	printf "  -c mute         Mute microphone.\n"
-	printf "  -c toggle       Toggle mute/unmute.\n\n"
+	printf "  -c up           Increase brghtness.\n"
+	printf "  -c down         Decrease brightness.\n"
 
-	printf "   -S <sink>      Specify AUDIO_SOURCE.\n"
-	printf "                  If omitted using '@DEFAULT_AUDIO_SOURCE@'.\n\n"
+	printf "OPTIONS:\n"
+	printf "   -i <interval>  Change the interval for brightness up/down.\n"
+	printf "                  The default is 5 (percent).\n\n"
 
 	printf "HELP:\n"
 	printf "   -h             Show help.\n"
@@ -54,16 +55,21 @@ while [ "${#}" -gt 0  ]; do
 	case "${1}" in
 		-c)
 			shift
-			if [ "${1}" != "mute" ] && [ "${1}" != "toggle" ]; then
-				printf "Error, -c must be either 'mute' or 'toggle'.\n"
+			if [ "${1}" != "up" ] && [ "${1}" != "down" ]; then
+				printf "Error, -c must either be 'up' or 'down'.\n"
 				print_usage_head
 				exit 1
 			fi
 			ACTION="${1}"
 			;;
-		-S)
+		-i)
 			shift
-			SINK="${1}"
+			if ! printf "%d" "${1}" >/dev/null 2>&1; then
+				printf "Error, the value for -i must be an integer.\n"
+				print_usage_head
+				exit 1
+			fi
+			INTERVAL="${1}"
 			;;
 		-h)
 			print_usage
@@ -99,36 +105,17 @@ fi
 # Rum command
 ############################################################
 
+PERCENT=""
+if [ "${ACTION}" = "up" ]; then
+	brightnessctl set "${INTERVAL}%+"
+	PERCENT="$( (brightnessctl get && brightnessctl max) | awk 'NR==1{val=$1} NR==2{printf "%.0f\n", (val/$1)*100}')"
 
-MUTE=""
-
-if  [ "${ACTION}" = "mute" ]; then
-	wpctl set-mute "${SINK}" 1
-	MUTE="muted"
-
-elif  [ "${ACTION}" = "toggle" ]; then
-	wpctl set-mute "${SINK}" toggle
-	STATUS="$( wpctl get-volume "${SINK}" )"
-	if echo "${STATUS}" | grep -q '[MUTED]'; then
-		MUTE="muted"
-	else
-		MUTE="unmuted"
-	fi
+elif [ "${ACTION}" = "down" ]; then
+	brightnessctl set "${INTERVAL}%-"
+	PERCENT="$( (brightnessctl get && brightnessctl max) | awk 'NR==1{val=$1} NR==2{printf "%.0f\n", (val/$1)*100}')"
 fi
 
-if [ "${MUTE}" = "muted" ]; then
-	notify-send "Microphone" "Muted" \
-		-i microphone-sensitivity-muted \
-		-h string:x-canonical-private-synchronous:mic \
-		-h int:value:0 \
-		-u low \
-		-a "System"
-
-elif [ "${MUTE}" = "unmuted" ]; then
-	notify-send "Microphone" "Unmuted" \
-		-i microphone-sensitivity-high \
-		-h string:x-canonical-private-synchronous:mic \
-		-h int:value:100 \
-		-u low \
-		-a "System"
-fi
+notify-send -a "System" \
+    -h int:value:"${PERCENT}" \
+    -h string:x-canonical-private-synchronous:brightness \
+    -i display-brightness "Screen" "${PERCENT}%"

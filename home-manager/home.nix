@@ -22,9 +22,10 @@
     # --- base: theming ---
     ./modules/base/xdg.nix
     ./modules/base/theme.nix
+    ./modules/base/key-management.nix
 
     # --- cli ---
-    ./modules/cli/ssh-agent.nix
+    #./modules/cli/ssh-agent.nix
     ./modules/cli/bash.nix
     ./modules/cli/git.nix
     ./modules/cli/zsh.nix
@@ -37,11 +38,13 @@
 
     # --- gui: others ---
     #./modules/gui/chromium.nix
+    ./modules/gui/image.nix
     ./modules/gui/keepassxc.nix
     ./modules/gui/thunderbird.nix
 
     ./modules/sway/volume-control.nix
     ./modules/sway/microphone-control.nix
+    ./modules/sway/brightness-control.nix
 
   ];
 }

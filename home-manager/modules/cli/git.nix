@@ -4,16 +4,13 @@
   programs.git = {
     enable = true;
 
+    # https://git-scm.com/docs/git-config
     settings = {
       user = {
         name  = "cytopia";
         email = "cytopia@everythingcli.org";
         signingkey = "A02C56F0";
       };
-      #signing = {
-      #  key = "A02C56F0";
-      #  signByDefault = false;
-      #};
 
       core = {
         # Highlight spaces in red during git diff/log/apply
@@ -35,6 +32,57 @@
         diffFilter = "delta --color-only";
       };
 
+      status = {
+        submodulesummary = true;
+        short = false;
+        branch = true;
+      };
+
+      commit = {
+        verbose = true;
+      };
+
+      apply = {
+        whitespace = "warn";
+      };
+
+      pull = {
+        rebase = true;
+      };
+
+      merge = {
+        log = true;
+        ff = false;
+        tool = "nvimdiff";
+        conflictstyle = "zdiff3";
+      };
+
+      mergetool = {
+        keepBackup = false;
+        prompt = false;
+      };
+      mergetool."nvimdiff" = {
+        layout = "LOCAL,BASE,REMOTE / MERGED";
+      };
+
+      diff = {
+        tool = "nvimdiff";
+        algorithm = "histogram";
+        renames = "copies";
+      };
+      difftool = {
+        prompt = false;
+        trustExitCode = true;
+      };
+
+      alias = {
+        uncommit = "reset HEAD~1 --mixed";
+        ls-ign = "ls-files -o -i --exclude-standard";
+        ign = "ls-files -o -i --exclude-standard";
+        tree = "log --graph --decorate --oneline --all";
+        tags = "tag --list --sort=-creatordate --format='%(color:yellow)%(refname:short)%(color:reset) \t%(creatordate:short) \t%(contents:subject)'";
+      };
+
       delta = {
         navigate = true;  # use n and N to move between diff sections
         dark = true;      # or light = true, or omit for auto-detection
@@ -42,29 +90,17 @@
         #line-numbers = true;
       };
 
+      gpg = {
+        program = "gpg";
+        };
 
-      commit = {
-        verbose = true;
+      column = {
+        ui = "auto";
       };
 
-      pull = {
-        # When pulling do not create a merge commit.
-        ff = "only";
+      color = {
+        ui = "auto";
       };
-
-      merge = {
-        summary = true;
-
-        # No fast forward merge
-        # I want to see the merge tree instead
-        # of a flat merge
-        ff = false;
-      };
-
-      alias = {
-        uncommit = "reset HEAD~1 --mixed";
-      };
-
     };
   };
 
