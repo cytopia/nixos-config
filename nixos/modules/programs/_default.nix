@@ -15,11 +15,13 @@
     unixtools.ifconfig
     curl
     wget
+    dig
 
     # Essentials
     vim
     git
     tmux
+    gnumake
     #fastfetch
   ];
 }

@@ -29,12 +29,13 @@
       grep = "grep --color=auto --binary-file=without-match";
     };
 
-    sessionVariables = {
-      EDITOR = "vim";
-      XDG_CURRENT_DESKTOP = "sway";
-      MOZ_ENABLE_WAYLAND = "1";
-      QT_QPA_PLATFORM = "wayland";
-    };
+    bashrcExtra = ''
+      git-ident-show() {
+        printf "user   %s\n" "$(git config --get user.name)"
+        printf "mail   %s\n" "$(git config --get user.email)"
+        printf "key    %s\n" "$(git config --get user.signingkey)"
+      }
+	'';
 
     # This is where your custom shell logic goes
     initExtra = ''
@@ -64,6 +65,13 @@
 
       fi
     '';
+
+    sessionVariables = {
+      EDITOR = "vim";
+      XDG_CURRENT_DESKTOP = "sway";
+      MOZ_ENABLE_WAYLAND = "1";
+      QT_QPA_PLATFORM = "wayland";
+    };
   };
 
   home.packages = [ pkgs.tmux ];

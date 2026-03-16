@@ -24,7 +24,9 @@
     ./modules/base/theme.nix
 
     # --- cli ---
+    ./modules/cli/ssh-agent.nix
     ./modules/cli/bash.nix
+    ./modules/cli/git.nix
     ./modules/cli/zsh.nix
     ./modules/cli/neovim.nix
 

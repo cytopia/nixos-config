@@ -2,6 +2,22 @@
 
 # https://gist.github.com/SilentQQS/b23c28889cb957088ecf382400ad4325
 
+
+# TODO:
+# Make sure chromium uses the system DNS by
+# Disabling 'Secure DNS'
+# and by disabling these flags
+# Disable #use-dns-https-svcb-alpn.
+# Disable #enable-async-dns (Chrome only).
+# Disable #encrypted-client-hello (Chrome only).
+#
+# What about this???
+# chrome.exe --host-resolver-rules="MAP * 0.0.0.0 , EXCLUDE 127.0.0.1"
+#
+# TODO: 2
+# Disable: Preload Pages
+
+
 let
   # GPU Optimizations
   gpuFeatures = [
@@ -89,17 +105,88 @@ in
           "system_theme" = 1;
         };
       };
+      "dns_prefetching" = {
+        "enabled" = false;
+       };
     };
 
+    # https://chromeenterprise.google/policies/
     extraOpts = {
       "BrowserSignin" = 0;
       "SyncDisabled" = true;
+
+      # Metrics send to google
+      "MetricsReportingEnabled" = false;
+      "DomainReliabilityAllowed" = false;
+      "FeedbackSurveysEnabled" = false;
+      "InsightsExtensionEnabled" = false;
+      "UrlKeyedAnonymizedDataCollectionEnabled" = false;
+      "DeviceMetricsReportingEnabled" = false;
+      "PluginVmDataCollectionAllowed" = false;
+
+      "DeviceActivityHeartbeatEnabled" = false;
+      "ReportDeviceActivityTimes" = false;
+
+      "AdsSettingForIntrusiveAdsSites" = 2; # Do not allow ads on sites with intrusive ads
+
+      "AdvancedProtectionAllowed" = false;
+      "DownloadRestrictions" = 0;
+
+      "PromotionsEnabled" = false;
+      "SearchSuggestEnabled" = false;
+
       "PasswordManagerEnabled" = false;
-      "SpellcheckEnabled" = true;
-      "SpellcheckLanguage" = [
-        "de"
-        "en-US"
-      ];
+      "PasswordLeakDetectionEnabled" = false;
+
+      "SafeBrowsingEnabled" = false;
+      "SafeBrowsingProtectionLevel" = 0;
+      "SafeBrowsingProxiedRealTimeChecksAllowed" = false;
+      "SafeBrowsingForTrustedSourcesEnabled" = false;
+      "SafeBrowsingSurveysEnabled" = false;
+      "SafeBrowsingExtendedReportingEnabled" = false;
+      "SafeBrowsingDeepScanningEnabled" = false;
+
+      "AutofillPredictionSettings" = 2;
+      "AutofillAddressEnabled" = false;
+      "AutofillCreditCardEnabled" = false;
+      "PaymentMethodQueryEnabled" = false;
+
+      "AutomatedPasswordChangeSettings" = 2; # DENY
+      "DefaultGeolocationSetting" = 2;
+
+      "DefaultBrowserSettingEnabled" = false;
+
+      "SpellcheckEnabled" = false;
+      "SpellcheckLanguage" = [];
+      # 5 = Open New Tab Page
+      # 1 = Restore the last session
+      # 4 = Open a list of URLs
+      # 6 = Open a list of URLs and restore the last session
+      "RestoreOnStartup" = 1;
+
+      "DefaultWindowManagementSetting" = 3;  # ask
+      "DefaultLocalFontsSetting" = 3; # ask
+      "DefaultFileSystemReadGuardSetting" = 3; # ask
+      "DefaultFileSystemWriteGuardSetting" = 3 ; # ask
+      "DefaultNotificationsSetting" = 3; # ask
+      "DefaultWebBluetoothGuardSetting" = 3; # ask
+      "DefaultWebHidGuardSetting" = 3; # ask
+      "DefaultWebUsbGuardSetting" = 3; # ask
+      "DefaultPopupsSetting" = 2; # DENY
+      "DefaultSensorsSetting" = 2; # DENY
+      "DefaultSerialGuardSetting" = 3; # DENY
+
+      # Disable Chromes own DNS
+      "NetworkPredictionOptions" = 2;
+      "BuiltInDnsClientEnabled" = false;
+      "DNSInterceptionChecksEnabled" = false;
+      "DnsOverHttpsMode" = "off";
+      "DnsPrefetchingEnabled" = false;
+      "AdditionalDnsQueryTypesEnabled" = false;
+      "DnsOverHttpsExcludedDomains" = [ "*" ];
+      "EnableMediaRouter" = false;  # chrome-cast discovery
+      "TranslateEnabled" = false;
+
       ExtensionSettings = {
         # uBlock Origin Lite
         "ddkjiahejlhfcafbddmgiahcphecmpfh" = {

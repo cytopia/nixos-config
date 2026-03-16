@@ -28,6 +28,9 @@
     ./modules/programs/_default.nix
     ./modules/programs/chromium.nix
     ./modules/programs/thunar.nix
+    ./modules/programs/podman.nix
     ./modules/programs/obs.nix
   ];
+
+  #networking.mobileWorkstation.profile = "hardened";
 }
