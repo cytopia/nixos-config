@@ -23,6 +23,7 @@
 	enable = true;
   };
 
+  # NOTE: If enabled, generated config $XDG_CONFIG_HOME/mimeapps.list will be read-only.
   xdg.mimeApps = {
 	enable = true;
 
@@ -33,6 +34,34 @@
         "gimp.desktop"
       ];
       "image/jpeg" = [
+        "swayimg.desktop"
+        "gimp.desktop"
+      ];
+      "image/gif" = [
+        "swayimg.desktop"
+        "gimp.desktop"
+      ];
+      "image/webp" = [
+        "swayimg.desktop"
+        "gimp.desktop"
+      ];
+      "image/svg" = [
+        "swayimg.desktop"
+        "gimp.desktop"
+      ];
+      "image/raw" = [
+        "swayimg.desktop"
+        "gimp.desktop"
+      ];
+      "image/tiff" = [
+        "swayimg.desktop"
+        "gimp.desktop"
+      ];
+      "image/heif" = [
+        "swayimg.desktop"
+        "gimp.desktop"
+      ];
+      "image/bmp" = [
         "swayimg.desktop"
         "gimp.desktop"
       ];
