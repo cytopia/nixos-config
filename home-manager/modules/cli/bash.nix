@@ -67,7 +67,6 @@
             exec tmux -2 -u attach-session -t "$SESS_ID"
           fi
         fi
-
       fi
     '';
 

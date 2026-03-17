@@ -228,7 +228,8 @@ bindsym $mod+minus scratchpad show
 # Default Scratch Pad
 ############################################################
 for_window [app_id="scratchterm"] move scratchpad
-bindsym $mod+grave [app_id="scratchterm"] scratchpad show
+#for_window [app_id="scratchterm"] floating enable, resize set width 60 ppt height 60 ppt, move position center, move scratchpad
+bindsym $mod+grave [app_id="scratchterm"] scratchpad show, resize set width 60 ppt height 60 ppt, move position center
 
 
 
