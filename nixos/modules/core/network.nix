@@ -149,12 +149,15 @@ in
       networking.timeServers = [];
       services.timesyncd.enable = false;
 
+      # Hardcode NTS time servers to break the Time/DNS deadlock
       networking.extraHosts = ''
-        # Hardcode NTS time servers to break the Time/DNS deadlock
+        # Cloudflare NTS (Anycast)
         162.159.200.1 time.cloudflare.com
         2606:4700:f0::1 time.cloudflare.com
-        194.58.200.20 nts.netnod.se
-        2a01:3f7::1 nts.netnod.se
+
+        # Netnod NTS (Anycast)
+        94.58.207.70 nts.netnod.se
+        2a01:3f0:1:4::28 nts.netnod.se
       '';
 
       # Use NTS (Network Time Security) via chrony.
@@ -175,8 +178,8 @@ in
           # Ignore NTS certificate expiration dates so we can sync even if time is years off
           nocerttimecheck 1
           # '1':  If clock is off by 1 sec then adjust
-          # '-1': Do infinite updates
-          makestep 1 -1
+          # '3': Only do 3 updates after start
+          makestep 1 3
 
           # 3. SECURITY: STRICT CLIENT MODE
           # Disable the NTP server port entirely (do not listen on UDP 123)
@@ -272,7 +275,7 @@ in
       # bootstrap connect to DNS 53.
       users.groups.dnscrypt = {
         gid = 10053;
-	  };
+      };
       # Only inject the systemd override when NOT in the hotel profile.
       # This prevents creating a broken zombie service when dnscrypt is disabled.
       systemd.services.dnscrypt-proxy = lib.mkIf (cfg.profile != "hotel") {
