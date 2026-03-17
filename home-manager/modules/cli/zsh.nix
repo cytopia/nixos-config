@@ -21,10 +21,13 @@
     '';
 
     shellAliases = {
+      # Overwrites
       k = "kubectl";
       tf = "terraform";
       g = "git";
       cat = "bat";        # Modern cat with syntax highlighting
+      open = "xdg-open";
+
 
       # Listings
       ll = "eza -la";
@@ -47,8 +50,6 @@
 
       # Default args
       grep = "grep --color=auto --binary-file=without-match";
-
-      open = "xdg-open";
     };
 
     # Essential plugins for DevOps/Platform
