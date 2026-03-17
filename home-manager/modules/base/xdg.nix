@@ -13,10 +13,10 @@
     publicShare = null;
     templates = null;
     videos = "${config.home.homeDirectory}/Videos";
-    #extraConfig = {
-    #  XDG_PROJECTS_DIR = "${home}/Projects";
-    #  XDG_WORK_DIR = "${home}/Work";
-    #};
+    extraConfig = {
+      XDG_PROJECTS_DIR = "${config.home.homeDirectory}/repo";
+      #XDG_WORK_DIR = "${config.home.homeDirectory}/Work";
+    };
   };
 
   xdg.mime = {
@@ -28,14 +28,15 @@
 
     # Default applications
     defaultApplications = {
-      "image/*" = [
+      "image/png" = [
+        "swayimg.desktop"
+        "gimp.desktop"
+      ];
+      "image/jpeg" = [
         "swayimg.desktop"
         "gimp.desktop"
       ];
     };
-    # Additional application associations
-    #addedAssociations = {
-    #};
   };
 }
 
