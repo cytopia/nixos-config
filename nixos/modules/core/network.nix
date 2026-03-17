@@ -267,6 +267,20 @@ in
         };
       };
 
+      # Explicitly define a static group so it exists in /etc/group at early boot.
+      # This prevents nftables from failing when allowing dnscrypt-proxy to do initial
+      # bootstrap connect to DNS 53.
+      users.groups.dnscrypt = {
+        gid = 10053;
+	  };
+      # Only inject the systemd override when NOT in the hotel profile.
+      # This prevents creating a broken zombie service when dnscrypt is disabled.
+      systemd.services.dnscrypt-proxy = lib.mkIf (cfg.profile != "hotel") {
+        serviceConfig = {
+          Group = "dnscrypt";
+        };
+      };
+
 
       ###
       ### Resolvd - Local DNS Resolver
@@ -577,8 +591,6 @@ in
         };
       };
 
-
-
       boot.kernel.sysctl = {
         # Source Routing Spoofing Protection (Defense in Depth)
         # What: Hardcode kernel-level locks for strict reverse path filtering.
@@ -595,7 +607,7 @@ in
       };
 
       # FIX: Skip build-time syntax check because cgroups don't exist in the Nix sandbox
-      networking.nftables.checkRuleset = false;
+      #networking.nftables.checkRuleset = false;
       networking.nftables.tables."dns-leak-protection" = {
         # What: Dedicated output chain to drop plaintext DNS and standard DoT.
         # How: Inspects outgoing packets on hook output.
@@ -611,8 +623,12 @@ in
 
             # 2. Allow dnscrypt-proxy to bootstrap via Port 53
             # This matches the SERVICE, not the USER.
-            socket cgroupv2 level 2 "system.slice/dnscrypt-proxy.service" udp dport 53 accept
-            socket cgroupv2 level 2 "system.slice/dnscrypt-proxy.service" tcp dport 53 accept
+            #socket cgroupv2 level 2 "system.slice/dnscrypt-proxy.service" udp dport 53 accept
+            #socket cgroupv2 level 2 "system.slice/dnscrypt-proxy.service" tcp dport 53 accept
+
+            # Allow our static group to bypass the block
+            meta skgid 10053 udp dport 53 accept
+            meta skgid 10053 tcp dport 53 accept
 
             # 3. Global Killswitch: Block all other DNS/DoT leaks
             # This will also block 'dig @1.1.1.1 google.com'
