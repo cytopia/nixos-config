@@ -6,7 +6,7 @@ icons = "material-nf"
 
 [[block]]
 block = "cpu"
-interval = 1
+interval = 2
 format = " $icon $frequency ($utilization) "
 
 [[block]]
@@ -24,7 +24,7 @@ format = " $icon $used.eng(w:2)/$available.eng(w:2) "
 
 [[block]]
 block = "custom"
-command = "echo '\uf0ac ' `curl ip-api.com/line/?fields=query`"
+command = "echo '\uf0ac ' `curl -s --connect-timeout 2 --max-time 3 ip-api.com/line/?fields=query`"
 interval = 60
 
 [[block]]

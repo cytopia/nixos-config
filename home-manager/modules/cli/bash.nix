@@ -13,7 +13,7 @@
 
     shellAliases = {
       # Overwrites
-      cat = "bat";        # Modern cat with syntax highlighting
+      cat = "bat --plain";     # Modern cat with syntax highlighting
       open = "xdg-open";
 
       # Listings

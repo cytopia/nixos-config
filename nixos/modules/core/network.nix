@@ -629,6 +629,9 @@ in
             tcp dport 53 drop
             udp dport 853 drop
             tcp dport 853 drop
+
+            # Drop Multicast Listener Discovery (MLD) to prevent local network chatter
+            icmpv6 type { mld-listener-query, mld-listener-report, mld-listener-done, mld2-listener-report } drop
           }
           chain forward {
             type filter hook forward priority -10; policy accept;
