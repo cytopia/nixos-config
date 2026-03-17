@@ -44,6 +44,7 @@
     ./modules/gui/keepassxc.nix
     ./modules/gui/thunderbird.nix
 
+    ./modules/sway/i3status-rs-modules.nix
     ./modules/sway/volume-control.nix
     ./modules/sway/microphone-control.nix
     ./modules/sway/brightness-control.nix

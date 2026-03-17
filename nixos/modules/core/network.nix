@@ -606,8 +606,6 @@ in
         checkReversePath = "strict";
       };
 
-      # FIX: Skip build-time syntax check because cgroups don't exist in the Nix sandbox
-      #networking.nftables.checkRuleset = false;
       networking.nftables.tables."dns-leak-protection" = {
         # What: Dedicated output chain to drop plaintext DNS and standard DoT.
         # How: Inspects outgoing packets on hook output.
@@ -621,12 +619,7 @@ in
             # 1. Always allow loopback (Resolved <-> DNSCrypt)
             oifname "lo" accept
 
-            # 2. Allow dnscrypt-proxy to bootstrap via Port 53
-            # This matches the SERVICE, not the USER.
-            #socket cgroupv2 level 2 "system.slice/dnscrypt-proxy.service" udp dport 53 accept
-            #socket cgroupv2 level 2 "system.slice/dnscrypt-proxy.service" tcp dport 53 accept
-
-            # Allow our static group to bypass the block
+            # 2. Allow dnscrypt-proxy (via its gid:10053) to bootstrap via Port 53
             meta skgid 10053 udp dport 53 accept
             meta skgid 10053 tcp dport 53 accept
 

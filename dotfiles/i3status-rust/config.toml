@@ -35,7 +35,14 @@ format = " $icon $ssid ($signal_strength) "
 format_alt = " $icon $ip "
 
 [[block]]
-block = "backlight"
+block = "custom"
+command = ''' i3status-rs-bluetooth.sh '''
+interval = 2
+json = true
+[block.theme_overrides]
+warning_fg = "#A86F6F"
+idle_fg = "#80b3ff"
+good_fg = "#005ce6"
 
 [[block]]
 block = "sound"
@@ -55,6 +62,9 @@ device_kind = "source"    # This targets your microphone
 warning_fg = "#A86F6F"
 
 [[block]]
+block = "backlight"
+
+[[block]]
 block = "battery"
 driver = "sysfs"
 interval = 10
@@ -70,3 +80,5 @@ format = "  $timestamp.datetime(f:'(%V) %a, %d.%m.%Y') "
 block = "time"
 interval = 60
 format = " $timestamp.datetime(f:'%R') "
+[block.theme_overrides]
+idle_fg = "#ffffff"
