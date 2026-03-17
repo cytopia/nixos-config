@@ -198,8 +198,12 @@ in
           # Since we drop port 53 via nftables, the probe would fail and block dnscrypt-proxy from starting.
           netprobe_timeout = 0;
 
-          # Disable the internal cache, systemd-resolvd will do the caching.
-          cache = false;
+          # Note: Ensure that systemd-resolved has caching turned off.
+          cache = true;
+
+          # Load balancing strategy
+          lb_strategy = "p2";  # Randomly switch between the 2 fastest available server
+          lb_estimator = true; # Constantly check which are fastest
 
           # Listen strictly on local loopback on a custom port for resolved to forward to.
           listen_addresses = [
@@ -209,11 +213,16 @@ in
 
           # Use only specific IPs to find the initial resolver list
           bootstrap_resolvers = [
-            "9.9.9.9:53"
-            "149.112.112.112:53"
-            "1.1.1.1:53"
+            "9.9.9.9:53"          # Quad9
+            "149.112.112.9:53"    # Quad9 alt-1
+            "149.112.112.112:53"  # Quad9 alt-2
+            "1.1.1.1:53"          # Cloudflare
+            "1.0.0.1:53"          # Cloudflare alt-1
+            "194.242.2.2"         # Mullvad DNS
           ];
 
+          # Option-A:
+          #
           # Auto-discover DNS servers from these sources
           # https://github.com/DNSCrypt/dnscrypt-proxy/wiki/Configuration-Sources
           # https://github.com/DNSCrypt/dnscrypt-proxy/wiki/DNS-server-sources
@@ -224,16 +233,17 @@ in
             ];
             cache_file = "/var/lib/dnscrypt-proxy/public-resolvers.md";
             minisign_key = "RWQf6LRCGA9i53mlYecO4IzT51TGPpvWucNSCh1CBM0QTaLn73Y7GFO3";
-            refresh_delay = 72;  # in hours
+            refresh_delay = 24;  # in hours
+            prefix = "";
           };
 
           # Filter sources on IP Stack
           ipv4_servers = true;
-          ipv6_servers = true;
+          ipv6_servers = false;  # Do not contact DNS server over IPv6 (my IPv6 is unique and can leak data)
 
           # Filter sources on protocol
-          dnscrypt_servers = true; # enforce DNSCrypt protocol
-          doh_servers = false;     # Disable DNS-over-HTTPS protocol
+          dnscrypt_servers = false; # Enforce DNSCrypt protocol?
+          doh_servers = true;      # Enforce DNS-over-HTTPS protocol?
           odoh_servers = false;    # Disable Oblivious DNS-over-HTTPS protocol
 
           # Filter sources features
@@ -241,14 +251,18 @@ in
           require_nolog = true;     # Servers must not log
           require_nofilter = false; # Servers can implement their own DNS blocking (e.g. adblocking)
 
+          # Option-B:
+          #
           # Instead of relying on sources and filters, we exclusivly define them statically here.
           # This will ignore sources.public-resolvers and their filters and only use this.
           # https://dnscrypt.info/public-servers/
           server_names = [
-            "quad9-dnscrypt-ip4-filter-pri"
-            "quad9-dnscrypt-ip6-filter-pri"
-            "adguard-dns"
-            "adguard-dns-ipv6"
+            #"quad9-dnscrypt-ip4-filter-pri"       # DNSCrypt, IPv4 (9.9.9.9)
+            #"quad9-dnscrypt-ip4-filter-alt"       # DNSCrypt, IPv4 (149.112.112.9)
+            #"quad9-dnscrypt-ip4-filter-alt2"      # DNSCrypt, IPv4 (149.112.112.112)
+            "quad9-doh-ip4-port443-filter-pri"   # DOH, IPv4 (9.9.9.9)
+            "quad9-doh-ip4-port443-filter-alt"   # DoH, IPv4 (149.112.112.9)
+            "quad9-doh-ip4-port443-filter-alt2"  # DoH, IPv4 (149.112.112.112)
           ];
         };
       };
@@ -258,6 +272,10 @@ in
       ### Resolvd - Local DNS Resolver
       ###
       # Acts as the local caching resolver for all local apps, forwarding appropriately.
+      # /nix/var/nix/profiles/system/etc/systemd/resolved.conf
+
+      # ROUTING: Point Resolved specifically to the Proxy
+      networking.nameservers = [ "127.0.0.1:5353" "[::1]:5353" ];
       services.resolved = {
         enable = true;
 
@@ -275,22 +293,22 @@ in
         # What: Bind strictly to both IPv4 and IPv6 local loopbacks.
         # Why: Dual-stack resolution prevents fragmentation and potential fallback delays in IPv6 containers or kernel stack preferences.
         extraConfig = ''
-          # ROUTING: Point Resolved specifically to the Proxy
-          DNS=127.0.0.1:5353 [::1]:5353
-          Domains=~.
-
           # Disable Apple/Printer discovery (Privacy)
           MulticastDNS=no
 
-          # PERFORMANCE: Enable local RAM caching
-          Cache=yes
+          # dnscrypt-proxy is already caching
+          Cache=no
+          CacheFromLocalhost=no
         '';
-        # What: Delete all fallback DNS.
-        # Why: Eliminates the risk of plaintext leakage if the encrypted path fails.
-        fallbackDns = [];
 
-        # Treat all queries as belonging to this encrypted path
+        # The "~." routing domain forces systemd-resolved to send ALL
+        # DNS queries to your global nameservers (dnscrypt-proxy).
         domains = [ "~." ];
+
+        # Clear out the default fallback DNS servers (Cloudflare/Google)
+        # so your system fails closed if dnscrypt-proxy goes down,
+        # rather than leaking plaintext queries.
+        fallbackDns = [];
       };
 
 
@@ -628,6 +646,7 @@ in
       ###
       ### Resolvd - Explicit Hotel Override
       ###
+      networking.nameservers = lib.mkForce [ "9.9.9.9" "149.112.112.112" ];
       services.resolved = {
         # What: Forcefully clear the global routing domain ("~.") set in the core profile.
         # Why: Prevents resolved from treating a dead dnscrypt-proxy as the only valid route.

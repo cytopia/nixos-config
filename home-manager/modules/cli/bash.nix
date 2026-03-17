@@ -5,7 +5,17 @@
     enable = true;
     enableCompletion = true;
 
+    # Configure history control to ignore duplicates
+    historyControl = [
+      "ignoredups"   # Do not save duplicates
+      "ignorespace"  # Do not save, if prefixed by a space
+    ];
+
     shellAliases = {
+      # Overwrites
+      cat = "bat";        # Modern cat with syntax highlighting
+      open = "xdg-open";
+
       # Listings
       ll = "ls --color=always --group-directories-first --classify -al";
       ls = "ls --color=always --group-directories-first --classify";
@@ -27,8 +37,6 @@
 
       # Default args
       grep = "grep --color=auto --binary-file=without-match";
-
-      open = "xdg-open";
     };
 
     # Extra functions to be added to bashrc

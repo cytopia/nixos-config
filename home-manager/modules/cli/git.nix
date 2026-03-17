@@ -100,6 +100,17 @@
 
       color = {
         ui = "auto";
+        status = {
+		  #header = "blue";
+		  branch = "green bold";
+		  localBranch = "green bold";
+		  remoteBranch = "green bold";
+		  unmerged = "red bold";
+
+          added = "green bold";
+		  changed = "yellow bold";
+		  untracked = "red bold";
+        };
       };
     };
   };
