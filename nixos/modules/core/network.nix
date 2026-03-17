@@ -156,7 +156,7 @@ in
         2606:4700:f0::1 time.cloudflare.com
 
         # Netnod NTS (Anycast)
-        94.58.207.70 nts.netnod.se
+        194.58.207.70 nts.netnod.se
         2a01:3f0:1:4::28 nts.netnod.se
       '';
 
