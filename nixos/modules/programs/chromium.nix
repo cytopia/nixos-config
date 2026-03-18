@@ -78,6 +78,12 @@ let
     #"--user-agent=\"Mozilla/5.0 (Macintosh; Intel Mac OS X 15_7_4) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.0 Safari/605.1.15\""
   ] ++ gpuFlags ++ privacyFlags;
 
+
+  #
+  # ALl available chromium flags
+  # https://peter.sh/experiments/chromium-command-line-switches/
+  #
+
 in
 {
   nixpkgs.overlays = [

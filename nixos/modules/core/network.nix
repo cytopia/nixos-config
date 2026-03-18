@@ -153,20 +153,17 @@ in
       networking.extraHosts = ''
         # Cloudflare NTS (Anycast)
         162.159.200.1 time.cloudflare.com
-        2606:4700:f0::1 time.cloudflare.com
+        2606:4700:f1::1 time.cloudflare.com
 
         # Netnod NTS (Anycast)
         194.58.207.70 nts.netnod.se
         2a01:3f0:1:4::28 nts.netnod.se
       '';
-
       # Use NTS (Network Time Security) via chrony.
       # Provides secure, encrypted time sync over SSL.
       services.chrony = {
         enable = true;
-
-        # Clear default servers so we only use our explicit NTS servers below
-        servers = [];
+        servers = [];  # Clear defaults and use extraConfig
 
         extraConfig = ''
           # 1. UPSTREAM SERVERS
@@ -175,17 +172,18 @@ in
           server nts.netnod.se iburst nts
 
           # 2. BOOTSTRAP FIXES
-          # Ignore NTS certificate expiration dates so we can sync even if time is years off
+          # # Ignore NTS cert expiration for the first sync, even if time is years off
           nocerttimecheck 1
-          # '1':  If clock is off by 1 sec then adjust
-          # '3': Only do 3 updates after start
+          # Sync clock immediately if offset > 1s during the first 3 updates
           makestep 1 3
 
           # 3. SECURITY: STRICT CLIENT MODE
-          # Disable the NTP server port entirely (do not listen on UDP 123)
+          # Disable NTP server (UDP 123)
           port 0
-          # Disable network command listening (forces chronyc to use the local Unix socket)
+          # Disable remote chronyc (UDP 323)
           cmdport 0
+          bindcmdaddress 127.0.0.1
+          bindcmdaddress ::1
         '';
       };
 

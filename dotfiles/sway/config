@@ -8,8 +8,7 @@ xwayland disable
 ##########################################################################################
 
 # swaymsg -t get_outputs
-output eDP-1 scale 1.5
-#output * bg /run/current-system/sw/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
+output eDP-1 scale 1.4
 output * bg /home/cytopia/Pictures/wallpapers/current fill
 
 # swaymsg -t get_inputs
