@@ -78,5 +78,7 @@
     };
   };
 
-  home.packages = [ pkgs.tmux ];
+  home.packages = [
+    pkgs.tmux
+  ];
 }
