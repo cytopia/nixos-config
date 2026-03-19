@@ -18,7 +18,12 @@
       fsType = "ext4";
     };
 
+  # Root LUKS
   boot.initrd.luks.devices."luks-***REMOVED***".device = "/dev/disk/by-uuid/***REMOVED***";
+
+  # Swap LUKS (Move this here!)
+  boot.initrd.luks.devices."luks-***REMOVED***".device = "/dev/disk/by-uuid/***REMOVED***";
+
 
   fileSystems."/boot" =
     { device = "/dev/disk/by-uuid/4F6A-16CD";

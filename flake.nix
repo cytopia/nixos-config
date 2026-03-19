@@ -86,7 +86,7 @@
         };
       };
 
-      modules = [ ./home-manager/home.nix ];
+      modules = [ ./modules/home-manager/home.nix ];
     };
 
 
