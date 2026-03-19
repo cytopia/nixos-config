@@ -10,14 +10,12 @@
   imports =
     [
       ./hardware-configuration.nix
-      ./nixos/default.nix
+      ./modules/nixos/default.nix
     ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-
-  boot.initrd.luks.devices."luks-d9097b1c-d54a-4659-89c9-9393df8e0b2a".device = "/dev/disk/by-uuid/d9097b1c-d54a-4659-89c9-9393df8e0b2a";
 
   # Enable the OpenSSH daemon.
   services.openssh = {
