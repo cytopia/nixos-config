@@ -33,4 +33,12 @@
   ];
 
   #networking.mobileWorkstation.profile = "hardened";
+
+  environment.systemPackages = [
+	pkgs.steam-run
+  ];
+  qt.enable = true;
+
+  # Might help chromium errors and screensharing
+  fonts.fontconfig.enable = true;
 }

@@ -1,9 +1,5 @@
 { config, pkgs, ... }:
 let
-  neovim-nightly-overlay = import (builtins.fetchTarball {
-    url = "https://github.com/nix-community/neovim-nightly-overlay/archive/master.tar.gz";
-  });
-
   tree-sitter-bin = pkgs.stdenv.mkDerivation rec {
     pname = "tree-sitter-bin";
     version = "0.26.7";
@@ -38,11 +34,11 @@ let
 
 in {
 
-  nixpkgs.overlays = [ neovim-nightly-overlay ];
-
   programs.neovim = {
     enable = true;
     defaultEditor = true;
+
+    package = pkgs.neovim; # This will now be the nightly version automatically
 
     # aliases
     viAlias = false;

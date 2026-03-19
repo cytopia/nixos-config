@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 
 {
@@ -16,8 +16,19 @@
   xdg.portal = {
     enable = true;
     wlr.enable = true;  # Enables the "Wayland Reference" portal
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk ]; # Common fallback portal
-    config.common.default = "*"; # modern xdg-desktop-portal 1.17+ syntax
+    extraPortals = [
+		pkgs.xdg-desktop-portal-gtk  # Common fallback portal
+		pkgs.xdg-desktop-portal-wlr  # Common fallback portal
+		#pkgs.xdg-desktop-portal-hyprland # Required for Hyprland
+	];
+    #config.common.default = "*"; # modern xdg-desktop-portal 1.17+ syntax
+    config = {
+		sway.default = lib.mkForce  [ "wlr" "gtk" ];  # IMPORTANT!!! This is required for screensharing (entire screen)
+		common.default = [ "gtk" ]; # modern xdg-desktop-portal 1.17+ syntax
+		#hyprland.default = [ "hyprland" "gtk" ];
+
+	};
+
   };
 
 

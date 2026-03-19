@@ -7,10 +7,10 @@
   ###
 
   # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
+#  nixpkgs.config.allowUnfree = true;
 
   # Flakes
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+#  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
 
   ###

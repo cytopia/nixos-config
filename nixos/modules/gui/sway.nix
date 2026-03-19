@@ -1,7 +1,7 @@
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 
 let
-  unstable = import <unstable> { config = config.nixpkgs.config; };
+  unstable = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
 in
 {
 
@@ -63,7 +63,7 @@ in
 
     # tray icons
     libappindicator-gtk3  # check if this is needed
-    #networkmanagerapplet
+    networkmanagerapplet   # TODO: When switching back to hardened network, remove this
     blueman
   ];
 }
