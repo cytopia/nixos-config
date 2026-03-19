@@ -26,7 +26,11 @@
   };
 
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, neovim-nightly, home-manager, awsvpnclient-nix, ... }@inputs: {
+  outputs = { self, nixpkgs, nixpkgs-unstable, neovim-nightly, home-manager, awsvpnclient-nix, ... }@inputs:
+  let
+    # Load our custom overlays from the directory
+    myOverlays = import ./overlays { inherit inputs; };
+  in {
 
     # This allows: sudo nixos-rebuild switch --flake .#host
     nixosConfigurations.host = nixpkgs.lib.nixosSystem {
@@ -69,7 +73,7 @@
       pkgs = import nixpkgs {
         system = "x86_64-linux";
         config.allowUnfree = true;
-        overlays = [ neovim-nightly.overlays.default ];  # Custom overlays
+        overlays = myOverlays.modifications;
       };
       # Everything in here is passed to the modules as an argument
       extraSpecialArgs = {
@@ -78,6 +82,7 @@
         pkgs-unstable = import nixpkgs-unstable {
           system = "x86_64-linux";
           config.allowUnfree = true;
+          overlays = myOverlays.modifications;
         };
       };
 
