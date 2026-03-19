@@ -1,11 +1,7 @@
-{ config, pkgs, inputs, ... }:
-let
-  # This imports the unstable channel into a local variable
-  unstable = pkgs.unstable;
-in
+{ config, pkgs, pkgs-unstable, inputs, ... }:
 {
   home.packages = with pkgs; [
-    unstable.swayimg
+    pkgs-unstable.swayimg
     pinta
     drawing  # gnome Drawing (ms-paint like)
   ];
