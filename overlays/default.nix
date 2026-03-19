@@ -5,6 +5,7 @@
   # We export a list of all overlays in this directory
   modifications = [
     (import ./neovim-nightly.nix inputs)
+	(import ./tree-sitter.nix)
     # You can add more overlays here later like:
     # (import ./discord-overlay.nix inputs)
   ];
