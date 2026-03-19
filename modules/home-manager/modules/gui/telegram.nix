@@ -1,10 +1,7 @@
-{ config, pkgs, inputs, ... }:
-#let
-#  unstable = pkgs.unstable;
-#in
+{ config, pkgs, pkgs-unstable, inputs, ... }:
 {
   home.packages = with pkgs; [
-    unstable.telegram-desktop
+    pkgs-unstable.telegram-desktop
   ];
 }
 

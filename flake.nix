@@ -32,11 +32,18 @@
   ###
   ### Outputs
   ###
-  outputs = { self, nixpkgs, home-manager, ... }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, ... }@inputs:
   let
     # Adjust accordingly
     stateVersion = "25.11";
     system = "x86_64-linux";
+
+    # [ADDED] Safely instantiate unstable packages once per system architecture.
+    # This allows unfree packages specifically for the unstable branch.
+    pkgs-unstable = import nixpkgs-unstable {
+      inherit system;
+      config.allowUnfree = true;
+    };
 
     # [CHANGED] Extracted overlays into a reusable variable instead of instantiating `pkgs` globally.
     # This allows NixOS and Home Manager to build their own `pkgs` with the same rules.
@@ -49,7 +56,7 @@
       inherit system;
 
       # Pass inputs and stateVersion to all NixOS modules
-      specialArgs = { inherit inputs stateVersion; };
+      specialArgs = { inherit inputs stateVersion pkgs-unstable; };
       modules = [
         {
           # This is the standard way to apply unfree packages and overlays in Flakes.
@@ -88,7 +95,7 @@
         overlays = sharedOverlays;
       };
 
-      extraSpecialArgs = { inherit inputs stateVersion; };
+      extraSpecialArgs = { inherit inputs stateVersion pkgs-unstable; };
       modules = [ ./modules/home-manager/home.nix ];
     };
   };

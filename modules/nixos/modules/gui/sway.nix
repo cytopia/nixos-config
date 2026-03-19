@@ -1,8 +1,5 @@
-{ config, pkgs, inputs, ... }:
+{ config, pkgs, pkgs-unstable, inputs, ... }:
 
-let
-  unstable = pkgs.unstable;
-in
 {
 
   ###
@@ -37,8 +34,8 @@ in
     # Terminal & UI
     foot
     waybar
-    unstable.ironbar
-    unstable.i3status-rust
+    pkgs-unstable.ironbar
+    pkgs-unstable.i3status-rust
     fuzzel
     tofi
     wmenu
