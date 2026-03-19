@@ -44,7 +44,7 @@
       };
       modules = [
         # This imports your existing configuration
-        ./configuration.nix
+        ./hosts/core/default.nix
 
         # This imports the AWS VPN module
         awsvpnclient-nix.nixosModules.default
