@@ -6,7 +6,10 @@ let
   # This is the 'set' containing all the nightly variants
   nightlySet = inputs.neovim-nightly.overlays.default final prev;
 in {
-  # We want the 'neovim' package from within that set
-  # We are 'mapping' the flake input to the standard 'neovim' attribute
-  neovim = nightlySet.neovim;
+  # pkgs.custom.neovim-nightly
+  # This creates 'pkgs.custom' if it doesn't exist, or merges with it if it does
+  custom = (prev.custom or {}) // {
+    neovim-nightly = nightlySet.neovim;
+    neovim-nightly-unwrapped = nightlySet.neovim-unwrapped;
+  };
 }
