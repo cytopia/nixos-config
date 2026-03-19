@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, pkgs-unstable, ... }:
 
 {
   # Basic Home Manager setup
@@ -13,10 +13,10 @@
   programs.home-manager.enable = true;
 
   # Configure flakes
-  nix = {
-    package = pkgs.nix;
-    settings.experimental-features = [ "nix-command" "flakes" ];
-  };
+  #nix = {
+  #  package = pkgs.nix;
+  #  settings.experimental-features = [ "nix-command" "flakes" ];
+  #};
 
   imports = [
     ./modules/default.nix
