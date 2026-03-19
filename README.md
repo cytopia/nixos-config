@@ -9,8 +9,14 @@ Make the hostname dynamic:
 https://gemini.google.com/app/34a7df97926ee263
 
 
+## Updates
+```
+# stage new versions to update
+nix flake update
 
+# Update system
 sudo nixos-rebuild switch --flake .#host
-sudo nixos-rebuild switch --flake .#host --impure
 
+# Update home
 home-manager switch --flake .#cytopia
+```

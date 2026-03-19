@@ -2,9 +2,6 @@
 
 {
   imports = [
-    # --- NixOS ---
-    ./modules/nixos/nix.nix
-
     # --- Core modules ---
     ./modules/core/network.nix
     ./modules/core/time-locale.nix
@@ -35,7 +32,7 @@
   #networking.mobileWorkstation.profile = "hardened";
 
   environment.systemPackages = [
-	pkgs.steam-run
+    pkgs.steam-run
   ];
   qt.enable = true;
 
