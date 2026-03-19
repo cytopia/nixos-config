@@ -1,18 +1,20 @@
-# overlays/default.nix
-{ inputs, ... }:
+{ inputs, ... }: {
+  # 1. additions: Custom packages added to pkgs
+  additions = final: _prev: {
+    # It is recommended to put custom packages at the top level
+    tree-sitter = final.callPackage ../pkgs/tree-sitter/default.nix {};
+  };
 
-{
-  # We export a list of all overlays in this directory
-  modifications = [
-    # 1. Map Neovim Nightly using 'prev.system' to avoid recursion
-    (final: prev: {
-      custom = (prev.custom or {}) // {
-        neovim-nightly = inputs.neovim-nightly.packages.${prev.stdenv.hostPlatform.system}.default;
-      };
-    })
+  # 2. modifications: Overrides and overlays from other flakes
+  modifications = final: prev: {
+    neovim-nightly = inputs.neovim-nightly.packages.${prev.system}.default;
+  };
 
-	(import ./tree-sitter.nix)
-    # You can add more overlays here later like:
-    # (import ./discord-overlay.nix inputs)
-  ];
+  # 3. unstable-packages: Standardized way to access unstable nixpkgs
+  unstable-packages = final: _prev: {
+    unstable = import inputs.nixpkgs-unstable {
+      system = final.system;
+      config.allowUnfree = true;
+    };
+  };
 }

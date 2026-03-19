@@ -1,22 +1,14 @@
-{ config, pkgs, inputs, pkgs-unstable, ... }:
+{ config, pkgs, inputs, stateVersion, ... }:
 
 {
   # Basic Home Manager setup
   home.username = "cytopia";
   home.homeDirectory = "/home/cytopia";
-  home.stateVersion = "25.11";
+  home.stateVersion = stateVersion;
 
-  # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
 
   # Let Home Manager install and manage itself
   programs.home-manager.enable = true;
-
-  # Configure flakes
-  #nix = {
-  #  package = pkgs.nix;
-  #  settings.experimental-features = [ "nix-command" "flakes" ];
-  #};
 
   imports = [
     ./modules/default.nix
@@ -48,6 +40,5 @@
     ./modules/sway/volume-control.nix
     ./modules/sway/microphone-control.nix
     ./modules/sway/brightness-control.nix
-
   ];
 }

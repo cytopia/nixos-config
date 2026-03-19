@@ -4,7 +4,7 @@
     enable = true;
     defaultEditor = true;
 
-    package = pkgs.custom.neovim-nightly; # custom overlay
+    package = pkgs.neovim-nightly; # custom overlay
 
     # aliases
     viAlias = false;
@@ -17,7 +17,7 @@
       curl
       luarocks
       # for treesitter
-      custom.tree-sitter  # comes from pkgs/
+      tree-sitter  # comes from pkgs/
       gcc
       # For fzf-lua
       fzf

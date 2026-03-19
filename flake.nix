@@ -1,24 +1,27 @@
 {
   description = "My NixOS Flake Configuration";
 
+  ###
+  ### Inputs
+  ###
   inputs = {
-    # This pulls the standard NixOS packages
-    #nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    # Match your existing 25.11 system
+    # NixOS: packages
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
-	nixpkgs-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable"; # Bleeding edge
-
-    # Add this input
-    neovim-nightly.url = "github:nix-community/neovim-nightly-overlay";
-
-
+    # NixOS: Home Manager
     home-manager = {
       url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # This pulls the AWS VPN Client flake
+    # Custom: neovim 0.12 overlay
+    neovim-nightly = {
+      url = "github:nix-community/neovim-nightly-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # Custom: AWS VPN Client flake
     awsvpnclient-nix = {
       url = "github:AddG0/awsvpnclient-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -26,70 +29,67 @@
   };
 
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, neovim-nightly, home-manager, awsvpnclient-nix, ... }@inputs:
+  ###
+  ### Outputs
+  ###
+  outputs = { self, nixpkgs, home-manager, ... }@inputs:
   let
-    # Load our custom overlays from the directory
-    myOverlays = import ./overlays { inherit inputs; };
+    # Adjust accordingly
+    stateVersion = "25.11";
+    system = "x86_64-linux";
+
+    # [CHANGED] Extracted overlays into a reusable variable instead of instantiating `pkgs` globally.
+    # This allows NixOS and Home Manager to build their own `pkgs` with the same rules.
+    sharedOverlays = builtins.attrValues (import ./overlays { inherit inputs; });
   in {
 
-    # This allows: sudo nixos-rebuild switch --flake .#host
+    # System (global)
+    # sudo nixos-rebuild switch --flake .#host
     nixosConfigurations.host = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-      specialArgs = {
-        inherit inputs;
-        pkgs-unstable = import nixpkgs-unstable {
-          system = "x86_64-linux";
-          config.allowUnfree = true;
-        };
-      };
+      inherit system;
+
+      # Pass inputs and stateVersion to all NixOS modules
+      specialArgs = { inherit inputs stateVersion; };
       modules = [
-        # This imports your existing configuration
-        ./hosts/core/default.nix
-
-        # This imports the AWS VPN module
-        awsvpnclient-nix.nixosModules.default
-
-        # This enables the AWS VPN program
         {
+          # This is the standard way to apply unfree packages and overlays in Flakes.
           nixpkgs.config.allowUnfree = true;
+          nixpkgs.overlays = sharedOverlays;
 
-          # Enable Flakes & Registry
-          nix.settings.experimental-features = [ "nix-command" "flakes" ];
+          # Sync Registry and Nix Path
           nix.registry.nixpkgs.flake = nixpkgs;
+          nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
+
+          # Enable Flakes
+          nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
           # 1. Ensure the home-manager CLI is installed on the system
           environment.systemPackages = [
-            home-manager.packages.x86_64-linux.default
+            home-manager.packages.${system}.default
           ];
-          # TODO: Move this somewhere else
-          programs.awsvpnclient.enable = true;
         }
+
+        # Import the AWS VPN module
+        inputs.awsvpnclient-nix.nixosModules.default
+
+        # Import the host
+        ./hosts/core/default.nix
       ];
     };
 
-    # This allows: home-manager switch --flake .#cytopia
+    # Home-Manager
+    # home-manager switch --flake .#cytopia
     homeConfigurations."cytopia" = home-manager.lib.homeManagerConfiguration {
-      # Default packages
+      # Home Manager standalone requires an instantiated `pkgs`.
+      # We instantiate it here specifically for Home Manager, using our shared config.
       pkgs = import nixpkgs {
-        system = "x86_64-linux";
+        inherit system;
         config.allowUnfree = true;
-        overlays = myOverlays.modifications;
-      };
-      # Everything in here is passed to the modules as an argument
-      extraSpecialArgs = {
-        inherit inputs;
-        # Define pkgs-unstable here so your home.nix can see it
-        pkgs-unstable = import nixpkgs-unstable {
-          system = "x86_64-linux";
-          config.allowUnfree = true;
-          overlays = myOverlays.modifications;
-        };
+        overlays = sharedOverlays;
       };
 
+      extraSpecialArgs = { inherit inputs stateVersion; };
       modules = [ ./modules/home-manager/home.nix ];
     };
-
-
-
   };
 }
