@@ -6,7 +6,7 @@ stdenv.mkDerivation rec {
 
   src = fetchurl {
     url = "https://github.com/tree-sitter/tree-sitter/releases/download/v${version}/tree-sitter-linux-x64.gz";
-    hash = "sha256-4367a46bc8abbb8328d6efbeb26e86807af0a3a7e462548a3924f87289ee1e9c";
+    hash = "sha256-Q2eka8iru4Mo1u++sm6GgHrwo6fkYlSKOST4conuHpw=";
   };
 
   nativeBuildInputs = [ gzip patchelf ];
