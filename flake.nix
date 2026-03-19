@@ -38,14 +38,14 @@
     stateVersion = "25.11";
     system = "x86_64-linux";
 
-    # [ADDED] Safely instantiate unstable packages once per system architecture.
+    # Safely instantiate unstable packages once per system architecture.
     # This allows unfree packages specifically for the unstable branch.
     pkgs-unstable = import nixpkgs-unstable {
       inherit system;
       config.allowUnfree = true;
     };
 
-    # [CHANGED] Extracted overlays into a reusable variable instead of instantiating `pkgs` globally.
+    # Extracted overlays into a reusable variable instead of instantiating `pkgs` globally.
     # This allows NixOS and Home Manager to build their own `pkgs` with the same rules.
     sharedOverlays = builtins.attrValues (import ./overlays { inherit inputs; });
   in {
@@ -96,7 +96,7 @@
       };
 
       extraSpecialArgs = { inherit inputs stateVersion pkgs-unstable; };
-      modules = [ ./modules/home-manager/home.nix ];
+      modules = [ ./home/cytopia/home.nix ];
     };
   };
 }
