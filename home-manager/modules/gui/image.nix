@@ -1,9 +1,7 @@
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 let
   # This imports the unstable channel into a local variable
-  unstable = import <unstable> {
-    config = config.nixpkgs.config; # Inherits your allowUnfree settings
-  };
+  unstable = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
 in
 {
   home.packages = with pkgs; [
