@@ -5,6 +5,7 @@ stdenv.mkDerivation rec {
   version = "0.26.7";
 
   src = fetchurl {
+    name = "tree-sitter-${version}-linux-x64.gz";
     url = "https://github.com/tree-sitter/tree-sitter/releases/download/v${version}/tree-sitter-linux-x64.gz";
     hash = "sha256-Q2eka8iru4Mo1u++sm6GgHrwo6fkYlSKOST4conuHpw=";
   };

@@ -1,3 +1,5 @@
-ai.sh
-ai-*
+/ai.sh
+/ai-*
 /scripts/
+/.cache
+/.gemini
