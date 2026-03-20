@@ -1,4 +1,4 @@
-{ config, pkgs, username, ... }:
+{ config, pkgs, pkgs-unstable, username, ... }:
 
 
 {
@@ -25,6 +25,11 @@
     ../../modules/nixos/services/sound.nix
     ../../modules/nixos/services/login.nix
 
+    # Desktop
+    ../../modules/nixos/desktop/wayland.nix
+    ../../modules/nixos/desktop/sway.nix
+
+
     # --- deprecated stuff to migrate
 
     # --- Core modules ---
@@ -35,8 +40,8 @@
 
     # --- GUI modules ---
     #./modules/gui/login-manager.nix
-    ./modules/gui/display-manager.nix
-    ./modules/gui/sway.nix
+    #./modules/gui/display-manager.nix
+    #./modules/gui/sway.nix
 
     # --- Programs ---
     ./modules/programs/_default.nix
@@ -66,6 +71,7 @@
     enableGUI = true;
   };
 
+
   ###
   ### My Modules: System
   ###
@@ -92,6 +98,7 @@
     homeMode = "0700";
   };
 
+
   ###
   ### My Modules: Services
   ###
@@ -106,10 +113,45 @@
   mySystem.services.login = {
     enable = true;
     defaultSession = "sway";
-	gnomeKeyring.enable = true;
+    gnomeKeyring.enable = true;
   };
 
 
+  ###
+  ### My Modules: Desktop
+  ###
+  mySystem.desktop.sway = {
+    enable = true;
+    terminal = "foot";
+    # You can append more packages here if needed
+    extraPackages = with pkgs; [
+      swaylock-effects  # Screen locker (Base PAM service in wayland.nix)
+      swayidle          # Idle management daemon
+      fuzzel            # App launcher/Menu
+      foot              # Fast, Wayland-native terminal
+      mako              # Lightweight notification daemon
+      libnotify         # Provides 'notify-send'
+
+      waybar
+      pkgs-unstable.ironbar
+      pkgs-unstable.i3status-rust
+      tofi
+      wmenu
+      wl-clipboard
+      cliphist
+      grim
+      slurp
+      wf-recorder
+      kanshi
+      brightnessctl
+      iwmenu
+      libappindicator-gtk3
+      networkmanagerapplet
+      blueman
+      #sway-audio-idle-inhibit
+      #swaynotificationcenter
+    ];
+  };
 
 
 
@@ -132,10 +174,6 @@
   environment.systemPackages = [
     pkgs.steam-run
   ];
-  qt.enable = true;
-
-  # Might help chromium errors and screensharing
-  fonts.fontconfig.enable = true;
 
 
   system.stateVersion = "25.11"; # Did you read the comment?

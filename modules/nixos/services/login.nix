@@ -12,7 +12,8 @@ let
 
     # Execute the compositor passed as the first argument
     # Redirecting 2>&1 ensures everything hits the systemd journal
-    exec "$@" 2>&1
+    #exec "$@"
+	exec "$@" 2> >(${pkgs.systemd}/bin/systemd-cat -t wayland-session)
   '';
 
   # Command construction using absolute store paths
@@ -106,7 +107,7 @@ in
       Type = "idle";
       StandardInput = "tty";
       StandardOutput = "journal";
-      StandardError = "journal"; # Log errors to journal, not the screen
+      StandardError = "journal";
       TTYReset = true;
       TTYVHangup = true;
       TTYVTDisallocate = true;
