@@ -1,4 +1,4 @@
-{ config, pkgs, pkgs-unstable, username, ... }:
+{ config, pkgs, pkgs-unstable, hostname, username, ... }:
 
 
 {
@@ -16,6 +16,8 @@
     ../../modules/nixos/system/fonts.nix
     ../../modules/nixos/system/user.nix
     ../../modules/nixos/system/keyring.nix
+    # Networking
+    ../../modules/nixos/networking/simple.nix
     # Services
     ../../modules/nixos/services/power-management.nix
     ../../modules/nixos/services/sound.nix
@@ -28,15 +30,7 @@
     ../../modules/nixos/programs/obs.nix
     ../../modules/nixos/programs/podman.nix
     ../../modules/nixos/programs/vim.nix
-
-
-    # --- deprecated stuff to migrate
-
-    # --- Core modules ---
-    ./modules/core/network.nix
-
-    # --- Programs ---
-    ./modules/programs/chromium.nix
+    ../../modules/nixos/programs/chromium.nix
   ];
 
   # Bootloader.
@@ -95,6 +89,13 @@
     keyringEnable = true;
   };
 
+  ###
+  ### My Modules: Networking
+  ###
+  mySystem.networking.simple = {
+    enable = true;
+	hostName = hostname;
+  };
 
   ###
   ### My Modules: Services
@@ -157,13 +158,16 @@
   mySystem.programs.obs.enable = true;
   mySystem.programs.podman.enable = true;
   mySystem.programs.vim.enable = true;
+  mySystem.programs.chromium.enable = true;
 
 
-
-  # TODO: what is this?
+  # Adds standard Linux paths
+  # e.g. /lib64 and others
+  # TODO: double-check if this is currently required
   programs.nix-ld.enable = true;
 
-
+  # TODO: Move this somewhere else
+  programs.awsvpnclient.enable = true;
 
 
   # Enable the OpenSSH daemon.
@@ -174,11 +178,6 @@
       AllowUsers = [ "cytopia" ];
     };
   };
-
-
-
-  # TODO: Move this somewhere else
-  programs.awsvpnclient.enable = true;
 
 
   ###
