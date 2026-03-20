@@ -5,7 +5,7 @@ let
 in
 {
   ###
-  ### 1. OPTIONS (The Control Panel)
+  ### 1. OPTIONS
   ###
   options.mySystem.system.keyboard = {
     enable = lib.mkEnableOption "Generic/Headless keyboard configuration";
@@ -34,7 +34,7 @@ in
 
 
   ###
-  ### 2. CONFIGURATION (The Logic)
+  ### 2. CONFIGURATION
   ###
   config = lib.mkIf cfg.enable {
 

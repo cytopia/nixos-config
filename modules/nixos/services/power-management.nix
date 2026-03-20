@@ -1,13 +1,13 @@
 { config, lib, pkgs, ... }:
 
 let
-  cfg = config.mySystem.system.power-management;
+  cfg = config.mySystem.services.power-management;
 in
 {
   ###
-  ### 1. OPTIONS (The Control Panel)
+  ### 1. OPTIONS
   ###
-  options.mySystem.system.power-management = {
+  options.mySystem.services.power-management = {
     enable = lib.mkEnableOption "Advanced Power Management (logind & upower)";
 
     sleepAction = lib.mkOption {
@@ -33,8 +33,9 @@ in
     };
   };
 
+
   ###
-  ### 2. CONFIGURATION (The Logic)
+  ### 2. CONFIGURATION
   ###
   config = lib.mkIf cfg.enable {
 

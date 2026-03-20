@@ -23,3 +23,9 @@ sudo nixos-rebuild switch --flake .#host
 # Update home
 home-manager switch --flake .#cytopia
 ```
+
+## Logs
+```
+# Session
+journalctl -u greetd
+```

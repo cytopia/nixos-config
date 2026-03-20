@@ -1,11 +1,13 @@
 { config, lib, pkgs, ... }:
 
 let
-  cfg = config.mySystem.system.sound;
+  cfg = config.mySystem.services.sound;
 in
 {
-  ### 1. OPTIONS (The Control Panel)
-  options.mySystem.system.sound = {
+  ###
+  ### 1. OPTIONS
+  ###
+  options.mySystem.services.sound = {
     enable = lib.mkEnableOption "PipeWire-based audio stack";
 
     enable32Bit = lib.mkOption {
@@ -27,7 +29,10 @@ in
     };
   };
 
-  ### 2. CONFIGURATION (The Logic)
+
+  ###
+  ### 2. CONFIGURATION
+  ###
   config = lib.mkIf cfg.enable {
 
     # --- ARCHITECTURAL FOUNDATION ---
