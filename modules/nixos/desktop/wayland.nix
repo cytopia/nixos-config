@@ -65,6 +65,7 @@ in
 
     # This ensures the dconf database (GTK's settings backend) is available globally.
     # Without this, many apps won't save settings or find themes.
+    # Required for GTK/Gnome apps (like Seahorse) to talk to the Keyring service.
     programs.dconf.enable = true;
 
     # Minimal Qt infrastructure
@@ -96,11 +97,12 @@ in
     # --- SYSTEM PACKAGES ---
     # Essential low-level utilities that every Wayland user needs.
     environment.systemPackages = with pkgs; [
-      slurp         # Region selector for grim/screen-sharing
-      grim          # Screenshot utility (Required for most sharing setups)
-      wayland-utils # Provides 'wayland-info' for debugging
-      wl-clipboard  # Standard Wayland copy/paste CLI (wl-copy/wl-paste)
-      libinput      # For 'libinput debug-events' and debugging
+      slurp          # Region selector for grim/screen-sharing
+      grim           # Screenshot utility (Required for most sharing setups)
+      wayland-utils  # Provides 'wayland-info' for debugging
+      wl-clipboard   # Standard Wayland copy/paste CLI (wl-copy/wl-paste)
+      libinput       # For 'libinput debug-events' and debugging
+	  pkgs.wayprompt # provides wayprompt-ssh-askpass and wayprompt-gpg-pinentry
     ];
 
     # --- ENVIRONMENT VARIABLES ---
