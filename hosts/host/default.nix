@@ -26,6 +26,7 @@
     # Programs
     ../../modules/nixos/programs/thunar.nix
     ../../modules/nixos/programs/obs.nix
+    ../../modules/nixos/programs/podman.nix
 
 
     # --- deprecated stuff to migrate
@@ -37,9 +38,7 @@
     ./modules/cli/vim.nix
 
     # --- Programs ---
-    #./modules/programs/_default.nix
     ./modules/programs/chromium.nix
-    ./modules/programs/podman.nix
   ];
 
   # Bootloader.
@@ -87,6 +86,11 @@
     name = username;
     uid = 1000;
     homeMode = "0700";
+    extraGroups = [
+      "wheel"           # Sudo privileges
+      "networkmanager"  # WiFi/Network control
+      #"podman"          # For podman if enabling docker socket (security issue)
+    ];
   };
   mySystem.system.keyring = {
     enable = true;
@@ -153,6 +157,7 @@
   ###
   mySystem.programs.thunar.enable = true;
   mySystem.programs.obs.enable = true;
+  mySystem.programs.podman.enable = true;
 
 
 
