@@ -27,15 +27,13 @@
     ../../modules/nixos/programs/thunar.nix
     ../../modules/nixos/programs/obs.nix
     ../../modules/nixos/programs/podman.nix
+    ../../modules/nixos/programs/vim.nix
 
 
     # --- deprecated stuff to migrate
 
     # --- Core modules ---
     ./modules/core/network.nix
-
-    # --- CLI modules ---
-    ./modules/cli/vim.nix
 
     # --- Programs ---
     ./modules/programs/chromium.nix
@@ -158,6 +156,7 @@
   mySystem.programs.thunar.enable = true;
   mySystem.programs.obs.enable = true;
   mySystem.programs.podman.enable = true;
+  mySystem.programs.vim.enable = true;
 
 
 
@@ -201,7 +200,6 @@
     dig
 
     # Essentials
-    vim
     git
     tmux
     gnumake
