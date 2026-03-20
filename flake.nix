@@ -9,6 +9,10 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
+    # NixOS: manage HDD
+    disko.url = "github:nix-community/disko";
+    disko.inputs.nixpkgs.follows = "nixpkgs";
+
     # NixOS: Home Manager
     home-manager = {
       url = "github:nix-community/home-manager/release-25.11";
@@ -37,6 +41,7 @@
     # Every machine is defined here with its architecture and user.
     myHosts = {
       host = { system = "x86_64-linux"; user = "cytopia"; };
+      shell = { system = "x86_64-linux"; user = "cytopia"; };
       # Example of scaling: satellite = { system = "aarch64-linux"; user = "alice"; };
     };
 
@@ -84,6 +89,9 @@
               home-manager.packages.${hostConfig.system}.default
             ];
           }
+
+          # Module: disko (to manage HDD)
+          disko.nixosModules.disko
 
           # Import the AWS VPN module
           inputs.awsvpnclient-nix.nixosModules.default
