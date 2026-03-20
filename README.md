@@ -14,6 +14,9 @@ https://gemini.google.com/app/34a7df97926ee263
 # stage new versions to update
 nix flake update
 
+# Update neovim-nightly
+nix flake update neovim-nightly
+
 # Update system
 sudo nixos-rebuild switch --flake .#host
 
