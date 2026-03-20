@@ -99,8 +99,6 @@ in
         "video"           # Hardware acceleration (Intel/VBox GPU)
         "input"           # Libinput/Keyboard/Mouse access
         "render"          # GPU Acceleration
-        "wheel"           # Sudo privileges
-        "networkmanager"  # WiFi/Network control
       ] ++ cfg.extraGroups;
 
       openssh.authorizedKeys.keys = cfg.sshKeys;
