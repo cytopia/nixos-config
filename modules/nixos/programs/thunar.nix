@@ -54,19 +54,19 @@ in
     # --- THE VISUAL LAYER (Thumbnails) ---
     services.tumbler.enable = true;
 
-    # ADDITION: Thumbnailers
-    # Tumbler is the 'engine', but it needs 'workers' to see specific files.
-    # Without these, you won't get thumbnails for videos or PDFs.
     environment.systemPackages = with pkgs; [
+      # Thumbnailers
+      # Tumbler is the 'engine', but it needs 'workers' to see specific files.
+      # Without these, you won't get thumbnails for videos or PDFs.
       ffmpegthumbnailer # For Video thumbnails
-      poppler_utils     # For PDF thumbnails
+      poppler-utils     # For PDF thumbnails
       libgsf            # For ODF (Office) thumbnails
-    ];
 
-    # --- ARCHITECTURAL ADDITION: ARCHIVE INTEGRATION ---
-    # The archive-plugin is useless without a backend.
-    # We install 'file-roller' (GNOME) or 'ark' (KDE) or 'engrampa' (MATE).
-    # Engrampa is the most 'Thunar-native' feeling archiver.
-    environment.systemPackages = [ pkgs.mate.engrampa ];
+      # Archive Integration
+      # The archive-plugin is useless without a backend.
+      # We install 'file-roller' (GNOME) or 'ark' (KDE) or 'engrampa' (MATE).
+      # Engrampa is the most 'Thunar-native' feeling archiver.
+      pkgs.mate.engrampa
+    ];
   };
 }
