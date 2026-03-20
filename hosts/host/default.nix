@@ -25,6 +25,7 @@
     ../../modules/nixos/desktop/sway.nix
     # Programs
     ../../modules/nixos/programs/thunar.nix
+    ../../modules/nixos/programs/obs.nix
 
 
     # --- deprecated stuff to migrate
@@ -36,10 +37,9 @@
     ./modules/cli/vim.nix
 
     # --- Programs ---
-    ./modules/programs/_default.nix
+    #./modules/programs/_default.nix
     ./modules/programs/chromium.nix
     ./modules/programs/podman.nix
-    ./modules/programs/obs.nix
   ];
 
   # Bootloader.
@@ -152,6 +152,7 @@
   ### My Modules: Programs
   ###
   mySystem.programs.thunar.enable = true;
+  mySystem.programs.obs.enable = true;
 
 
 
