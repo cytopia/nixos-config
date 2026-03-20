@@ -14,6 +14,9 @@ Make the hostname dynamic:
 # stage new versions to update
 nix flake update
 
+# Update neovim-nightly
+nix flake update neovim-nightly
+
 # Update system
 sudo nixos-rebuild switch --flake .#host
 
