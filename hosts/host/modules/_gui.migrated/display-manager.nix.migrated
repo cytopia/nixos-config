@@ -52,7 +52,8 @@
     GDK_BACKEND                 = "wayland";
 
     # --- QT (KDE/OBS/vlc) ---
-    QT_QPA_PLATFORM             = "wayland";
+    QT_QPA_PLATFORM             = "wayland;xcb";
+	QT_QPA_PLATFORMTHEME = "xdgdesktopportal"; # Add this here
     QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
 
     # --- Electrom & Chromium ---

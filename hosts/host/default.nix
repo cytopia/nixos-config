@@ -2,33 +2,29 @@
 
 
 {
-  # TODO: what is this?
-  programs.nix-ld.enable = true;
-
-
   imports =
   [
-    # Hardware
+    # NixOS hardware config: sudo nixos-generate-config
     ./hardware-configuration.nix
+    # Hardware
     ../../modules/nixos/hardware/gpu-intel.nix
     ../../modules/nixos/hardware/gpu-virtualbox.nix
     ../../modules/nixos/hardware/bluetooth.nix
-
     # System
     ../../modules/nixos/system/keyboard.nix
     ../../modules/nixos/system/locale.nix
     ../../modules/nixos/system/fonts.nix
     ../../modules/nixos/system/user.nix
     ../../modules/nixos/system/keyring.nix
-
     # Services
     ../../modules/nixos/services/power-management.nix
     ../../modules/nixos/services/sound.nix
     ../../modules/nixos/services/login.nix
-
     # Desktop
     ../../modules/nixos/desktop/wayland.nix
     ../../modules/nixos/desktop/sway.nix
+    # Programs
+    ../../modules/nixos/programs/thunar.nix
 
 
     # --- deprecated stuff to migrate
@@ -39,15 +35,9 @@
     # --- CLI modules ---
     ./modules/cli/vim.nix
 
-    # --- GUI modules ---
-    #./modules/gui/login-manager.nix
-    #./modules/gui/display-manager.nix
-    #./modules/gui/sway.nix
-
     # --- Programs ---
     ./modules/programs/_default.nix
     ./modules/programs/chromium.nix
-    ./modules/programs/thunar.nix
     ./modules/programs/podman.nix
     ./modules/programs/obs.nix
   ];
@@ -104,7 +94,6 @@
   };
 
 
-
   ###
   ### My Modules: Services
   ###
@@ -159,6 +148,16 @@
   };
 
 
+  ###
+  ### My Modules: Programs
+  ###
+  mySystem.programs.thunar.enable = true;
+
+
+
+  # TODO: what is this?
+  programs.nix-ld.enable = true;
+
 
 
 
@@ -176,11 +175,37 @@
   # TODO: Move this somewhere else
   programs.awsvpnclient.enable = true;
 
-  environment.systemPackages = [
-    pkgs.steam-run
+
+  ###
+  ### Standard System packages
+  ###
+  environment.systemPackages = with pkgs; [
+    # Utilities
+    pciutils
+    usbutils
+    unzip
+    zip
+    file
+    procps
+    killall
+    unixtools.netstat
+    unixtools.ifconfig
+    curl
+    wget
+    dig
+
+    # Essentials
+    vim
+    git
+    tmux
+    gnumake
+    #fastfetch
+
+    # *.deb compatibility
+    steam-run
   ];
 
-
-  system.stateVersion = "25.11"; # Did you read the comment?
+  # Keep
+  system.stateVersion = "25.11";
 }
 
