@@ -91,7 +91,7 @@
           }
 
           # Module: disko (to manage HDD)
-          disko.nixosModules.disko
+          inputs.disko.nixosModules.disko
 
           # Import the AWS VPN module
           inputs.awsvpnclient-nix.nixosModules.default
