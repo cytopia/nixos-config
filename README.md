@@ -1,21 +1,10 @@
 # nixos-config
 
-## Directory Structure:
-
-https://github.com/Misterio77/nix-starter-configs/blob/main/standard/flake.nix
-
-Make the hostname dynamic:
-
-https://gemini.google.com/app/34a7df97926ee263
-
 
 ## Updates
 ```
 # stage new versions to update
 nix flake update
-
-# Update neovim-nightly
-nix flake update neovim-nightly
 
 # Update system
 sudo nixos-rebuild switch --flake .#host
@@ -29,3 +18,8 @@ home-manager switch --flake .#cytopia
 # Session
 journalctl -u greetd
 ```
+
+
+## Credits
+
+Inpsired by [Misterio77](https://github.com/Misterio77/nix-starter-configs)
