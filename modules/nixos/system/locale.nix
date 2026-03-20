@@ -5,7 +5,7 @@ let
 in
 {
   ###
-  ### 1. OPTIONS (The Control Panel)
+  ### 1. OPTIONS
   ###
   options.mySystem.system.locale = {
     enable = lib.mkEnableOption "System-wide Locale and Timezone configuration";
@@ -33,7 +33,7 @@ in
 
 
   ###
-  ### 2. CONFIGURATION (The Logic)
+  ### 2. CONFIGURATION
   ###
   config = lib.mkIf cfg.enable {
 

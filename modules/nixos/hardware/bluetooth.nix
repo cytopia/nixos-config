@@ -5,7 +5,7 @@ let
 in
 {
   ###
-  ### 1. OPTIONS (The Control Panel)
+  ### 1. OPTIONS
   ###
   options.mySystem.hardware.bluetooth = {
     enable = lib.mkEnableOption "Optimized Bluetooth support (BlueZ 5+)";
@@ -44,7 +44,7 @@ in
 
 
   ###
-  ### 2. CONFIGURATION (The Logic)
+  ### 2. CONFIGURATION
   ###
   config = lib.mkIf cfg.enable {
 

@@ -8,36 +8,33 @@
 
   imports =
   [
+    # Hardware
     ./hardware-configuration.nix
-    #../../modules/nixos/default.nix
-
-    # --- Core modules ---
-    ./modules/core/network.nix
-    #./modules/core/time-locale.nix
-    #./modules/core/keyboard.nix
-    #./modules/core/users.nix
-
-    # NEW MODULES
-    #./modules/core/gpu-intel.nix
-    #./modules/core/bluetooth.nix
     ../../modules/nixos/hardware/gpu-intel.nix
     ../../modules/nixos/hardware/gpu-virtualbox.nix
     ../../modules/nixos/hardware/bluetooth.nix
-    ../../modules/nixos/system/power-management.nix
-    ../../modules/nixos/system/sound.nix
+
+    # System
     ../../modules/nixos/system/keyboard.nix
     ../../modules/nixos/system/locale.nix
     ../../modules/nixos/system/user.nix
+    ../../modules/nixos/system/fonts.nix
 
-    #./modules/core/sound.nix
-    #./modules/core/power-management.nix
+    # Services
+    ../../modules/nixos/services/power-management.nix
+    ../../modules/nixos/services/sound.nix
+    ../../modules/nixos/services/login.nix
+
+    # --- deprecated stuff to migrate
+
+    # --- Core modules ---
+    ./modules/core/network.nix
 
     # --- CLI modules ---
     ./modules/cli/vim.nix
 
     # --- GUI modules ---
-    ./modules/gui/fonts.nix
-    ./modules/gui/login-manager.nix
+    #./modules/gui/login-manager.nix
     ./modules/gui/display-manager.nix
     ./modules/gui/sway.nix
 
@@ -72,14 +69,6 @@
   ###
   ### My Modules: System
   ###
-  mySystem.system.power-management = {
-    enable = true;
-  };
-  mySystem.system.sound = {
-    enable = true;
-    supportBluetooth = true;
-    enableLowLatency = false;
-  };
   mySystem.system.keyboard = {
     enable = true;
     repeatDelay = "250";
@@ -93,12 +82,38 @@
       LC_MEASUREMENT = "de_DE.UTF-8";  # Metric System
     };
   };
+  mySystem.system.fonts = {
+    enable = true;
+  };
   mySystem.system.user = {
     enable = true;
     name = username;
     uid = 1000;
     homeMode = "0700";
   };
+
+  ###
+  ### My Modules: Services
+  ###
+  mySystem.services.power-management = {
+    enable = true;
+  };
+  mySystem.services.sound = {
+    enable = true;
+    supportBluetooth = true;
+    enableLowLatency = false;
+  };
+  mySystem.services.login = {
+    enable = true;
+    defaultSession = "sway";
+	gnomeKeyring.enable = true;
+  };
+
+
+
+
+
+
 
   # Enable the OpenSSH daemon.
   services.openssh = {
