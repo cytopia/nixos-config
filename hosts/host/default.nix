@@ -13,7 +13,11 @@
     ./modules/core/time-locale.nix
     ./modules/core/keyboard.nix
     ./modules/core/users.nix
-    ./modules/core/gpu-intel.nix
+
+    # NEW MODULES
+    #./modules/core/gpu-intel.nix
+    ../../modules/nixos/hardware/gpu-intel.nix
+
     ./modules/core/bluetooth.nix
     ./modules/core/sound.nix
     ./modules/core/power-management.nix
