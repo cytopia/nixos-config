@@ -4,28 +4,38 @@ let
   cfg = config.mySystem.services.login;
 
   # A generic wrapper that sets Wayland vars for any compositor
+
+  # --- ARCHITECTURAL CHANGE: SESSION WRAPPER SCOPING ---
+  # This script is now strictly for "Post-Login" setup.
+  # We don't need to manually export XDG_SESSION_TYPE here anymore because
+  # your wayland.nix handles that globally. This script now focuses on
+  # dynamic session naming and specialized journaling.
   session-wrapper = pkgs.writeShellScript "greetd-session-wrapper" ''
-    # Export essential Wayland environment variables
-    export XDG_SESSION_TYPE=wayland
+    # Dynamically determine the desktop name for XDG portals
+    # $1 will be the compositor command (e.g., 'sway')
     export XDG_SESSION_DESKTOP=$(basename "$1")
     export XDG_CURRENT_DESKTOP=$XDG_SESSION_DESKTOP
 
-    # Execute the compositor passed as the first argument
-    # Redirecting 2>&1 ensures everything hits the systemd journal
-    #exec "$@"
-	exec "$@" 2> >(${pkgs.systemd}/bin/systemd-cat -t wayland-session)
+    # --- ADDITION: LOGGING ISOLATION ---
+    # We execute the session and pipe stderr to the systemd journal
+    # under a specific tag. This makes 'journalctl -t wayland-session'
+    # your best friend for debugging desktop crashes.
+    #exec "$@" 2> /tmp/wayland.errors>(${pkgs.systemd}/bin/systemd-cat -t wayland-session)
+    exec "$@" 2> /tmp/wayland.errors
   '';
 
   # Command construction using absolute store paths
   tuigreet-cmd = lib.concatStringsSep " " [
     "${pkgs.tuigreet}/bin/tuigreet"
     "--time"
+
     #"--remember"
     #"--remember-user-session"
     "--theme '${cfg.theme}'"
     "--greeting '${cfg.greeting}'"
-    "--cmd ${cfg.defaultSession}" # The default highlighted option
-    "--sessions /run/current-system/sw/share/wayland-sessions:/run/current-system/sw/share/xsessions"
+
+    "--cmd '${session-wrapper} ${cfg.defaultSession}'"
+    #"--sessions /run/current-system/sw/share/wayland-sessions:/run/current-system/sw/share/xsessions"
   ];
 in
 {
@@ -39,19 +49,6 @@ in
       type = lib.types.str;
       default = "sway";
       description = "The compositor command to run by default (e.g., 'sway' or 'Hyprland').";
-    };
-
-    gnomeKeyring = {
-      enable = lib.mkOption {
-        type = lib.types.bool;
-        default = false;
-        description = "Whether to initialize Gnome Keyring in the session wrapper.";
-      };
-      components = lib.mkOption {
-        type = lib.types.listOf lib.types.str;
-        default = [ "secrets" ]; # SSH is now optional/omitted by default
-        description = "Gnome Keyring components to start (secrets, ssh, pkcs11).";
-      };
     };
 
     vt = lib.mkOption {
@@ -85,9 +82,9 @@ in
     # Keep the TUI clean from kernel "noise" during password entering on greetd
     boot.kernelParams = [ "quiet" "splash" ];
 
-    # Only enable the system-wide service if our module option is enabled
-    services.gnome.gnome-keyring.enable = lib.mkIf cfg.gnomeKeyring.enable true;
-    security.pam.services.greetd.enableGnomeKeyring = lib.mkIf cfg.gnomeKeyring.enable true;
+    # Only tell PAM to unlock the keyring IF the keyring service is actually enabled elsewhere.
+    # This uses NixOS's ability to "see" other module settings.
+    security.pam.services.greetd.enableGnomeKeyring = config.services.gnome.gnome-keyring.enable;
 
     # The login service
     services.greetd = {
@@ -95,7 +92,7 @@ in
 
       settings = {
         default_session = {
-          command = "${session-wrapper} ${tuigreet-cmd}";
+          command = tuigreet-cmd;
           user = "greeter";
           vt = cfg.vt;
         };

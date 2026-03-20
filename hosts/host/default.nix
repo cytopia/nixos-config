@@ -17,8 +17,9 @@
     # System
     ../../modules/nixos/system/keyboard.nix
     ../../modules/nixos/system/locale.nix
-    ../../modules/nixos/system/user.nix
     ../../modules/nixos/system/fonts.nix
+    ../../modules/nixos/system/user.nix
+    ../../modules/nixos/system/keyring.nix
 
     # Services
     ../../modules/nixos/services/power-management.nix
@@ -97,6 +98,11 @@
     uid = 1000;
     homeMode = "0700";
   };
+  mySystem.system.keyring = {
+    enable = true;
+    keyringEnable = true;
+  };
+
 
 
   ###
@@ -113,7 +119,6 @@
   mySystem.services.login = {
     enable = true;
     defaultSession = "sway";
-    gnomeKeyring.enable = true;
   };
 
 

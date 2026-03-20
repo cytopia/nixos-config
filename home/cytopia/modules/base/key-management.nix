@@ -6,10 +6,10 @@
   ### Manage SSH keys exclusively
   ###
   services.ssh-agent = {
-	enable = true;
-	enableZshIntegration = true;
-	enableBashIntegration = true;
-	defaultMaximumIdentityLifetime = 3600; # in seconds
+    enable = true;
+    enableZshIntegration = true;
+    enableBashIntegration = true;
+    defaultMaximumIdentityLifetime = 3600; # in seconds
   };
 
   # Tell OpenSSH how to prompt you for passwords in Wayland
@@ -30,34 +30,24 @@
   ### Manage GPG keys exclusively
   ###
   services.gpg-agent = {
-	enable = true;
-	enableSshSupport = false; # Do I need this if i have ssh-agent already?
-	pinentry.program = pkgs.wayprompt;
+    enable = true;
+    enableSshSupport = false; # Do I need this if i have ssh-agent already?
+    pinentry.program = "${pkgs.wayprompt}/bin/wayprompt-gpg-pinentry"; # Be specific
 
-	enableZshIntegration = true;
+    enableZshIntegration = true;
     enableBashIntegration = true;
   };
 
+  # This is now done on system-level
   ###
   ### Only manage secrets
   ###
-  services.gnome-keyring = {
-	enable = true;
-    # CRITICAL: We only enable "secrets" (for passwords/Seahorse).
-    # We explicitly leave out "ssh" so it doesn't fight your real ssh-agent.
-    components = [ "secrets" ];
-  };
-
-  # Comment out if you want to unlock the keyring after login
-  #security.pam.services.greetd.enableGnomeKeyring = true;
-
-  ###
-  ### Password prompt
-  ###
-  programs.wayprompt = {
-	enable = true;
-	#settings = {};
-  };
+  #services.gnome-keyring = {
+  #  enable = true;
+  #  # CRITICAL: We only enable "secrets" (for passwords/Seahorse).
+  #  # We explicitly leave out "ssh" so it doesn't fight your real ssh-agent.
+  #  components = [ "secrets" ];
+  #};
 
 
   ###

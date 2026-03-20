@@ -53,11 +53,12 @@ in
     };
 
     # --- SWAY SPECIFIC PORTAL CONFIG ---
-    # This is the "Friend's Config" logic refined for this module.
+    # We use lib.mkForce here to override the default 'gtk'-only
+    # configuration provided by the built-in NixOS sway module.
     # We tell the system to use 'wlr' first for Sway, then 'gtk' as a fallback.
     xdg.portal = {
       wlr.enable = true;
-      config.sway.default = [ "wlr" "gtk" ];
+      config.sway.default = lib.mkForce [ "wlr" "gtk" ];
     };
 
     # --- HARDWARE INTEGRATION (OPTIONAL BUT BEST PRACTICE) ---
