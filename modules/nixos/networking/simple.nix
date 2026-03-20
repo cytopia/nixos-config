@@ -26,6 +26,10 @@ in
     # Set your machine's hostname
     networking.hostName = cfg.hostName;
 
+    # Explicitly disable wpa_supplicant. If this is running,
+    # iwd will see "No devices" because the card is busy.
+    networking.wireless.enable = false;
+
     # --- THE CONNECTIVITY ENGINE ---
     networking.networkmanager = {
       enable = true;
