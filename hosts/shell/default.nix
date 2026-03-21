@@ -39,7 +39,7 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   # Hibernation settings (see ./disko-config.nix)
-  boot.resumeDevice = "/dev/mapper/pool-swap";
+  #boot.resumeDevice = "/dev/mapper/pool-swap";
   # Ensure the kernel loads the necessary disk-required modules early
   boot.initrd.availableKernelModules = [ "aesni_intel" "cryptd" ];
 
