@@ -42,7 +42,7 @@
     pkgs-unstable.devbox
 
     saml2aws
-    awscli
+    awscli2
     jq
   ];
 }
