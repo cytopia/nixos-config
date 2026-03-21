@@ -22,6 +22,11 @@
               content = {
                 type = "luks";
                 name = "crypted";
+                settings = {
+                  allowDiscards = true;     # Enables SSD TRIM
+                  bypassWorkqueues = true;  # Reduces latency on fast NVMe drives
+                };
+                extraFormatArgs = [ "--type luks2" "--iter-time 2000" ];
                 # allowDiscards = true; # Set to true in config.nix for SSD health
                 content = {
                   type = "lvm_pv";
