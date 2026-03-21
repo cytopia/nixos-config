@@ -144,6 +144,7 @@
       foot              # Fast, Wayland-native terminal
       mako              # Lightweight notification daemon
       libnotify         # Provides 'notify-send'
+      glib              # Provides 'gsettings'
 
       waybar
       pkgs-unstable.ironbar
