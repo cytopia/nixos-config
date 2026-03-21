@@ -41,6 +41,7 @@
   home.packages = with pkgs; [
     pkgs-unstable.devbox
 
+    # Work
     saml2aws
     awscli2
     jq
