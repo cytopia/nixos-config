@@ -11,32 +11,13 @@
   # TODO: Implement zRAM
   # ***REMOVED***
 
-  boot.initrd.availableKernelModules = [ "xhci_pci" "thunderbolt" "nvme" "rtsx_pci_sdmmc" ];
-  boot.initrd.kernelModules = [ ];
+  # TODO: re-run: sudo nixos-generate-config --root /mnt --dir /etc/nixos/hosts/shell
+  # With LAN adapter plugged in
+
+  boot.initrd.availableKernelModules = [ "xhci_pci" "thunderbolt" "nvme" "usb_storage" "sd_mod" ];
+  boot.initrd.kernelModules = [ "dm-snapshot" ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
-
-  fileSystems."/" =
-    { device = "/dev/mapper/luks-***REMOVED***";
-      fsType = "ext4";
-    };
-
-  # Root LUKS
-  boot.initrd.luks.devices."luks-***REMOVED***".device = "/dev/disk/by-uuid/***REMOVED***";
-
-  # Swap LUKS (Move this here!)
-  boot.initrd.luks.devices."luks-***REMOVED***".device = "/dev/disk/by-uuid/***REMOVED***";
-
-
-  fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/4F6A-16CD";
-      fsType = "vfat";
-      options = [ "fmask=0077" "dmask=0077" ];
-    };
-
-  swapDevices =
-    [ { device = "/dev/mapper/luks-***REMOVED***"; }
-    ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
