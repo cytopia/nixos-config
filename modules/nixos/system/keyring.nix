@@ -9,8 +9,7 @@ in
   ###
   options.mySystem.system.keyring = {
     enable = lib.mkEnableOption "system-wide security and key management";
-
-    keyringEnable = lib.mkEnableOption "Gnome Keyring daemon";
+    gnomeKeyringEnable = lib.mkEnableOption "Gnome Keyring daemon";
   };
 
 
@@ -19,7 +18,7 @@ in
   ###
   config = lib.mkIf cfg.enable {
     # 1. Keyring Configuration
-    services.gnome.gnome-keyring = lib.mkIf cfg.keyringEnable {
+    services.gnome.gnome-keyring = lib.mkIf cfg.gnomeKeyringEnable {
       enable = true;
     };
 
@@ -32,6 +31,6 @@ in
 
     # 3. Security Glue
     # Ensure TTY logins also unlock the keyring
-    security.pam.services.login.enableGnomeKeyring = cfg.keyringEnable;
+    security.pam.services.login.enableGnomeKeyring = cfg.gnomeKeyringEnable;
   };
 }

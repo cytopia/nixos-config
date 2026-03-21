@@ -34,27 +34,25 @@
     ../../modules/nixos/programs/chromium.nix
   ];
 
+  ###
+  ### Booting (ensure aesni_intel and crypd kernel mods are loaded)
+  ###
+
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  # Enable LVM in the initrd so it can find the encrypted partition at boot.
+  # Disko created the LVM and NixOS needs to scan for it at boot.
+  boot.initrd.services.lvm.enable = true;
 
-
-  # 1. Enable LVM in the initrd (Essential for LVM-on-LUKS Hibernation)
-  # Disko creates the LVM, but this line tells the Kernel to "scan" for it at boot.
-  #boot.initrd.services.lvm.enable = true;
-
-  # 2. Tell the system to activate the swap Disko created
-  # Disko defines the partition, but NixOS needs this to run 'swapon' at boot.
+  # Activate swap (disko defined it)
+  # Disko defines the partition and NixOS needs this to run 'swapon' at boot.
   swapDevices = [ { device = "/dev/mapper/pool-swap"; } ];
-
-
-
-  # Ensure the kernel loads the necessary disk-required modules early
-  boot.initrd.availableKernelModules = [ "aesni_intel" "cryptd" ];
 
   # Better SSD lifespan with encryption (comes with a security risk)
   boot.initrd.luks.devices."crypted".allowDiscards = true;
+
 
   ###
   ### My Modules: Hardware
@@ -104,7 +102,7 @@
   };
   mySystem.system.keyring = {
     enable = true;
-    keyringEnable = true;
+    gnomeKeyringEnable = true;
   };
 
   ###
