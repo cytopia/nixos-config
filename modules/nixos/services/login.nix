@@ -4,22 +4,8 @@ let
   cfg = config.mySystem.services.login;
 
   # A generic wrapper that sets Wayland vars for any compositor
-
-  # --- ARCHITECTURAL CHANGE: SESSION WRAPPER SCOPING ---
-  # This script is now strictly for "Post-Login" setup.
-  # We don't need to manually export XDG_SESSION_TYPE here anymore because
-  # your wayland.nix handles that globally. This script now focuses on
-  # dynamic session naming and specialized journaling.
   session-wrapper = pkgs.writeShellScript "greetd-session-wrapper" ''
-    # Dynamically determine the desktop name for XDG portals
-    # $1 will be the compositor command (e.g., 'sway')
-    export XDG_SESSION_DESKTOP=$(basename "$1")
-    export XDG_CURRENT_DESKTOP=$XDG_SESSION_DESKTOP
 
-    # --- ADDITION: LOGGING ISOLATION ---
-    # We execute the session and pipe stderr to the systemd journal
-    # under a specific tag. This makes 'journalctl -t wayland-session'
-    # your best friend for debugging desktop crashes.
     #exec "$@" 2> /tmp/wayland.errors>(${pkgs.systemd}/bin/systemd-cat -t wayland-session)
     exec "$@" 2> /tmp/wayland.errors
   '';
@@ -76,14 +62,10 @@ in
   ###
   config = lib.mkIf cfg.enable {
 
-    # Ensure tuigreet is available in the system profile
-    #environment.systemPackages = [ pkgs.tuigreet ];
-
     # Keep the TUI clean from kernel "noise" during password entering on greetd
     boot.kernelParams = [ "quiet" "splash" ];
 
-    # Only tell PAM to unlock the keyring IF the keyring service is actually enabled elsewhere.
-    # This uses NixOS's ability to "see" other module settings.
+    # If Gnome Keyring is enabled (somehwere), tell PAM to unlock the keyring automatically.
     security.pam.services.greetd.enableGnomeKeyring = config.services.gnome.gnome-keyring.enable;
 
     # The login service

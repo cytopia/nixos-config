@@ -86,7 +86,7 @@
   };
   mySystem.system.keyring = {
     enable = true;
-    keyringEnable = true;
+    gnomeKeyringEnable = true;
   };
 
   ###
