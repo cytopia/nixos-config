@@ -11,32 +11,13 @@
   # TODO: Implement zRAM
   # https://gemini.google.com/app/0bda298fcec111c8
 
-  boot.initrd.availableKernelModules = [ "xhci_pci" "thunderbolt" "nvme" "rtsx_pci_sdmmc" ];
-  boot.initrd.kernelModules = [ ];
+  # TODO: re-run: sudo nixos-generate-config --root /mnt --dir /etc/nixos/hosts/shell
+  # With LAN adapter plugged in
+
+  boot.initrd.availableKernelModules = [ "xhci_pci" "thunderbolt" "nvme" "usb_storage" "sd_mod" ];
+  boot.initrd.kernelModules = [ "dm-snapshot" ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
-
-  fileSystems."/" =
-    { device = "/dev/mapper/luks-119ba4cf-2246-453c-8522-fef4e3415686";
-      fsType = "ext4";
-    };
-
-  # Root LUKS
-  boot.initrd.luks.devices."luks-119ba4cf-2246-453c-8522-fef4e3415686".device = "/dev/disk/by-uuid/119ba4cf-2246-453c-8522-fef4e3415686";
-
-  # Swap LUKS (Move this here!)
-  boot.initrd.luks.devices."luks-d9097b1c-d54a-4659-89c9-9393df8e0b2a".device = "/dev/disk/by-uuid/d9097b1c-d54a-4659-89c9-9393df8e0b2a";
-
-
-  fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/4F6A-16CD";
-      fsType = "vfat";
-      options = [ "fmask=0077" "dmask=0077" ];
-    };
-
-  swapDevices =
-    [ { device = "/dev/mapper/luks-d9097b1c-d54a-4659-89c9-9393df8e0b2a"; }
-    ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;

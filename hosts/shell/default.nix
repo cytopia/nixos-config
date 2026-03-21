@@ -43,6 +43,9 @@
   # Ensure the kernel loads the necessary disk-required modules early
   boot.initrd.availableKernelModules = [ "aesni_intel" "cryptd" ];
 
+  # Better SSD lifespan with encryption (comes with a security risk)
+  boot.initrd.luks.devices."crypted".allowDiscards = true;
+
   ###
   ### My Modules: Hardware
   ###
