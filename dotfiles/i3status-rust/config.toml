@@ -25,14 +25,14 @@ format = " $icon $used.eng(w:2)/$available.eng(w:2) "
 [[block]]
 block = "custom"
 command = "echo '\uf0ac ' `curl -s --connect-timeout 2 --max-time 3 ip-api.com/line/?fields=query`"
-interval = 60
+interval = 10
 
 [[block]]
 block = "net"
 # If 'wlan0' fails, comment out the device line to auto-detect
 device = "wlan0"
 format = " $icon $ssid ($signal_strength) "
-format_alt = " $icon $ip "
+format_alt = " $icon $ip ($bitrate) "
 
 [[block]]
 block = "custom"
@@ -47,29 +47,30 @@ good_fg = "#005ce6"
 [[block]]
 block = "sound"
 [block.theme_overrides]
-#idle_bg = "#123456"
-#warning_fg = "#88B090"
 warning_fg = "#A86F6F"
-#good_bg = "#123456"
-#critical_bg = "#123456"
-#info_bg = "#123456"
 
 [[block]]
 block = "sound"
 driver = "pulseaudio"
-device_kind = "source"    # This targets your microphone
+device_kind = "source" # This targets your microphone
 [block.theme_overrides]
 warning_fg = "#A86F6F"
 
-[[block]]
-block = "backlight"
+#[[block]]
+#block = "backlight"
 
 [[block]]
 block = "battery"
 driver = "sysfs"
-interval = 10
-format = " $icon $percentage {$time_remaining} $power "
-full_format = " $icon $percentage {$time_remaining.dur(hms:true, min_unit:m) |}"
+interval = 1
+#format = " $icon $percentage {$time_remaining} $power "
+full_format = " $icon $percentage {($time_remaining.dur(hms:true, min_unit:m))|}"
+not_charging_format = " a asd "
+charging_format = " $icon $percentage "
+missing_format = " "
+[block.theme_overrides]
+warning_fg = "#A86F6F"
+critical_fg = "#A86F6F"
 
 [[block]]
 block = "time"
