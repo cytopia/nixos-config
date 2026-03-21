@@ -38,8 +38,18 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  # Hibernation settings (see ./disko-config.nix)
-  #boot.resumeDevice = "/dev/mapper/pool-swap";
+
+
+  # 1. Enable LVM in the initrd (Essential for LVM-on-LUKS Hibernation)
+  # Disko creates the LVM, but this line tells the Kernel to "scan" for it at boot.
+  #boot.initrd.services.lvm.enable = true;
+
+  # 2. Tell the system to activate the swap Disko created
+  # Disko defines the partition, but NixOS needs this to run 'swapon' at boot.
+  swapDevices = [ { device = "/dev/mapper/pool-swap"; } ];
+
+
+
   # Ensure the kernel loads the necessary disk-required modules early
   boot.initrd.availableKernelModules = [ "aesni_intel" "cryptd" ];
 
@@ -102,7 +112,7 @@
   ###
   mySystem.networking.simple = {
     enable = true;
-	hostName = hostname;
+    hostName = hostname;
   };
 
   ###
@@ -151,7 +161,7 @@
       brightnessctl
       iwmenu
       libappindicator-gtk3
-      networkmanagerapplet
+      #networkmanagerapplet
       blueman
       #sway-audio-idle-inhibit
       #swaynotificationcenter

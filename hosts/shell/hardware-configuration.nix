@@ -9,7 +9,7 @@
     ];
 
   # TODO: Implement zRAM
-  # https://gemini.google.com/app/0bda298fcec111c8
+  # https://gemini.google.com/app/2bda298fcec111c8
 
   # TODO: re-run: sudo nixos-generate-config --root /mnt --dir /etc/nixos/hosts/shell
   # With LAN adapter plugged in
