@@ -141,6 +141,7 @@
     extraPackages = with pkgs; [
       swaylock-effects  # Screen locker (Base PAM service in wayland.nix)
       swayidle          # Idle management daemon
+      sway-audio-idle-inhibit # Prevent sleep whenever audio is played
       fuzzel            # App launcher/Menu
       foot              # Fast, Wayland-native terminal
       mako              # Lightweight notification daemon
