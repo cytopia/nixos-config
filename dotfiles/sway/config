@@ -412,12 +412,19 @@ bindsym $mod+$alt+Left   move workspace to output left
 # Lock, Logout, Suspend, Hibernat, Reboot, Poweroff
 set $mode_system System (l) lock, (e) logout, (s) suspend, (h) hibernate, (r) reboot, (p) poweroff
 mode "$mode_system" {
-  bindsym l exec '$mute; $lock', mode "default"
+  bindsym l exec 'loginctl lock-session', mode "default"
   bindsym e exec swaymsg exit,  mode "default"
-  bindsym s exec '$mute; $lock; systemctl suspend-then-hibernate',   mode "default"
-  bindsym h exec '$mute; $lock; systemctl hibernate', mode "default"
+  bindsym s exec 'loginctl lock-session; systemctl suspend-then-hibernate',   mode "default"
+  bindsym h exec 'loginctl lock-session; systemctl hibernate', mode "default"
   bindsym r exec 'systemctl reboot',   mode "default"
   bindsym p exec 'systemctl poweroff', mode "default"
+#mode "$mode_system" {
+#  bindsym l exec '$mute; $lock', mode "default"
+#  bindsym e exec swaymsg exit,  mode "default"
+#  bindsym s exec '$mute; $lock; systemctl suspend-then-hibernate',   mode "default"
+#  bindsym h exec '$mute; $lock; systemctl hibernate', mode "default"
+#  bindsym r exec 'systemctl reboot',   mode "default"
+#  bindsym p exec 'systemctl poweroff', mode "default"
 
   # back to normal: Enter or Escape
   bindsym Return mode "default"
@@ -515,11 +522,25 @@ bindsym $ctrl+grave exec makoctl restore
 #    If you close the lid, this line runs IMMEDIATELY before power is cut.
 # 6. lock : If you manually run 'loginctl lock-session', this ensures audio is also muted.
 exec swayidle -w \
-  timeout 300 '$mute; $lock;' \
+  timeout 300 'loginctl lock-session' \
   timeout 310 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
   timeout 600 'systemctl suspend-then-hibernate' \
-  before-sleep '$mute; $lock;' \
+  before-sleep 'loginctl lock-session' \
   lock '$mute; $lock;'
+
+# loginctl broadcasts an event so that other apps also know about this.
+# This fixes the issue that KeePassXC will also lock, once the session is locked.
+
+#exec swayidle -w \
+#  timeout 300 '$mute; $lock;' \
+#  timeout 310 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
+#  timeout 600 'systemctl suspend-then-hibernate' \
+#  before-sleep '$mute; $lock;' \
+#  lock '$mute; $lock;'
+
+# Redshift
+exec wlsunset -l 52.5 -L 13.3
+
 
 # Clipboard manager
 #exec wl-paste --type text --watch cliphist store
