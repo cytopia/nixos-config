@@ -8,7 +8,7 @@ xwayland disable
 ##########################################################################################
 
 # swaymsg -t get_outputs
-output eDP-1 scale 1.4
+#output eDP-1 scale 1.0
 output * bg /home/cytopia/Pictures/wallpapers/current fill
 
 # swaymsg -t get_inputs
@@ -44,6 +44,7 @@ input type:keyboard {
 
 # Your preferred terminal emulator
 set $term foot
+set $term_scratch foot -o main.font=monospace:size=8
 
 # Your preferred application launcher
 set $menu wmenu-run
@@ -95,7 +96,10 @@ set $WS10 10  tmp
 ############################################################################################
 
 # No title bar
-default_border pixel 3
+default_border pixel 2
+smart_borders off
+
+hide_edge_borders --i3 none
 
 # Force borders and title bar for all chromium-based windows
 #for_window [app_id="chromium"] border normal
@@ -109,14 +113,16 @@ client.urgent           #ec7ea4  #eb709b #ffffff #eb709b
 
 
 
-#font [pango:]<font>
+font pango:Devaju Sans Mono 12
 #
 #Sets font to use for the title bars. To enable support for pango markup, preface the font name with pango:. For example, monospace 10 is the default font. To enable support for pango markup, pango:monospace 10 should be used instead. Regardless of whether pango markup is enabled, font should be specified as a pango font description. For more information on pango font descriptions, see https://docs.gtk.org/Pango/type_func.FontDescription.from_string.html#description
 #
 #titlebar_border_thickness <thickness>
+titlebar_border_thickness 0
 #
 #Thickness of the titlebar border in pixels
 #titlebar_padding <horizontal> [<vertical>]
+titlebar_padding 10 0
 #
 #Padding of the text in the titlebar. horizontal value affects horizontal padding of the text while vertical value affects vertical padding (space above and below text). Padding includes titlebar borders so their value should be greater than titlebar_border_thickness. If vertical value is not specified it is set to the horizontal value.
 
@@ -129,7 +135,7 @@ client.urgent           #ec7ea4  #eb709b #ffffff #eb709b
 
 # Read `man 5 sway-bar` for more information about this section.
 bar {
-  font pango:Dejavu Sans Mono 8
+  font pango:Dejavu Sans Mono 9
   position top
 
   # tray_output none|<output>|*
@@ -228,7 +234,10 @@ bindsym $mod+minus scratchpad show
 ############################################################
 for_window [app_id="scratchterm"] move scratchpad
 #for_window [app_id="scratchterm"] floating enable, resize set width 60 ppt height 60 ppt, move position center, move scratchpad
-bindsym $mod+grave [app_id="scratchterm"] scratchpad show, resize set width 60 ppt height 60 ppt, move position center
+bindsym $mod+grave [app_id="scratchterm"] scratchpad show, resize set width 60 ppt height 80 ppt, move position center
+
+# Quake like console for terminal
+exec $term_scratch --app-id=scratchterm
 
 
 
@@ -494,9 +503,6 @@ bindsym $ctrl+grave exec makoctl restore
 #
 ##########################################################################################
 
-# Quake like console for terminal
-exec $term --app-id=scratchterm
-
 # IDLE manager
 # EXPLAINING THE COMMANDS:
 # 1. exec swayidle -w : Starts the idle daemon. '-w' (wait) ensures commands finish.
@@ -516,11 +522,14 @@ exec swayidle -w \
   lock '$mute; $lock;'
 
 # Clipboard manager
-exec wl-paste --type text --watch cliphist store
-exec wl-paste --type image --watch cliphist store
+#exec wl-paste --type text --watch cliphist store
+#exec wl-paste --type image --watch cliphist store
+# Use stash: prefer images and exlcude keepass
+exec stash --excluded-apps org.keepassxc.KeePassXC watch --mime-type image
 
 # Open Clipboard history
-bindsym $mod+c exec cliphist list | fuzzel --dmenu --width 100 | cliphist decode | wl-copy
+#bindsym $mod+c exec cliphist list | fuzzel --dmenu --width 100 | cliphist decode | wl-copy
+bindsym $mod+c exec stash list | fuzzel --dmenu --width 100 | stash decode | stash-copy
 
 # Wipe Clipboard history
 bindsym $mod+Shift+c exec cliphist wipe
