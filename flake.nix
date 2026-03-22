@@ -19,6 +19,9 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Custom: stash clipboard Manager
+    stash.url = "github:NotAShelf/stash";
+
     # Custom: neovim 0.12 overlay (not pinned to nixpkgs)
     neovim-nightly.url = "github:nix-community/neovim-nightly-overlay";
 
