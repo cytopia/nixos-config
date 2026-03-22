@@ -22,6 +22,13 @@ sudo systemctl restart nix-daemon
 journalctl -u greetd
 ```
 
+## Devbos
+```
+devbox init
+devbox add terraform@1.8.5 terragrunt@0.98.0
+devbox generate direnv
+```
+
 
 ## Credits
 

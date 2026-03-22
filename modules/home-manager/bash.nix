@@ -59,11 +59,6 @@ in
   ### 2. CONFIGURATION
   ###
   config = lib.mkIf cfg.enable {
-    ## https://mynixos.com/home-manager/option/programs.bash.enableCompletion
-    #(lib.mkIf cfg.enableCompletion {
-    #  #environment.pathsToLink = [ "/share/bash-completion" ];
-    #  environment.pathsToLink = [ "bash-completion" ];
-    #})
 
     programs.bash = {
       enable = true;
@@ -113,7 +108,7 @@ in
 
 
       # Extra functions to be added to bashrc
-      bashrcExtra = lib.optionalString (cfg.bashrc.extraFile != null) 
+      bashrcExtra = lib.optionalString (cfg.bashrc.extraFile != null)
         (builtins.readFile cfg.bashrc.extraFile);
 
       # Do we attach Tmux for every interactive shell?
