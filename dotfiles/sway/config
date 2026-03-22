@@ -1,6 +1,8 @@
 # Disable Xwayland
 #xwayland disable
 
+# This fixes a bug in Telegram for a non-switching cursor
+seat seat0 xcursor_theme Adwaita 24
 ##########################################################################################
 #
 # Hardware
