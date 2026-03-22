@@ -25,7 +25,7 @@ journalctl -u greetd
 ## Devbos
 ```
 devbox init
-devbox add terraform@1.8.5 terragrunt@0.98.0
+devbox add terraform@1.8.5 terragrunt@0.98.0 sops
 devbox generate direnv
 ```
 
