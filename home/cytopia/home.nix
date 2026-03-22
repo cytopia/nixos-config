@@ -12,7 +12,7 @@
 
   imports = [
     # --- Modules ---
-    ../../../modules/home-manager/bash.nix
+    ../../modules/home-manager/bash.nix
 
     # --- base: theming ---
     ./modules/base/xdg.nix
@@ -53,10 +53,10 @@
     aliases = {
       use_bat = true;
       use_eza = false;
-      extra = {}
+      extra = {};
     };
 
-    bashrc.extraFile = ./scripts/shell-functions.sh;
+    bashrc.extraFile = ./modules/cli/scripts/shell-functions.sh;
   };
 
 
