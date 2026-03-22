@@ -70,7 +70,8 @@ charging_format = " $icon $percentage "
 missing_format = " "
 [block.theme_overrides]
 warning_fg = "#A86F6F"
-critical_fg = "#A86F6F"
+critical_bg = "#A86F6F"
+critical_fg = "#FFFFFF"
 
 [[block]]
 block = "time"
