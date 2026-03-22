@@ -136,6 +136,7 @@
   mySystem.desktop.sway = {
     enable = true;
     terminal = "foot";
+    enableXwayland = true;
     # You can append more packages here if needed
     extraPackages = with pkgs; [
       swaylock-effects  # Screen locker (Base PAM service in wayland.nix)
@@ -214,6 +215,7 @@
     curl
     wget
     dig
+    tree
 
     # Essentials
     git

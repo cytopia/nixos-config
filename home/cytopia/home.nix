@@ -41,6 +41,8 @@
 
   home.packages = with pkgs; [
     pkgs-unstable.devbox
+    wlsunset
+    burpsuite
 
     # Work
     saml2aws
