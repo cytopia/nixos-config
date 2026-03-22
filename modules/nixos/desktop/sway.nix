@@ -10,6 +10,14 @@ in
   options.mySystem.desktop.sway = {
     enable = lib.mkEnableOption "Sway Wayland Compositor";
 
+    enableXwayland= lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Enables XWayland";
+    };
+
+
+
     extraPackages = lib.mkOption {
       type = lib.types.listOf lib.types.package;
       default = with pkgs; [
@@ -39,7 +47,7 @@ in
     # We enable the base Wayland module and pass it the Sway-specific portal package.
     mySystem.desktop.wayland = {
       enable = true;
-      enableXwayland = lib.mkDefault true; # Sway handles XWayland gracefully
+      enableXwayland = cfg.enableXwayland;
       extraPortals = [ pkgs.xdg-desktop-portal-wlr ];
     };
 
@@ -48,6 +56,7 @@ in
       enable = true;
       wrapperFeatures.gtk = true; # Required for GTK themes and portal synchronization
 
+      xwayland.enable = cfg.enableXwayland;
       # We inject the chosen packages into the system environment
       extraPackages = cfg.extraPackages;
     };
