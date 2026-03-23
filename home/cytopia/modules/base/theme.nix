@@ -1,19 +1,33 @@
 { config, pkgs, ... }:
 
 {
-  dconf.settings = {
-    "org/gnome/desktop/interface" = {
-      cursor-theme = "Adwaita";
-      cursor-size = 24;
-      color-scheme = "prefer-dark";
-      # These ensure GTK4 apps use your chosen icons and fonts
-      icon-theme = "breeze";
-      font-name = "Adwaita Sans 11";
-      gtk-theme = "Arc";
-    };
+  # 1. DCONF: Essential for GTK4/Libadwaita apps
+  #dconf.settings = {
+  #  "org/gnome/desktop/interface" = {
+  #    cursor-theme = "Adwaita";
+  #    cursor-size = 24;
+  #    color-scheme = "prefer-dark";
+  #    # These ensure GTK4 apps use your chosen icons and fonts
+  #    icon-theme = "breeze";
+  #    font-name = "Adwaita Sans 11";
+  #    gtk-theme = "Arc";
+  #  };
+  #};
+
+  # 2. POINTER CURSOR: The "modern" way to handle cursors in HM
+  # This replaces manual sessionVariables and cursorTheme entries
+  home.pointerCursor = {
+    gtk.enable = true;
+    x11.enable = true; # Helps with older XWayland apps
+	sway.enable = true;
+    package = pkgs.adwaita-icon-theme;
+    name = "Adwaita";
+    size = 24;
   };
 
-  # ADDED: Environment variables for Wayland/Sway.
+
+
+  # Environment variables for Wayland/Sway.
   # Some apps (and XWayland apps) check these instead of dconf.
   home.sessionVariables = {
     XCURSOR_THEME = "Adwaita";
@@ -37,24 +51,30 @@
       name = "breeze";
       package = pkgs.libsForQt5.breeze-icons;
     };
-    cursorTheme = {
-      name = "Adwaita";
-      size = 24;
-      package = pkgs.adwaita-icon-theme;
-      # Note: Ad this line to Sway config
-      # seat seat0 xcursor_theme Adwaita 24
-    };
+    #cursorTheme = {
+    #  name = "Adwaita";
+    #  size = 24;
+    #  package = pkgs.adwaita-icon-theme;
+    #  # Note: Ad this line to Sway config
+    #  # seat seat0 xcursor_theme Adwaita 24
+    #};
     font = {
       name = "Adwaita Sans";
       size = 11;
       package = pkgs.adwaita-fonts;
     };
     colorScheme = "dark";  # or light
+    # Modern apps look for this key in dconf via the portal
+    gtk3.extraConfig.gtk-application-prefer-dark-theme = 1;
+    gtk4.extraConfig.gtk-application-prefer-dark-theme = 1;
   };
 
   qt = {
     enable = true;
-    platformTheme.name = "gtk";
+    #platformTheme.name = "gtk";
+    # In 2026, 'xdgdesktopportal' is the preferred bridge over 'gtk'
+    # because it respects the system-wide Dark Mode toggle better.
+    platformTheme.name = "xdgdesktopportal";
     style.name = "adwaita-dark";
   };
 

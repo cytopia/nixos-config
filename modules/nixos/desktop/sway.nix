@@ -67,7 +67,13 @@ in
     # We tell the system to use 'wlr' first for Sway, then 'gtk' as a fallback.
     xdg.portal = {
       wlr.enable = true;
-      config.sway.default = lib.mkForce [ "wlr" "gtk" ];
+      #config.sway.default = lib.mkForce [ "wlr" "gtk" ];
+	  config.sway = {
+        default = [ "gtk" ]; # Use GTK for most things (files, settings, themes)
+        # Use WLR specifically for screen interaction
+        "org.freedesktop.impl.portal.Screenshot" = [ "wlr" ];
+        "org.freedesktop.impl.portal.ScreenCast" = [ "wlr" ];
+	  };
     };
 
     # --- HARDWARE INTEGRATION (OPTIONAL BUT BEST PRACTICE) ---
