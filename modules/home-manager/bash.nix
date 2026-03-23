@@ -188,10 +188,10 @@ in
     home.packages = [
       pkgs.xdg-utils  # used for 'open' alias (xdg-open)
     ]
+    ++ lib.optionals cfg.enableCompletion [ pkgs.bash-completion pkgs.nix-bash-completions ]
     ++ lib.optionals cfg.aliases.use_bat [ pkgs.bat ]
     ++ lib.optionals cfg.aliases.use_eza [ pkgs.eza ]
     ++ lib.optionals cfg.autoAttachTmux [ pkgs.tmux ];
   };
-
 }
 
