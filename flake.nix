@@ -46,6 +46,7 @@
     # Every machine is defined here with its architecture and user.
     myHosts = {
       host = { system = "x86_64-linux"; user = "cytopia"; };
+      core = { system = "x86_64-linux"; user = "cytopia"; };
       shell = { system = "x86_64-linux"; user = "cytopia"; };
       # Example of scaling: satellite = { system = "aarch64-linux"; user = "alice"; };
     };
