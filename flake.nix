@@ -71,6 +71,7 @@
           pkgs-unstable = import nixpkgs-unstable {
             system = hostConfig.system;
             config.allowUnfree = true;
+            overlays = sharedOverlays;
           };
         };
 
@@ -132,6 +133,7 @@
             pkgs-unstable = import nixpkgs-unstable {
               system = hostConfig.system;
               config.allowUnfree = true;
+              overlays = sharedOverlays;
             };
           };
           # Import the user's home configuration dynamically
