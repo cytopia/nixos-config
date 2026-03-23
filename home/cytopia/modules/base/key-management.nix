@@ -32,8 +32,8 @@
   services.gpg-agent = {
     enable = true;
     enableSshSupport = false;
-    pinentry.program = "pinentry-wayprompt";
-    pinentry.package = pkgs.wayprompt;
+    pinentry.program = "pinentry-gnome3";
+    pinentry.package = pkgs.pinentry-gnome3;
 
     enableZshIntegration = true;
     enableBashIntegration = true;
@@ -58,10 +58,20 @@
         pin-square-amount = 32;
       };
       colours = {
-        background = "ffffffaa";
+        background = "ffffff00";
       };
     };
   };
+
+#[general]
+#button-inner-padding = 0;
+#vertical-padding = 0;
+#horizontal-padding = 0;
+#pin-square-size =18;
+#pin-square-amount = 16;
+#border = 2;
+#pin-square-border = 1;
+#button-border = 1;
 
 
   ###
