@@ -71,10 +71,10 @@
 
   qt = {
     enable = true;
-    #platformTheme.name = "gtk";
+    platformTheme.name = "gtk";
     # In 2026, 'xdgdesktopportal' is the preferred bridge over 'gtk'
     # because it respects the system-wide Dark Mode toggle better.
-    platformTheme.name = "xdgdesktopportal";
+    #platformTheme.name = "xdgdesktopportal";
     style.name = "adwaita-dark";
   };
 
