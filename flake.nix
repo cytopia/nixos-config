@@ -6,7 +6,8 @@
   ###
   inputs = {
     # NixOS: packages
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+    #nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
     # NixOS: manage HDD
@@ -15,7 +16,8 @@
 
     # NixOS: Home Manager
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.11";
+      #url = "github:nix-community/home-manager/release-25.11";
+      url = "github:nix-community/home-manager/master";  # like nixpkgs-unstable
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
