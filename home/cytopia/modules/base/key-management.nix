@@ -33,7 +33,7 @@
     enable = true;
     enableSshSupport = false;
     pinentry.program = "${pkgs.wayprompt}/bin/wayprompt-gpg-pinentry"; # Be specific
-    pinentryPackage = pkgs.wayprompt;
+    pinentry.package = pkgs.wayprompt;
 
     enableZshIntegration = true;
     enableBashIntegration = true;
