@@ -26,6 +26,7 @@ in
   config = lib.mkIf cfg.enable {
 
     fonts.enableDefaultPackages = cfg.enableDefaultPackages;
+    fonts.fontDir.enable = true;
 
     # NixOS 25.11 uses 'fonts.packages'.
     # (Older versions used 'fonts.fonts')
