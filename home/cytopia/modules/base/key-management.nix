@@ -32,7 +32,7 @@
   services.gpg-agent = {
     enable = true;
     enableSshSupport = false;
-    pinentry.program = "${pkgs.wayprompt}/bin/wayprompt-gpg-pinentry"; # Be specific
+    pinentry.program = "wayprompt-gpg-pinentry";
     pinentry.package = pkgs.wayprompt;
 
     enableZshIntegration = true;
