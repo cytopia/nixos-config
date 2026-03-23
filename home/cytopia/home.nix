@@ -13,10 +13,11 @@
   imports = [
     # --- Modules ---
     ../../modules/home-manager/bash.nix
+    ../../modules/home-manager/theme.nix
 
     # --- base: theming ---
     ./modules/base/xdg.nix
-    ./modules/base/theme.nix
+    #./modules/base/theme.nix
     ./modules/base/key-management.nix
 
     # --- cli ---
@@ -43,7 +44,7 @@
   ];
 
   ###
-  ### My Modules: bash
+  ### My Modules: cli
   ###
   cytopia.cli.bash = {
     enable = true;
@@ -56,13 +57,22 @@
       extra = {};
     };
 
+    enableStarship = true;
+    enableDirenv = true;
+    enableFzf = true;
+
     bashrc.extraFile = ./modules/cli/scripts/shell-functions.sh;
   };
+
+  ###
+  ### My Modules: ui
+  ###
+  cytopia.ui.theme.enable = true;
 
 
   home.packages = with pkgs; [
     pkgs-unstable.devbox
-    wlsunset
+    wlsunset   # redshift
     burpsuite
 
     # Work

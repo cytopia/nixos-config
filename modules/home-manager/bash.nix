@@ -52,6 +52,28 @@ in
       default = false;
       description = "Whether to always start a tmux session in bash.";
     };
+
+    # External helper programms
+    enableStarship = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Whether to enable Starship for bash.";
+    };
+    enableFzf = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Whether to enable FZF for bash.";
+    };
+    enableZoxide = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Whether to enable zoxide for bash.";
+    };
+    enableDirenv = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Whether to enable direnv for bash.";
+    };
   };
 
 
@@ -139,6 +161,27 @@ in
           fi
         fi
       '';
+    };
+
+    programs.starship = {
+      enable = cfg.enableStarship;
+      enableBashIntegration = cfg.enableStarship;
+    };
+
+    programs.zoxide = {
+      enable = cfg.enableZoxide;
+      enableBashIntegration = cfg.enableZoxide;
+    };
+
+    programs.fzf = {
+      enable = cfg.enableFzf;
+      enableBashIntegration = cfg.enableFzf;
+    };
+
+    programs.direnv = {
+      enable = cfg.enableDirenv;
+      enableBashIntegration = cfg.enableDirenv;
+      nix-direnv.enable = cfg.enableDirenv;
     };
 
     # Install required packages
