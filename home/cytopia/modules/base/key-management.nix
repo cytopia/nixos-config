@@ -31,8 +31,9 @@
   ###
   services.gpg-agent = {
     enable = true;
-    enableSshSupport = false; # Do I need this if i have ssh-agent already?
+    enableSshSupport = false;
     pinentry.program = "${pkgs.wayprompt}/bin/wayprompt-gpg-pinentry"; # Be specific
+    pinentryPackage = pkgs.wayprompt;
 
     enableZshIntegration = true;
     enableBashIntegration = true;
@@ -48,6 +49,19 @@
   #  # We explicitly leave out "ssh" so it doesn't fight your real ssh-agent.
   #  components = [ "secrets" ];
   #};
+
+  programs.wayprompt = {
+    enable = true;
+    settings = {
+      general = {
+        font-regular = "sans:size=14";
+        pin-square-amount = 32;
+      };
+      colours = {
+        background = "ffffffaa";
+      };
+    };
+  };
 
 
   ###
