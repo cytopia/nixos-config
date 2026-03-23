@@ -163,25 +163,25 @@ in
       '';
     };
 
-    programs.starship = {
-      enable = cfg.enableStarship;
-      enableBashIntegration = cfg.enableStarship;
+    programs.starship = lib.mkIf cfg.enableStarship {
+      enable = true;
+      enableBashIntegration = true;
     };
 
-    programs.zoxide = {
-      enable = cfg.enableZoxide;
-      enableBashIntegration = cfg.enableZoxide;
+    programs.zoxide = lib.mkIf cfg.enableZoxide {
+      enable = true;
+      enableBashIntegration = true;
     };
 
-    programs.fzf = {
-      enable = cfg.enableFzf;
-      enableBashIntegration = cfg.enableFzf;
+    programs.fzf = lib.mkIf cfg.enableFzf {
+      enable = true;
+      enableBashIntegration = true;
     };
 
-    programs.direnv = {
-      enable = cfg.enableDirenv;
-      enableBashIntegration = cfg.enableDirenv;
-      nix-direnv.enable = cfg.enableDirenv;
+    programs.direnv = lib.mkIf cfg.enableDirenv {
+      enable = true;
+      enableBashIntegration = true;
+      nix-direnv.enable = true;
     };
 
     # Install required packages
