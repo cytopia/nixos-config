@@ -48,7 +48,8 @@
 
   # Activate swap (disko defined it)
   # Disko defines the partition and NixOS needs this to run 'swapon' at boot.
-  swapDevices = [ { device = "/dev/mapper/pool-swap"; } ];
+  #  swapDevices = [ { device = "/dev/mapper/pool-swap"; } ];
+  #  boot.resumeDevice = "/dev/mapper/pool-swap";
 
   # Better SSD lifespan with encryption (comes with a security risk)
   boot.initrd.luks.devices."crypted".allowDiscards = true;
