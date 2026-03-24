@@ -105,11 +105,15 @@ in {
       cfg.icons.package
       cfg.font.package
       # Core requirements
-      pkgs.adwaita-qt       # Required for QT styling
-      pkgs.librsvg          # Required for SVG icons
-      pkgs.glib             # Required for gsettings
-
-      pkgs.hicolor-icon-theme  # Provides '/usr/share/icons/hicolor/' as a safety net
+      adwaita-qt       # Required for QT styling
+      librsvg          # Required for SVG icons
+      glib             # Required for gsettings
+      # Icon themes
+      hicolor-icon-theme  # Provides '/usr/share/icons/hicolor/' as a safety net
+      pop-icon-theme
+      arc-icon-theme
+      numix-icon-theme
+      papirus-icon-theme
     ];
   };
 }

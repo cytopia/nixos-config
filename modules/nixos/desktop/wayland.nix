@@ -97,12 +97,13 @@ in
     # --- SYSTEM PACKAGES ---
     # Essential low-level utilities that every Wayland user needs.
     environment.systemPackages = with pkgs; [
-      slurp          # Region selector for grim/screen-sharing
-      grim           # Screenshot utility (Required for most sharing setups)
-      wayland-utils  # Provides 'wayland-info' for debugging
-      wl-clipboard   # Standard Wayland copy/paste CLI (wl-copy/wl-paste)
-      libinput       # For 'libinput debug-events' and debugging
-	  pkgs.wayprompt # provides wayprompt-ssh-askpass and wayprompt-gpg-pinentry
+      slurp            # Region selector for grim/screen-sharing
+      grim             # Screenshot utility (Required for most sharing setups)
+      wayland-utils    # Provides 'wayland-info' for debugging
+      wl-clipboard     # Standard Wayland copy/paste CLI (wl-copy/wl-paste)
+      libinput         # For 'libinput debug-events' and debugging
+      wayprompt        # provides wayprompt-ssh-askpass and wayprompt-gpg-pinentry
+      gtk4-layer-shell # library that allows GTK4 applications to use the Wayland Layer Shell protocol
     ];
 
     # --- ENVIRONMENT VARIABLES ---
