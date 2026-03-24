@@ -154,7 +154,7 @@
       pkgs-unstable.i3status-rust
       tofi
       wmenu
-      wl-clipboard
+      pkgs-unstable.wl-clipboard
       cliphist
       grim
       slurp
