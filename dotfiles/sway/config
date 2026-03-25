@@ -545,14 +545,14 @@ exec wlsunset -l 52.5 -L 13.3
 
 
 # Clipboard manager
-#exec wl-paste --type text --watch cliphist store
-#exec wl-paste --type image --watch cliphist store
+exec wl-paste --type text --watch cliphist store
+exec wl-paste --type image --watch cliphist store
 # Use stash: prefer images and exlcude keepass
-exec stash --excluded-apps org.keepassxc.KeePassXC watch --mime-type image
+#exec stash --excluded-apps org.keepassxc.KeePassXC watch --mime-type image
 
 # Open Clipboard history
-#bindsym $mod+c exec cliphist list | fuzzel --dmenu --width 100 | cliphist decode | wl-copy
-bindsym $mod+c exec stash list | fuzzel --dmenu --width 100 | stash decode | stash-copy
+bindsym $mod+c exec cliphist list | fuzzel --dmenu --width 100 | cliphist decode | wl-copy
+#bindsym $mod+c exec stash list | fuzzel --dmenu --width 100 | stash decode | stash-copy
 
 # Wipe Clipboard history
 bindsym $mod+Shift+c exec cliphist wipe
