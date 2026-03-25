@@ -125,16 +125,16 @@ in
       } else {})
       // (if cfg.enableEza then {
         # Listings: eza
+        #l = "eza -l";
         #ll = "eza -la";
         #ls = "eza --icons";
         #la = "eza -a";
-        #l = "eza -l";
       } else {
         # Listings: ls
+        l = "ls --color=always --group-directories-first --classify -l";
         ll = "ls --color=always --group-directories-first --classify -al";
         ls = "ls --color=always --group-directories-first --classify";
         la = "ls --color=always --group-directories-first --classify -a";
-        l = "ls --color=always --group-directories-first --classify -l";
       })
       //  cfg.aliases.extra;
 
@@ -217,7 +217,6 @@ in
       enableBashIntegration = true;
       extraOptions = [
         "--group-directories-first"
-        "--header"
       ];
     };
     programs.dircolors = lib.mkIf cfg.enableDircolors {
