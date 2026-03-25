@@ -23,6 +23,8 @@
       fzf
       ripgrep
       fd
+      cargo # for nixfmt
+      nixfmt
     ];
 
     # Failed to run healthcheck for "nvim-treesitter" plugin. Exception:
