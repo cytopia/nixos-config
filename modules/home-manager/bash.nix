@@ -130,11 +130,11 @@ in
         #ls = "eza --icons";
         #la = "eza -a";
       } else {
-        # Listings: ls
-        l = "ls --color=always --group-directories-first --classify -l";
-        ll = "ls --color=always --group-directories-first --classify -al";
-        ls = "ls --color=always --group-directories-first --classify";
-        la = "ls --color=always --group-directories-first --classify -a";
+        # Listings: ls (LC_COLLATE=C ensures that dot files/dirs come first)
+        l = "LC_COLLATE=C ls --color=always --group-directories-first --classify -l";
+        ll = "LC_COLLATE=C ls --color=always --group-directories-first --classify -al";
+        ls = "LC_COLLATE=C ls --color=always --group-directories-first --classify";
+        la = "LC_COLLATE=C ls --color=always --group-directories-first --classify -a";
       })
       //  cfg.aliases.extra;
 
