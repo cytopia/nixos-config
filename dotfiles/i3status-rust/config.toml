@@ -30,6 +30,18 @@ interval = 10
 [[block]]
 block = "net"
 # If 'wlan0' fails, comment out the device line to auto-detect
+device = "tun0"
+format = " $icon $ip "
+missing_format = ""
+format_alt = " $icon $ip / $ipv6 / NS: $nameserver "
+[block.theme_overrides]
+idle_bg = "#A86F6F"
+idle_fg = "#FFFFFF"
+
+
+[[block]]
+block = "net"
+# If 'wlan0' fails, comment out the device line to auto-detect
 device = "wlan0"
 format = " $icon $ssid ($signal_strength) "
 format_alt = " $icon $ip ($bitrate) "

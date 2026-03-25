@@ -113,7 +113,7 @@ in {
       pop-icon-theme
       arc-icon-theme
       numix-icon-theme
-      papirus-icon-theme
+      #papirus-icon-theme
     ];
   };
 }

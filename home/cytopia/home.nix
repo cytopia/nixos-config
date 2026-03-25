@@ -79,5 +79,6 @@
     saml2aws
     awscli2
     jq
+    custom.colorpicker
   ];
 }
