@@ -2,7 +2,7 @@
 
 let
   cfg = config.cytopia.cli.bash;
-  shell = import ./shared-shell.nix;
+  shell = import ./lib/shell.nix { inherit pkgs lib; };
 in
 {
   ###
@@ -68,7 +68,7 @@ in
         // (if cfg.autoAttachTmux then shell.aliases.tmux else {})
         // (if cfg.enableEza then {} else shell.aliases.ls)
         // (if cfg.enableBat then shell.aliases.bat else {})
-        // cfg.aliasesl;
+        // cfg.aliases;
 
       # Very top of ~/.bashrc
       # Do we attach Tmux for every interactive shell?
