@@ -24,7 +24,7 @@
     ./modules/cli/git.nix
     ./modules/cli/zsh.nix
     ./modules/cli/neovim.nix
-    ./modules/cli/stash.nix
+    #./modules/cli/stash.nix  # Weired terminal issues
 
     # --- gui: messenger ---
     ./modules/gui/signal.nix
