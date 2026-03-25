@@ -12,8 +12,7 @@
 
   imports = [
     # --- Modules ---
-    ../../modules/home-manager/bash.nix
-    ../../modules/home-manager/theme.nix
+    ../../modules/home-manager/default.nix
 
     # --- base: theming ---
     ./modules/base/xdg.nix
@@ -49,19 +48,34 @@
   cytopia.cli.bash = {
     enable = true;
     enableCompletion = true;
+
+    extraRcFile = ./modules/cli/scripts/shell-functions.sh;
     autoAttachTmux = true;
 
-    aliases = {
-      use_bat = true;
-      use_eza = false;
-      extra = {};
-    };
-
-    enableStarship = true;
+    enableBat = true;
+    enableDircolors = true;
     enableDirenv = true;
     enableFzf = true;
+    enableStarship = true;
 
-    bashrc.extraFile = ./modules/cli/scripts/shell-functions.sh;
+    enableEza = false;
+    enableZoxide = false;
+  };
+  cytopia.cli.fish = {
+    enable = true;
+    enableCompletion = true;
+
+    #extraRcFile = ./modules/cli/scripts/shell-functions.sh;
+    autoAttachTmux = true;
+
+    enableBat = true;
+    enableDircolors = true;
+    enableDirenv = true;
+    enableFzf = true;
+    enableStarship = true;
+
+    enableEza = false;
+    enableZoxide = false;
   };
 
   ###
