@@ -146,7 +146,7 @@ in
 
       # Very top of ~/.bashrc
       # Do we attach Tmux for every interactive shell?
-      bashExtra = lib.optionalString cfg.autoAttachTmux ''
+      bashrcExtra = lib.optionalString cfg.autoAttachTmux ''
         # 1. We are in an interactive shell ($- == *i*)
         # 2. We are NOT already inside a tmux session ($TMUX is empty)
         # 3. We are NOT in a plain TTY (ensures tmux only starts in Wayland)
