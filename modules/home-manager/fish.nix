@@ -1,14 +1,14 @@
 { config, lib, pkgs, ... }:
 
 let
-  cfg = config.cytopia.cli.bash;
+  cfg = config.cytopia.cli.fish;
   shell = import ./shared-shell.nix;
 in
 {
   ###
   ### 1. OPTIONS
   ###
-  options.cytopia.cli.bash = {
+  options.cytopia.cli.fish = {
     enable = lib.mkEnableOption "Shell customization module";
 
     # Completion
@@ -26,7 +26,7 @@ in
       example = { g = "git"; };
     };
 
-    # ~/.bashrc
+    # ~/.config/fish
     extraRcFile = lib.mkOption {
       type = lib.types.nullOr lib.types.path;
       default = null;
@@ -53,15 +53,9 @@ in
   config = lib.mkIf cfg.enable {
 
     # 1. Shell configuration
-    programs.bash = {
+    programs.fish = {
       enable = true;
-      enableCompletion = cfg.enableCompletion;
-
-      # Sane defaults for history
-      historyControl = [
-        "ignoredups"   # Do not save duplicates
-        "ignorespace"  # Do not save, if prefixed by a space
-      ];
+      generateCompletions = cfg.enableCompletion;
 
       # Aliases
       shellAliases = shell.aliases.default
@@ -70,19 +64,19 @@ in
         // (if cfg.enableBat then shell.aliases.bat else {})
         // cfg.aliasesl;
 
-      # Very top of ~/.bashrc
+      # Very top of fish shell config
       # Do we attach Tmux for every interactive shell?
-      bashrcExtra = lib.optionalString cfg.autoAttachTmux shell.tmuxAttach.posix;
+      shellInit = lib.optionalString cfg.autoAttachTmux shell.tmuxAttach.fish;
 
-      # Very bottom of ~/.bashrc
-      # Extra functions to be added to bashrc
-      initExtra = lib.optionalString (cfg.extraRcFile != null) (builtins.readFile cfg.extraRcFile);
+      # Very bottom fish shell config
+      # Extra functions to be added to fish shell config
+      shellInitLast = lib.optionalString (cfg.extraRcFile != null) (builtins.readFile cfg.extraRcFile);
     };
 
     # 2. External helper shell integration
     # This ensures that the helper defined below have the corresponding
     # shell integration enabled automatically.
-    home.shell.enableBashIntegration = true;
+    home.shell.enableFishIntegration = true;
 
     # 3. External helper
     programs.bat = lib.mkIf cfg.enableBat {
@@ -118,7 +112,6 @@ in
     home.packages = [
       pkgs.xdg-utils  # used for 'open' alias (xdg-open) in shell.aliases.default
     ]
-    ++ lib.optionals cfg.enableCompletion [ pkgs.bash-completion pkgs.nix-bash-completions ]
     ++ lib.optionals cfg.autoAttachTmux [ pkgs.tmux ];
   };
 }
