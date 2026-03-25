@@ -116,6 +116,9 @@ in
         # Default args
         rgrep = "grep -r --color=auto --binary-file=without-match";
       }
+      // (if cfg.autoAttachTmux then {
+        refresh-tmux-env = "eval $(tmux show-environment -s)";
+      } else {})
       // (if cfg.enableBat then {
         cat = "bat --plain";
         man = "batman";
