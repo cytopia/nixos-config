@@ -2,7 +2,7 @@
 
 let
   cfg = config.cytopia.cli.fish;
-  shell = import ./shared-shell.nix;
+  shell = import ./lib/shell.nix { inherit pkgs lib; };
 in
 {
   ###
@@ -58,11 +58,11 @@ in
       generateCompletions = cfg.enableCompletion;
 
       # Aliases
-      shellAliases = shell.aliases.default
+      shellAbbrs = shell.aliases.default
         // (if cfg.autoAttachTmux then shell.aliases.tmux else {})
         // (if cfg.enableEza then {} else shell.aliases.ls)
         // (if cfg.enableBat then shell.aliases.bat else {})
-        // cfg.aliasesl;
+        // cfg.aliases;
 
       # Very top of fish shell config
       # Do we attach Tmux for every interactive shell?
