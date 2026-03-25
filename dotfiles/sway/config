@@ -561,8 +561,44 @@ bindsym $mod+Shift+c exec cliphist wipe
 
 ##########################################################################################
 #
+# Floating definition
+#
+##########################################################################################
+
+# Get info about currently selected window
+# sleep 3; swaymsg -t get_tree | jq -r '..|try select(.focused == true)'
+
+# Thunderbird
+#for_window [app_id="thunderbird"] floating enable
+#for_window [app_id="thunderbird" title=".*Mozilla Thunderbird"] floating disable
+#for_window [app_id="thunderbird" title="Write.*Thunderbird"] floating disable
+for_window [app_id="thunderbird" title="^(?!.*(Thunderbird|Write)).*$"] floating enable
+
+# Yad (selectr)
+for_window [app_id="yad"] floating enable
+
+
+for_window [window_role="pop-up"] floating enable
+for_window [window_role="Pop-up"] floating enable
+for_window [window_role="bubble"] floating enable
+for_window [window_role="Bubble"] floating enable
+for_window [window_role="dialog"] floating enable
+for_window [window_role="Dialog"] floating enable
+for_window [window_type="dialog"] floating enable
+for_window [window_type="Dialog"] floating enable
+for_window [class="dialog"] floating enable
+for_window [class="Dialog"] floating enable
+for_window [window_role="task_dialog"] floating enable
+for_window [window_type="menu"] floating enable
+for_window [window_role="About"] floating enable
+
+
+
+##########################################################################################
+#
 # Additional Configuration
 #
 ##########################################################################################
+
 
 include /etc/sway/config.d/*
