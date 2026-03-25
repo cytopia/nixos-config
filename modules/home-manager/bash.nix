@@ -139,12 +139,14 @@ in
       //  cfg.aliases.extra;
 
 
+      # Very bottom of ~/.bashrc
       # Extra functions to be added to bashrc
-      bashrcExtra = lib.optionalString (cfg.bashrc.extraFile != null)
+      initExtra = lib.optionalString (cfg.bashrc.extraFile != null)
         (builtins.readFile cfg.bashrc.extraFile);
 
+      # Very top of ~/.bashrc
       # Do we attach Tmux for every interactive shell?
-      initExtra = lib.optionalString cfg.autoAttachTmux ''
+      bashExtra = lib.optionalString cfg.autoAttachTmux ''
         # 1. We are in an interactive shell ($- == *i*)
         # 2. We are NOT already inside a tmux session ($TMUX is empty)
         # 3. We are NOT in a plain TTY (ensures tmux only starts in Wayland)
