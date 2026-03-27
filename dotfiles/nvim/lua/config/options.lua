@@ -4,3 +4,9 @@
 
 -- No relative line numbers
 vim.opt.relativenumber = false
+
+-- Show char count
+vim.opt.colorcolumn = "100"
+
+-- always keep 8 lines above/below the cursor visible when scrolling
+vim.opt.scrolloff = 10
