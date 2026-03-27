@@ -39,6 +39,19 @@ let
       linter = [ ];
       formatter = [ pkgs.terragrunt ];
     };
+    docker = {
+      lsp = [ pkgs.docker-language-server ];
+      linter = [
+        pkgs.hadolint
+        pkgs.shellcheck # hadolint requires shellcheck
+      ];
+      formatter = [ pkgs.dockerfmt ];
+    };
+    dockerCompose = {
+      lsp = [ pkgs.docker-language-server ];
+      linter = [ pkgs.yamllint ];
+      formatter = [ pkgs.yamlfmt ];
+    };
     json = {
       lsp = [ pkgs.biome ];
       linter = [ pkgs.biome ];
@@ -74,6 +87,12 @@ let
     ++ languageSupport.terragrunt.lsp
     ++ languageSupport.terragrunt.linter
     ++ languageSupport.terragrunt.formatter
+    ++ languageSupport.docker.lsp
+    ++ languageSupport.docker.linter
+    ++ languageSupport.docker.formatter
+    ++ languageSupport.dockerCompose.lsp
+    ++ languageSupport.dockerCompose.linter
+    ++ languageSupport.dockerCompose.formatter
     ++ languageSupport.json.lsp
     ++ languageSupport.json.linter
     ++ languageSupport.json.formatter
