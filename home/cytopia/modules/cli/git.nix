@@ -95,7 +95,7 @@
         };
 
       column = {
-        ui = "auto";
+        ui = "never";
       };
 
       color = {

@@ -22,8 +22,8 @@ return {
         yamlls = {
           settings = {
             yaml = {
-              schemaStore = { enabled = true },
-              kubernetesCRDStore = { enabled = true },
+              schemaStore = { enable = true },
+              kubernetesCRDStore = { enable = true },
               format = { enable = false }, -- Let yamlfmt do that.
               validate = true,
             },
