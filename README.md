@@ -7,7 +7,7 @@
 nix flake update
 
 # Update system
-sudo nixos-rebuild switch --flake .#host
+sudo nixos-rebuild switch --flake .#HOSTNAME
 
 # Update home
 home-manager switch --flake .#cytopia

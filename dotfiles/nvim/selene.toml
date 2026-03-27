@@ -1,0 +1,5 @@
+[rules]
+mixed_table = "allow"
+
+[diagnostics]
+globals = [ "vim" ]
