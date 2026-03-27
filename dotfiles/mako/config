@@ -1,47 +1,35 @@
-# Behaviour
-sort=-time
-
-# Timeout
-default-timeout=5000
-ignore-timeout=1
-
-# Appearance
-font=monospace 14
+# This section acts as your [urgency_normal] from Dunst
+font=Monospace 10
 text-alignment=left
-text-color=#FFFFFFFF
-background-color=#2e3440
-layer=overlay
+width=400
+height=150
 
-# Dimensions
-width=300
-height=110
+anchor=top-right
+margin=10,20
+padding=20
+border-size=1
 
-# Border
-border-size=2
-border-color=#88c0d0
-border-radius=15
-
-# Icons
+max-icon-size=32
 icons=1
-#max-icon-size=64
-#icon-path=/run/current-system/sw/share/icons/
-#icon-path=/run/current-system/sw/share/icons/hicolor:/run/current-system/sw/share/icons/Adwaita
+icon-path=/home/cytopia/.nix-profile/share/icons/breeze-dark/:/home/cytopia/.nix-profile/share/icons/default/:/home/cytopia/.nix-profile/share/icons/hicolor/
+
+# Enable Pango markup
+markup=1
+format=<b>%s</b>\n%b
 
 
+# --- Global / Urgency Normal ---
+background-color=#24273a
+text-color=#cad3f5
+border-color=#8aadf4
+progress-color=source #363a4f
+default-timeout=10000
 
-icon-path=/home/cytopia/.nix-profile/share/icons/Arc/:/home/cytopia/.nix-profile/share/icons/Moka/:/home/cytopia/.nix-profile/share/icons/Numix/:/home/cytopia/.nix-profile/share/icons/Numix-Cursor/:/home/cytopia/.nix-profile/share/icons/Numix-Cursor-Light/:/home/cytopia/.nix-profile/share/icons/Numix-Light/:/home/cytopia/.nix-profile/share/icons/Papirus/:/home/cytopia/.nix-profile/share/icons/Papirus-Dark/:/home/cytopia/.nix-profile/share/icons/Papirus-Light/:/home/cytopia/.nix-profile/share/icons/breeze/:/home/cytopia/.nix-profile/share/icons/gnome/:/home/cytopia/.nix-profile/share/icons/hicolor/:/home/cytopia/.nix-profile/share/icons/Adwaita/:/home/cytopia/.nix-profile/share/icons/HighContrast
-
-
-[urgency=low]
-border-color=#cccccc
-
-[urgency=normal]
-border-color=#d08770
-
+# --- Urgency High (Dunst Critical) ---
 [urgency=high]
-border-color=#bf616a
+border-color=#f5a97f
 default-timeout=0
 
-[category=mpd]
-default-timeout=2000
-group-by=category
+# --- Urgency Low ---
+[urgency=low]
+default-timeout=10000
