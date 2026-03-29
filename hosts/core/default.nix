@@ -42,6 +42,11 @@
   ];
 
   ###
+  ### Kernel
+  ###
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+
+  ###
   ### Booting (ensure aesni_intel and crypd kernel mods are loaded)
   ###
 
@@ -184,9 +189,9 @@
 
   mySystem.programs.chromium = {
     enable = true;
-    scalingFactor = appScaleFactor;
+    scalingFactor = 1.0; #appScaleFactor;
     gpuEngine = {
-      displayServer = "xwayland";
+      displayServer = "wayland";
       engine = "vulkan";
     };
     engineOptimizations = {
@@ -204,9 +209,9 @@
   };
   mySystem.programs.google-chrome = {
     enable = true;
-    scalingFactor = appScaleFactor;
+    scalingFactor = 1.0; #appScaleFactor;
     gpuEngine = {
-      displayServer = "xwayland";
+      displayServer = "wayland";
       engine = "vulkan";
     };
     engineOptimizations = {
