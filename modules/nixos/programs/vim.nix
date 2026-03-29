@@ -43,7 +43,7 @@ in
             " Turn on syntax highlighting by default
             syntax on
 
-            " Statusbar Colors (preserved from your original setup)
+            " Statusbar Colors
             hi User1 guifg=#ffdad8  guibg=#880c0e           ctermfg=15 ctermbg=52
             hi User2 guifg=#000000  guibg=#F4905C           ctermfg=16 ctermbg=166
             hi User3 guifg=#292b00  guibg=#f4f597           ctermfg=16 ctermbg=192
@@ -58,6 +58,14 @@ in
             set ruler                       " Show line and column number
             set laststatus=2                " Always show status line
             set cmdheight=1
+
+            if &diff
+                colorscheme desert  " Replace with your preferred diff theme
+            endif
+            augroup DiffColors
+                autocmd!
+                autocmd VimEnter * if &diff | colorscheme desert | endif
+            augroup END
 
             " Helper function
             function! HighlightSearch()

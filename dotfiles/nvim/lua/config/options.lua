@@ -13,3 +13,6 @@ vim.opt.scrolloff = 10
 
 -- Disable auto formatting
 vim.g.autoformat = false
+
+-- Disable Spell check
+-- vim.opt.spell = false

@@ -1,9 +1,15 @@
-{ config, pkgs, pkgs-unstable, hostname, username, ... }:
-
+{
+  config,
+  pkgs,
+  pkgs-unstable,
+  hostname,
+  username,
+  appScaleFactor,
+  ...
+}:
 
 {
-  imports =
-  [
+  imports = [
     # NixOS hardware config: sudo nixos-generate-config
     ./hardware-configuration.nix
     ./disko-config.nix
@@ -32,6 +38,7 @@
     ../../modules/nixos/programs/podman.nix
     ../../modules/nixos/programs/vim.nix
     ../../modules/nixos/programs/chromium.nix
+    ../../modules/nixos/programs/google-chrome.nix
   ];
 
   ###
@@ -54,7 +61,6 @@
   # Better SSD lifespan with encryption (comes with a security risk)
   boot.initrd.luks.devices."crypted".allowDiscards = true;
 
-
   ###
   ### My Modules: Hardware
   ###
@@ -70,7 +76,6 @@
     enableGUI = true;
   };
 
-
   ###
   ### My Modules: System
   ###
@@ -84,7 +89,7 @@
     timeZone = "Europe/Berlin";
     defaultLocale = "en_US.UTF-8";
     extraConfig = {
-      LC_MEASUREMENT = "de_DE.UTF-8";  # Metric System
+      LC_MEASUREMENT = "de_DE.UTF-8"; # Metric System
     };
   };
   mySystem.system.fonts = {
@@ -96,8 +101,8 @@
     uid = 1000;
     homeMode = "0700";
     extraGroups = [
-      "wheel"           # Sudo privileges
-      "networkmanager"  # WiFi/Network control
+      "wheel" # Sudo privileges
+      "networkmanager" # WiFi/Network control
       #"podman"          # For podman if enabling docker socket (security issue)
     ];
   };
@@ -130,7 +135,6 @@
     defaultSession = "sway";
   };
 
-
   ###
   ### My Modules: Desktop
   ###
@@ -140,14 +144,14 @@
     enableXwayland = true;
     # You can append more packages here if needed
     extraPackages = with pkgs; [
-      swaylock-effects  # Screen locker (Base PAM service in wayland.nix)
-      swayidle          # Idle management daemon
+      swaylock-effects # Screen locker (Base PAM service in wayland.nix)
+      swayidle # Idle management daemon
       sway-audio-idle-inhibit # Prevent sleep whenever audio is played
-      fuzzel            # App launcher/Menu
-      foot              # Fast, Wayland-native terminal
-      mako              # Lightweight notification daemon
-      libnotify         # Provides 'notify-send'
-      glib              # Provides 'gsettings'
+      fuzzel # App launcher/Menu
+      foot # Fast, Wayland-native terminal
+      mako # Lightweight notification daemon
+      libnotify # Provides 'notify-send'
+      glib # Provides 'gsettings'
 
       waybar
       pkgs-unstable.ironbar
@@ -170,7 +174,6 @@
     ];
   };
 
-
   ###
   ### My Modules: Programs
   ###
@@ -178,8 +181,47 @@
   mySystem.programs.obs.enable = true;
   mySystem.programs.podman.enable = true;
   mySystem.programs.vim.enable = true;
-  mySystem.programs.chromium.enable = true;
 
+  mySystem.programs.chromium = {
+    enable = true;
+    scalingFactor = appScaleFactor;
+    gpuEngine = {
+      displayServer = "xwayland";
+      engine = "vulkan";
+    };
+    engineOptimizations = {
+      enableGpuRasterization = true;
+      enableMemoryManagement = true;
+      enableIgnoreGpuBlocklist = true;
+      enableSafetyOverrides = false;
+    };
+    engineFeatures = {
+      enableVideoAcceleration = true;
+      enableTreesInViz = true;
+      enableWebNn = true;
+      enableSkiaGraphite = false;
+    };
+  };
+  mySystem.programs.google-chrome = {
+    enable = true;
+    scalingFactor = appScaleFactor;
+    gpuEngine = {
+      displayServer = "xwayland";
+      engine = "vulkan";
+    };
+    engineOptimizations = {
+      enableGpuRasterization = true;
+      enableMemoryManagement = true;
+      enableIgnoreGpuBlocklist = true;
+      enableSafetyOverrides = false;
+    };
+    engineFeatures = {
+      enableVideoAcceleration = true;
+      enableTreesInViz = true;
+      enableWebNn = true;
+      enableSkiaGraphite = false;
+    };
+  };
 
   # Adds standard Linux paths
   # e.g. /lib64 and others
@@ -189,7 +231,6 @@
   # TODO: Move this somewhere else
   programs.awsvpnclient.enable = true;
 
-
   # Enable the OpenSSH daemon.
   services.openssh = {
     enable = true;
@@ -198,7 +239,6 @@
       AllowUsers = [ "cytopia" ];
     };
   };
-
 
   ###
   ### Standard System packages
@@ -223,7 +263,6 @@
     git
     tmux
     gnumake
-    #fastfetch
 
     # *.deb compatibility
     steam-run
@@ -232,4 +271,3 @@
   # Keep
   system.stateVersion = "25.11";
 }
-

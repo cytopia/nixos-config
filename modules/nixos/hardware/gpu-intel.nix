@@ -77,6 +77,8 @@ in
       "i915.force_probe=!${cfg.deviceId}" # Tell i915 to NOT bind
       "xe.force_probe=${cfg.deviceId}"    # Tell xe to bind
     ] else [
+      # "GuC" (Graphics MicroController) and "HuC" (Header Unpack Control) firmware
+      # for video acceleration on Gen12+ (Tiger Lake).
       "i915.enable_guc=3"  # Enable GuC/HuC for offloading
       "i915.enable_fbc=1"  # frame buffer compression
     ];

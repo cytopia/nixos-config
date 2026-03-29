@@ -4,6 +4,8 @@ text-alignment=left
 width=400
 height=150
 
+layer=overlay
+
 anchor=top-right
 margin=10,20
 padding=20
