@@ -6,7 +6,7 @@
 }:
 
 let
-  cfg = config.mySystem.programs.chromium;
+  cfg = config.mySystem.programs.google-chrome;
 
   # Import the hardware flag library
   chromeHwLib = import ../lib/chromium-flags-gpu.nix;
@@ -65,8 +65,8 @@ in
   ###
   ### 1. OPTIONS
   ###
-  options.mySystem.programs.chromium = {
-    enable = lib.mkEnableOption "Chromium with advanced Hardware Acceleration";
+  options.mySystem.programs.google-chrome = {
+    enable = lib.mkEnableOption "Google Chrome with advanced Hardware Acceleration";
 
     scalingFactor = lib.mkOption {
       type = lib.types.float;
@@ -159,20 +159,20 @@ in
   config = lib.mkIf cfg.enable {
 
     # --- Chrome Enterprise Policies
-    environment.etc."chromium/policies/managed/policies.json".text = builtins.toJSON (
+    environment.etc."opt/chrome/policies/managed/policies.json".text = builtins.toJSON (
       activePolicies
       // {
         "RestoreOnStartup" = 1;
         "DefaultBrowserSettingEnabled" = false;
       }
     );
-    environment.etc."chromium/policies/managed/search.json".text = builtins.toJSON ({
+    environment.etc."opt/chrome/policies/managed/search.json".text = builtins.toJSON ({
       "DefaultSearchProviderEnabled" = true;
       "DefaultSearchProviderSearchURL" = "https://duckduckgo.com/?q={searchTerms}";
       "DefaultSearchProviderSuggestURL" = "https://duckduckgo.com/ac/?q={searchTerms}&type=list";
       "SearchSuggestEnabled" = false;
     });
-    environment.etc."chromium/policies/managed/extensions.json".text = builtins.toJSON ({
+    environment.etc."opt/chrome/policies/managed/extensions.json".text = builtins.toJSON ({
       "ExtensionSettings" = {
         # Vimium
         "dbepggeogbaibhgnhhndojpepiihcmeb" = {
@@ -186,9 +186,15 @@ in
           "update_url" = "https://clients2.google.com/service/update2/crx";
           "toolbar_pin" = "force_pinned";
         };
+        # AWS Extend Roles
+        "jpmkfafbacpgapdghgdpembnojdlgkdl" = {
+          "installation_mode" = "force_installed";
+          "update_url" = "https://clients2.google.com/service/update2/crx";
+          "toolbar_pin" = "force_pinned";
+        };
       };
     });
-    environment.etc."chromium/initial_preferences".text = builtins.toJSON firstRunDefaults;
+    environment.etc."opt/chrome/initial_preferences".text = builtins.toJSON firstRunDefaults;
 
     # --- Overwrite Chrome with startup flags
     nixpkgs.overlays = [
@@ -241,7 +247,7 @@ in
         in
         {
           # Rewrite the google-chrome package system-wide
-          chromium = prev.chromium.override {
+          google-chrome = prev.google-chrome.override {
             commandLineArgs = finalCommandLineArgs;
           };
         }
@@ -250,7 +256,7 @@ in
 
     # --- Install the globally overridden package
     environment.systemPackages = [
-      pkgs.chromium
+      pkgs.google-chrome
     ];
   };
 }

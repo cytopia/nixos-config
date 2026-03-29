@@ -45,9 +45,9 @@
 
     # Every machine is defined here with its architecture and user.
     myHosts = {
-      host = { system = "x86_64-linux"; user = "cytopia"; };
-      core = { system = "x86_64-linux"; user = "cytopia"; };
-      shell = { system = "x86_64-linux"; user = "cytopia"; };
+      host = { system = "x86_64-linux"; user = "cytopia"; appScaleFactor = 1.0; };
+      core = { system = "x86_64-linux"; user = "cytopia"; appScaleFactor = 1.3; };
+      shell = { system = "x86_64-linux"; user = "cytopia"; appScaleFactor = 1.0;  };
       # Example of scaling: satellite = { system = "aarch64-linux"; user = "alice"; };
     };
 
@@ -69,6 +69,7 @@
         specialArgs = {
           inherit inputs stateVersion hostname;
           username = hostConfig.user;
+          appScaleFactor = hostConfig.appScaleFactor;
 
           # Safely instantiate unstable packages for THIS specific architecture
           pkgs-unstable = import nixpkgs-unstable {

@@ -10,7 +10,7 @@ seat seat0 xcursor_theme Adwaita 24
 ##########################################################################################
 
 # swaymsg -t get_outputs
-#output eDP-1 scale 1.0
+output eDP-1 scale 1.0
 output * bg /home/cytopia/Pictures/wallpapers/current fill
 
 # swaymsg -t get_inputs
@@ -539,6 +539,10 @@ exec swayidle -w \
 #  timeout 600 'systemctl suspend-then-hibernate' \
 #  before-sleep '$mute; $lock;' \
 #  lock '$mute; $lock;'
+
+# Prevent IDLE if sound is playing
+exec sway-audio-idle-inhibit
+
 
 # Redshift
 exec wlsunset -l 52.5 -L 13.3
