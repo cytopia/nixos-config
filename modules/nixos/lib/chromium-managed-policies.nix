@@ -89,6 +89,8 @@ let
     "GoogleSearchSidePanelEnabled" = false;
     # false (Disable) disables promotional UI elements in Chrome.
     "PromotionsEnabled" = false;
+    # str (Enforce) always show about:blank upon opening a new Tab to not reveal recently visited pages
+    "NewTabPageLocation" = "about:blank";
   };
 
   # ==========================================

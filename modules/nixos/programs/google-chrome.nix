@@ -192,6 +192,12 @@ in
           "update_url" = "https://clients2.google.com/service/update2/crx";
           "toolbar_pin" = "force_pinned";
         };
+        # KeePassXC
+        "oboonakemofpalcgghocfoadofidjkkk" = {
+          "installation_mode" = "force_installed";
+          "update_url" = "https://clients2.google.com/service/update2/crx";
+          "toolbar_pin" = "default_unpinned";
+        };
       };
     });
     environment.etc."opt/chrome/initial_preferences".text = builtins.toJSON firstRunDefaults;
