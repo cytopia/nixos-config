@@ -223,6 +223,11 @@ in
           combined = lib.zipAttrsWith (name: values: lib.concatLists values) [
             hwConfig
             privacyConfig
+            {
+              enableFeatures = [
+                "WaylandFractionalScaleV1"
+              ];
+            }
           ];
 
           # 4. Generate final strings from the combined set

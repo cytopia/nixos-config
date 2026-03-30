@@ -2,6 +2,10 @@
 -- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
 -- Add any additional keymaps here
 
+-- --------------------------------------------------------------------------------
+-- Custom keymaps
+-- --------------------------------------------------------------------------------
+
 -- Select all
 vim.keymap.set("n", "<C-a>", "ggVG", { noremap = true })
 
@@ -11,25 +15,6 @@ vim.keymap.set("i", "jj", "<Esc>", { noremap = false })
 -- Keep search always centered
 vim.keymap.set("n", "n", "nzz", { noremap = true })
 vim.keymap.set("n", "N", "Nzz", { noremap = true })
-
--- Open Explorer (<leader>e)
--- This also requires an overwrite in ../plugins/snacks.lua
-vim.keymap.set("n", "<C-n>", function() Snacks.explorer() end, { desc = "Toggle Explorer" })
-
--- List open buffers (<leader>,)
--- im.keymap.set("n", "<C-o>", function() Snacks.picker.buffers({current = false}) end, { desc = "Show buffers without current"})
-vim.keymap.set("n", "<C-o>", function() Snacks.picker.buffers({
-  current = true,
-  sort_lastused = true;
-  on_show = function(picker)
-    picker:action("list_down")
-  end,
-}) end, { desc = "Show buffers and preselect previous" })
-
--- List all files (<leader><space>)
-vim.keymap.set("n", "<C-p>", function() Snacks.picker.smart() end, { desc = "Smart Find Files" })
--- Search in all files (<leader>sg)
-vim.keymap.set("n", " C-g>", function() Snacks.picker.grep() end, { desc = "Grep" })
 
 -- Relad configration
 vim.keymap.set("n", "<leader>r", function()
@@ -41,7 +26,6 @@ vim.keymap.set("n", "<leader>r", function()
   require("config.autocmds")
   require("config.keymaps")
   require("config.options")
-
   -- 4. Re-load everything in the plugins directory
   -- This updates the "specs" that lazy.nvim knows about
   local plugin_files = vim.api.nvim_get_runtime_file("lua/plugins/*.lua", true)
@@ -56,3 +40,28 @@ vim.keymap.set("n", "<leader>r", function()
   end
   Snacks.notify.info("Config and Plugins reloaded!", { title = "Config" })
 end, { desc = "Reload Full Neovim Config" })
+
+
+-- --------------------------------------------------------------------------------
+-- Custom Ctrl Maps
+-- --------------------------------------------------------------------------------
+
+-- Open Explorer (<leader>e)
+-- This also requires an overwrite in ../plugins/snacks.lua
+vim.keymap.set("n", "<C-n>", function() Snacks.explorer() end, { desc = "Toggle Explorer" })
+
+-- List all files (<leader><space>)
+vim.keymap.set("n", "<C-p>", function() Snacks.picker.files() end, { desc = "Find Files" })
+
+-- Search in all files (<leader>sg)
+vim.keymap.set("n", "<C-g>", function() Snacks.picker.grep() end, { desc = "Grep" })
+
+-- List open buffers (<leader>,)
+-- im.keymap.set("n", "<C-o>", function() Snacks.picker.buffers({current = false}) end, { desc = "Show buffers without current"})
+vim.keymap.set("n", "<C-o>", function() Snacks.picker.buffers({
+  current = true,
+  sort_lastused = true;
+  on_show = function(picker)
+    picker:action("list_down")
+  end,
+}) end, { desc = "Show buffers and preselect previous" })
