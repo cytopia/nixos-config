@@ -94,7 +94,6 @@
   ### Additional packages
   ###
   home.packages = with pkgs; [
-    pkgs-unstable.devbox
     wlsunset # redshift
     custom.colorpicker
     burpsuite
@@ -105,6 +104,8 @@
     shotcut
 
     # Work
+    pkgs-unstable.devbox
+    gum
     saml2aws
     awscli2
     jq
