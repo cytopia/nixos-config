@@ -81,6 +81,7 @@
         ign = "ls-files -o -i --exclude-standard";
         tree = "log --graph --decorate --oneline --all";
         tags = "tag --list --sort=-creatordate --format='%(color:yellow)%(refname:short)%(color:reset) \t%(creatordate:short) \t%(contents:subject)'";
+        sig = "log --show-signature";
       };
 
       delta = {
