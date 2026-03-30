@@ -2,19 +2,6 @@ return {
   "folke/snacks.nvim",
   opts = {
     picker = {
-
-      -- This applies to ALL pickers (Buffers, Files, Grep, etc.)
-      -- win = {
-      --   input = {
-      --     keys = {
-      --       -- Navigate down the list
-      --       ["<C-j>"] = { "list_down", mode = { "i", "n" } },
-      --       -- Navigate up the list
-      --       ["<C-k>"] = { "list_up", mode = { "i", "n" } },
-      --     },
-      --   },
-      -- },
-
       sources = {
         explorer = {
           win = {
