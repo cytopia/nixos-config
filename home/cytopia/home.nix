@@ -99,6 +99,11 @@
     custom.colorpicker
     burpsuite
 
+    # media
+    vlc
+    mpv
+    shotcut
+
     # Work
     saml2aws
     awscli2
