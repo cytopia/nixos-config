@@ -10,7 +10,10 @@
     enableZshIntegration = true;
     enableBashIntegration = true;
     enableFishIntegration = true;
-    defaultMaximumIdentityLifetime = 3600; # in seconds
+    # We let KeePassXC handle the ssh keys.
+    # Lifetime should be null so that ssh keys are available
+    # as long as the database is unlocked.
+    defaultMaximumIdentityLifetime = null;
   };
 
   ###
