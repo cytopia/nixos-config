@@ -16,19 +16,38 @@ home-manager switch --flake .#cytopia
 sudo systemctl restart nix-daemon
 ```
 
+## Housekeeping
+
+### System
+```
+# List generations
+sudo nixos-rebuild list-generations
+
+# Delete all generations older than 14 days
+sudo nix-env --profile /nix/var/nix/profiles/system --delete-generations 14d
+
+# Delete ALL generations except the current one
+sudo nix-env --profile /nix/var/nix/profiles/system --delete-generations old
+
+sudo nix-collect-garbage -d
+```
+
+### Home-Manager
+```
+# List generations
+home-manager generations
+
+# Delete generations older than 14 days
+home-manager expire-generations "-14 days"
+
+nix-collect-garbage -d
+```
+
 ## Logs
 ```
 # Session
 journalctl -u greetd
 ```
-
-## Devbos
-```
-devbox init
-devbox add terraform@1.8.5 terragrunt@0.98.0 sops
-devbox generate direnv
-```
-
 
 ## Credits
 
