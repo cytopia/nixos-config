@@ -10,7 +10,9 @@ return {
         basedpyright = {},
         bashls = {},
         terraformls = {},
-        biome = {},
+        biome = {
+          cmd = { "biome", "lsp-proxy" },
+        },
         docker_language_server = {
           init_options = {
             telemetry = "off", -- "all" | "error" | "off"
@@ -24,8 +26,14 @@ return {
             yaml = {
               schemaStore = { enable = true },
               kubernetesCRDStore = { enable = true },
-              format = { enable = false }, -- Let yamlfmt do that.
               validate = true,
+              completion = true,
+              format = { enable = false }, -- Let yamlfmt do that.
+            },
+            redhat = {
+              telemetry = {
+                enabled = false,
+              },
             },
           },
         },
@@ -48,6 +56,7 @@ return {
         zsh = { "shellcheck" },
         terraform = { "tflint" },
         dockerfile = { "hadolint" },
+        make = { "checkmake", "mbake" },
         ["yaml.docker-compose"] = { "yamllint" },
         json = { "biomejs" },
         yaml = { "yamllint", "actionlint" },
@@ -70,9 +79,16 @@ return {
         terraform = { "terraform_fmt" },
         terragrunt = { "terragrunt_hclfmt" },
         dockerfile = { "dockerfmt" },
+        make = { "mbake" },
         ["yaml.docker-compose"] = { "yamlfmt" },
         json = { "biome" },
         yaml = { "yamlfmt" },
+      },
+      formatters = {
+        mbake = {
+          command = "mbake",
+          args = { "format", "--stdin" },
+        },
       },
     },
   },

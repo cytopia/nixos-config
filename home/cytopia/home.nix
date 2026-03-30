@@ -1,11 +1,18 @@
-{ config, pkgs, pkgs-unstable, inputs, username, stateVersion, ... }:
+{
+  pkgs,
+  pkgs-unstable,
+  username,
+  stateVersion,
+  ...
+}:
 
 {
   # Basic Home Manager setup
-  home.username = username;
-  home.homeDirectory = "/home/${username}";
-  home.stateVersion = stateVersion;
-
+  home = {
+    username = username;
+    homeDirectory = "/home/${username}";
+    stateVersion = stateVersion;
+  };
 
   # Let Home Manager install and manage itself
   programs.home-manager.enable = true;
@@ -83,16 +90,24 @@
   ###
   cytopia.ui.theme.enable = true;
 
-
+  ###
+  ### Additional packages
+  ###
   home.packages = with pkgs; [
     pkgs-unstable.devbox
-    wlsunset   # redshift
+    wlsunset # redshift
+    custom.colorpicker
     burpsuite
 
     # Work
     saml2aws
     awscli2
     jq
-    custom.colorpicker
+    yq
+
+    # Monitoring
+    htop
+    btop
+    nvtopPackages.intel
   ];
 }

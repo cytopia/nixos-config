@@ -23,33 +23,6 @@ let
   #   fc-match -s emoji
   fontChoices = {
 
-    # The "Silicon Valley" look: Clean, geometric, and professional.
-    inter = {
-      monospace = [
-        "Inter Mono"
-        "Symbols Nerd Font Mono"
-        "Noto Sans CJK JP"
-      ];
-      sanSerif = [
-        "Inter"
-        "Noto Sans CJK JP"
-      ];
-      serif = [
-        "Source Serif 4"
-        "Noto Serif CJK JP"
-      ];
-      emoji = [ "Noto Color Emoji" ];
-      packages = [
-        pkgs.inter
-        pkgs.inter-mono
-        pkgs.nerd-fonts.symbols-only
-        pkgs.noto-fonts-cjk-sans
-        pkgs.noto-fonts-cjk-serif
-        pkgs.source-serif
-        pkgs.noto-fonts-color-emoji
-      ];
-    };
-
     # The "Bulletproof" look: Maximum character coverage for global compatibility.
     noto = {
       monospace = [
@@ -214,11 +187,14 @@ in
       # users of such displays may want to disable this option.
       antialias = true;
 
-      # Optimized for Laptop LCDs
-      subpixel.rgba = "rgb";
-      # FreeType LCD filter. At high resolution (> 200 DPI), LCD filtering has
-      # no visible effect; users of such displays may want to select none.
-      subpixel.lcdfilter = "default";
+      subpixel = {
+        # Optimized for Laptop LCDs
+        # "rgb", "bgr", "vrgb", "vbgr", "none"
+        rgba = "rgb";
+        # FreeType LCD filter. At high resolution (> 200 DPI), LCD filtering has
+        # no visible effect; users of such displays may want to select none.
+        lcdfilter = "default";
+      };
 
       hinting = {
         # Hinting aligns glyphs to pixel boundaries to improve rendering sharpness
@@ -228,6 +204,7 @@ in
         # slight will make the font more fuzzy to line up to the grid but will be
         # better in retaining font shape, while full will be a crisp font that
         # aligns well to the pixel grid but will lose a greater amount of font shape.
+        # "none", "slight", "medium", "full"
         style = "slight";
       };
 

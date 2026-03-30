@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, ... }:
 
 {
   xdg.userDirs = {
@@ -68,5 +68,3 @@
   #  };
   #};
 }
-
-

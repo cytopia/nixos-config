@@ -10,9 +10,17 @@ vim.opt.colorcolumn = "100"
 
 -- always keep 8 lines above/below the cursor visible when scrolling
 vim.opt.scrolloff = 10
+vim.opt.sidescrolloff = 0
 
 -- Disable auto formatting
 vim.g.autoformat = false
 
+-- Disable animations
+vim.g.snacks_animate = false
+
 -- Disable Spell check
 -- vim.opt.spell = false
+--
+--vim.opt.ruler = true
+--
+--ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss

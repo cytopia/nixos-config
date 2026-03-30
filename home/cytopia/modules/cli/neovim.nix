@@ -52,6 +52,11 @@ let
       linter = [ pkgs.yamllint ];
       formatter = [ pkgs.yamlfmt ];
     };
+    make = {
+      lsp = [ ];
+      linter = [ pkgs.checkmake pkgs.mbake ];
+      formatter = [ pkgs.mbake ];
+    };
     json = {
       lsp = [ pkgs.biome ];
       linter = [ pkgs.biome ];
@@ -93,6 +98,9 @@ let
     ++ languageSupport.dockerCompose.lsp
     ++ languageSupport.dockerCompose.linter
     ++ languageSupport.dockerCompose.formatter
+    ++ languageSupport.make.lsp
+    ++ languageSupport.make.linter
+    ++ languageSupport.make.formatter
     ++ languageSupport.json.lsp
     ++ languageSupport.json.linter
     ++ languageSupport.json.formatter

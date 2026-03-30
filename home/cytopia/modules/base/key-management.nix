@@ -9,24 +9,9 @@
     enable = true;
     enableZshIntegration = true;
     enableBashIntegration = true;
+    enableFishIntegration = true;
     defaultMaximumIdentityLifetime = 3600; # in seconds
   };
-
-
-  # Not needed, we use KeePass to hand it over to SSH-Agent
-  ## Tell OpenSSH how to prompt you for passwords in Wayland
-  #home.sessionVariables = {
-  #  # Point SSH to wayprompt's dedicated askpass binary
-  #  SSH_ASKPASS = "${pkgs.wayprompt}/bin/wayprompt-ssh-askpass";
-
-  #  # IMPORTANT BEHAVIOR NOTE:
-  #  # By default, OpenSSH only uses the GUI askpass if you run SSH via a
-  #  # background program (like git in VSCode). If you run `ssh` in a terminal,
-  #  # it will prompt you in the terminal.
-  #  # Uncomment the line below if you want to FORCE the Wayprompt GUI
-  #  # to appear even when you are typing `ssh` directly in your terminal:
-  #  # SSH_ASKPASS_REQUIRE = "prefer";
-  #};
 
   ###
   ### Manage GPG keys exclusively
@@ -40,43 +25,6 @@
     enableZshIntegration = true;
     enableBashIntegration = true;
   };
-
-# https://github.com/cruegge/pam-gnupg
-
-  # This is now done on system-level
-  ###
-  ### Only manage secrets
-  ###
-  #services.gnome-keyring = {
-  #  enable = true;
-  #  # CRITICAL: We only enable "secrets" (for passwords/Seahorse).
-  #  # We explicitly leave out "ssh" so it doesn't fight your real ssh-agent.
-  #  components = [ "secrets" ];
-  #};
-
-  programs.wayprompt = {
-    enable = true;
-    settings = {
-      general = {
-        font-regular = "sans:size=14";
-        pin-square-amount = 32;
-      };
-      colours = {
-        background = "ffffff00";
-      };
-    };
-  };
-
-#[general]
-#button-inner-padding = 0;
-#vertical-padding = 0;
-#horizontal-padding = 0;
-#pin-square-size =18;
-#pin-square-amount = 16;
-#border = 2;
-#pin-square-border = 1;
-#button-border = 1;
-
 
   ###
   ### Additional tools

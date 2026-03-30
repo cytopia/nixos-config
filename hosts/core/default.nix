@@ -99,6 +99,7 @@
   };
   mySystem.system.fonts = {
     enable = true;
+    fontChoice = "jetbrains";
   };
   mySystem.system.user = {
     enable = true;
