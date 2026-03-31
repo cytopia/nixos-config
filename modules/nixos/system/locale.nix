@@ -25,12 +25,14 @@ in
     # The "Clean" Overwrite Set
     extraConfig = lib.mkOption {
       type = lib.types.attrsOf lib.types.str;
-      default = {};
-      example = { LC_TIME = "de_DE.UTF-8"; LC_MONETARY = "en_GB.UTF-8"; };
+      default = { };
+      example = {
+        LC_TIME = "de_DE.UTF-8";
+        LC_MONETARY = "en_GB.UTF-8";
+      };
       description = "Specific LC_* overrides. Any key not set here defaults to defaultLocale.";
     };
   };
-
 
   ###
   ### 2. CONFIGURATION
@@ -48,16 +50,17 @@ in
       # We create a base set of all standard LC_ variables pointing to defaultLocale,
       # then merge (//) the user's extraConfig over it.
       extraLocaleSettings = {
-        LC_ADDRESS        = cfg.defaultLocale;
+        LC_ADDRESS = cfg.defaultLocale;
         LC_IDENTIFICATION = cfg.defaultLocale;
-        LC_MEASUREMENT    = cfg.defaultLocale;
-        LC_MONETARY       = cfg.defaultLocale;
-        LC_NAME           = cfg.defaultLocale;
-        LC_NUMERIC        = cfg.defaultLocale;
-        LC_PAPER          = cfg.defaultLocale;
-        LC_TELEPHONE      = cfg.defaultLocale;
-        LC_TIME           = cfg.defaultLocale;
-      } // cfg.extraConfig;
+        LC_MEASUREMENT = cfg.defaultLocale;
+        LC_MONETARY = cfg.defaultLocale;
+        LC_NAME = cfg.defaultLocale;
+        LC_NUMERIC = cfg.defaultLocale;
+        LC_PAPER = cfg.defaultLocale;
+        LC_TELEPHONE = cfg.defaultLocale;
+        LC_TIME = cfg.defaultLocale;
+      }
+      // cfg.extraConfig;
     };
   };
 }

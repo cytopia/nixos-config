@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   cfg = config.mySystem.services.login;
@@ -56,14 +61,16 @@ in
     };
   };
 
-
   ###
   ### 2. CONFIGURATION
   ###
   config = lib.mkIf cfg.enable {
 
     # Keep the TUI clean from kernel "noise" during password entering on greetd
-    boot.kernelParams = [ "quiet" "splash" ];
+    boot.kernelParams = [
+      "quiet"
+      "splash"
+    ];
 
     # If Gnome Keyring is enabled (somehwere), tell PAM to unlock the keyring automatically.
     security.pam.services.greetd.enableGnomeKeyring = config.services.gnome.gnome-keyring.enable;
