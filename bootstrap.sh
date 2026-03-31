@@ -1,5 +1,9 @@
 #!/bin/sh
 
+# currently not working
+exit 1
+
+
 # How to run this script as root:
 # nix-shell -p curl --run "curl -sSL https://raw.githubusercontent.com/cytopia/nixos-config/main/bootstrap.sh" | bash
 
