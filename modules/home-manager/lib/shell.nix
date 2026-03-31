@@ -50,7 +50,6 @@
     };
   };
 
-
   ###
   ### Script that automatically attaches to tmux
   ###
@@ -143,5 +142,5 @@
       end
     '';
   };
-  
+
 }
