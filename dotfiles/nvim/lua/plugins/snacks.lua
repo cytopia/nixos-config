@@ -1,6 +1,9 @@
 return {
   "folke/snacks.nvim",
   opts = {
+    -- This moves status column to the left of line numbers
+    -- Also check ../config/options.lua
+    statuscolumn = { enabled = false },
     picker = {
       sources = {
         explorer = {
