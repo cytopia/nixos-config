@@ -1,10 +1,14 @@
 let
 
+  ###
+  ### Display Server (Wayland vs XWayland/X11)
+  ###
   displayServerStrategy = {
     all = {
       flags = [ ];
       enableFeatures = [
         # Force Wayland native screen sharing
+        # Ensures Wayland uses the modern, efficient PipeWire backend instead of legacy X11 grabbing.
         "WebRTCPipeWireCapturer"
       ];
       disableFeatures = [ ];
@@ -15,6 +19,7 @@ let
         "--ozone-platform-hint=wayland"
       ];
       enableFeatures = [
+        # Tells Wayland (Sway) to handle the window borders cleanly.
         "WaylandWindowDecorations"
       ];
       disableFeatures = [ ];
@@ -28,6 +33,9 @@ let
     };
   };
 
+  ###
+  ### Rendering (Vulkan vs GL vs GLES)
+  ###
   renderingEngine = {
     all = { };
     vulkan = {
@@ -38,6 +46,7 @@ let
         "--vulkan-implementation=native"
       ];
       enableFeatures = [
+        # Uses the modern, low-overhead Vulkan API to draw the browser UI, reducing CPU draw calls.
         "Vulkan"
         "VulkanFromANGLE"
         "DefaultANGLEVulkan"
@@ -72,6 +81,9 @@ let
     };
   };
 
+  ###
+  ### Video Acceleration
+  ###
   videoAcceleration = {
     all = {
       flags = [ ];
@@ -124,12 +136,16 @@ let
     };
   };
 
+  ###
+  ### GPU Rasterization
+  ###
   gpuRasterization = {
     all = {
       flags = [
         "--enable-gpu-rasterization"
       ];
       enableFeatures = [
+        # Offloads 2D canvas drawing (like Google Maps) to a separate GPU process thread for better performance
         "CanvasOopRasterization"
       ];
       disableFeatures = [ ];
@@ -138,10 +154,16 @@ let
     gl = { };
     gles = { };
   };
+
+  ###
+  ### Memory Management
+  ###
   memoryManagement = {
     all = {
       flags = [
+        # Allows the GPU to read pixel data directly from memory without the CPU copying it first.
         "--enable-zero-copy"
+        # Pairs with zero-copy to allow the Wayland compositor and the browser to share DMA-BUFs directly.
         "--enable-native-gpu-memory-buffers"
       ];
       enableFeatures = [ ];
@@ -152,6 +174,9 @@ let
     gles = { };
   };
 
+  ###
+  ### Driver ignores
+  ###
   ignoreGpuBlocklist = {
     all = {
       flags = [
