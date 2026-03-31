@@ -59,6 +59,19 @@ let
       "import_bookmarks" = false;
       "import_history" = false;
     };
+    # chrome://settings/content/federatedIdentityApi
+    # Setting: Block sign-in prompts from identity services
+    "profile" = {
+      "content_settings" = {
+        "exceptions" = {
+          "federated-identity-api" = {
+            "*,*" = {
+              "setting" = 2;
+            };
+          };
+        };
+      };
+    };
   };
 in
 {
