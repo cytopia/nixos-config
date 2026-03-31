@@ -13,6 +13,35 @@ format = " $icon $frequency ($utilization) "
 block = "temperature"
 format = " $icon $max "
 
+# GPU
+[[block]]
+block = "custom"
+interval = 1
+json = true
+command = '''
+# Get current frequency and convert to MHz (it's stored in MHz already in Xe)
+cur=$(cat /sys/class/drm/card0/device/tile0/gt0/freq0/cur_freq)
+max=$(cat /sys/class/drm/card0/device/tile0/gt0/freq0/max_freq)
+
+# Colors from your palette
+NORMAL="#80b3ff" # Your blue
+BOOST="#EBCB8B"  # Your performance yellow
+
+# If GPU is boosting above 1000MHz, use the Yellow color
+if [ "$cur" -gt 1000 ]; then
+    COLOR=$BOOST
+    COLOR=$BOOST
+else
+    COLOR=$NORMAL
+fi
+
+#echo "{\"text\": \"<span color='$COLOR'>󰢮 ${cur}MHz</span>\"}"
+echo "{\"text\": \"<span>󰢮 ${cur}MHz</span>\"}"
+'''
+
+
+
+
 [[block]]
 block = "memory"
 format = " $icon $mem_used.eng(w:3, p:G) ($mem_used_percents) "
@@ -84,6 +113,50 @@ missing_format = " "
 warning_fg = "#A86F6F"
 critical_bg = "#A86F6F"
 critical_fg = "#FFFFFF"
+
+
+[[block]]
+block = "custom"
+interval = 2
+json = true
+# 1. The Display Logic (checks profile and outputs Icon + Text + Theme Color)
+command = '''
+profile=$(powerprofilesctl get)
+case "$profile" in
+  "performance")
+    echo '{"text": "  Performance", "state": "Warning"}' # Yellow
+    ;;
+  "balanced")
+    echo '{"text": "  Balanced"}'                         # Normal (No state)
+    ;;
+  "power-saver")
+    echo '{"text": "  Power Saver", "state": "Good"}'    # Green
+    ;;
+  *)
+    echo '{"text": " ❓ Unknown", "state": "Idle"}'
+    ;;
+esac
+'''
+[block.theme_overrides]
+warning_fg = "#EBCB8B" # Force pure Yellow
+good_fg = "#50fa7b"    # Force pure Green
+# 2. The Click Action (Left-click to cycle profiles instantly)
+[[block.click]]
+button = "left"
+update = true
+cmd = '''
+profile=$(powerprofilesctl get)
+if [ "$profile" = "performance" ]; then
+    powerprofilesctl set balanced
+elif [ "$profile" = "balanced" ]; then
+    powerprofilesctl set power-saver
+elif [ "$profile" = "power-saver" ]; then
+    powerprofilesctl set performance
+fi
+'''
+
+
+
 
 [[block]]
 block = "time"
