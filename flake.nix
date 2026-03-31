@@ -132,6 +132,7 @@
           extraSpecialArgs = {
             inherit inputs stateVersion hostname;
             username = hostConfig.user;
+            appScaleFactor = hostConfig.appScaleFactor;
 
             # Safely instantiate unstable packages for THIS specific architecture
             pkgs-unstable = import nixpkgs-unstable {

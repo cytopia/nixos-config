@@ -2,6 +2,7 @@
   pkgs,
   pkgs-unstable,
   username,
+  appScaleFactor,
   stateVersion,
   ...
 }:
@@ -88,7 +89,10 @@
   ###
   ### My Modules: ui
   ###
-  cytopia.ui.theme.enable = true;
+  cytopia.ui.theme = {
+    enable = true;
+    scalingFactor = appScaleFactor;
+  };
 
   ###
   ### Additional packages

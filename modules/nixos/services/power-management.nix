@@ -8,7 +8,7 @@ in
   ### 1. OPTIONS
   ###
   options.mySystem.services.power-management = {
-    enable = lib.mkEnableOption "Advanced Power Management (logind & upower)";
+    enable = lib.mkEnableOption "Advanced Power Management (logind & upower and ppd & thermald)";
 
     sleepAction = lib.mkOption {
       type = lib.types.enum [ "suspend" "suspend-then-hibernate" "hibernate" "ignore" ];
@@ -89,5 +89,32 @@ in
       # you must set this to true. For Hibernate, it's not needed.
       allowRiskyCriticalPowerAction = false;
     };
+
+
+    ###
+    ### toggles
+    ###
+    ### powerprofilesctl get
+    ### powerprofilesctl set performance
+    ### powerprofilesctl set balanced
+    ### powerprofilesctl set power-saver
+    ###
+
+    # --- 4. HARDWARE POWER PROFILES (Active Power Management) ---
+    # Manages CPU/GPU frequencies and thermals while the system is awake.
+    
+    # Thermald: Prevents the Intel Tiger Lake CPU from prematurely throttling.
+    # Interfaces directly with Intel's Dynamic Platform and Thermal Framework.
+    services.thermald.enable = true;
+
+    # Power-Profiles-Daemon: The modern standard for ACPI power management.
+    # Native Wayland/Desktop integration. Relies on upower (configured above) 
+    # to automatically shift the Intel P-State and GPU power budgets when unplugged.
+    services.power-profiles-daemon.enable = true;
+
+    # Explicitly disable legacy and conflicting tools to ensure PPD and 
+    # the Linux kernel have exclusive control over the hardware states.
+    services.tlp.enable = false;
+    services.auto-cpufreq.enable = false;
   };
 }

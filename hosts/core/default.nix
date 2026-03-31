@@ -190,7 +190,7 @@
 
   mySystem.programs.chromium = {
     enable = true;
-    scalingFactor = 1.0; #appScaleFactor;
+    scalingFactor = appScaleFactor;
     gpuEngine = {
       displayServer = "wayland";
       engine = "vulkan";
@@ -210,7 +210,7 @@
   };
   mySystem.programs.google-chrome = {
     enable = true;
-    scalingFactor = 1.0; #appScaleFactor;
+    scalingFactor = appScaleFactor;
     gpuEngine = {
       displayServer = "wayland";
       engine = "vulkan";
@@ -245,17 +245,6 @@
       AllowUsers = [ "cytopia" ];
     };
   };
-
-  programs._1password.enable = true;
-  programs._1password-gui = {
-    enable = true;
-    # Certain features, including CLI integration and system authentication support,
-    # require enabling PolKit integration on some desktop environments (e.g. Plasma).
-    polkitPolicyOwners = [ "cytopia" ];
-    package = pkgs-unstable._1password-gui;
-  };
-
-
 
   ###
   ### Standard System packages
