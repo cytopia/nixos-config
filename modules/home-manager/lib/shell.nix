@@ -31,11 +31,13 @@
       # Default args
       grep = "grep --color=auto --binary-file=without-match";
       rgrep = "grep -r --color=auto --binary-file=without-match";
+      df = "df -h";
+      du = "du -h";
     };
     ls = {
       # Listings: ls (LC_COLLATE=C ensures that dot files/dirs come first)
-      l = "LC_COLLATE=C ls --color=always --group-directories-first --classify -l";
-      ll = "LC_COLLATE=C ls --color=always --group-directories-first --classify -al";
+      l = "LC_COLLATE=C ls --color=always --group-directories-first --classify -hl";
+      ll = "LC_COLLATE=C ls --color=always --group-directories-first --classify -hla";
       ls = "LC_COLLATE=C ls --color=always --group-directories-first --classify";
       la = "LC_COLLATE=C ls --color=always --group-directories-first --classify -a";
     };
