@@ -1,4 +1,9 @@
-{ stdenv, fetchurl, gzip, patchelf }:
+{
+  stdenv,
+  fetchurl,
+  gzip,
+  patchelf,
+}:
 
 stdenv.mkDerivation rec {
   pname = "tree-sitter";
@@ -10,7 +15,10 @@ stdenv.mkDerivation rec {
     hash = "sha256-Q2eka8iru4Mo1u++sm6GgHrwo6fkYlSKOST4conuHpw=";
   };
 
-  nativeBuildInputs = [ gzip patchelf ];
+  nativeBuildInputs = [
+    gzip
+    patchelf
+  ];
 
   unpackPhase = ''
     gunzip -c $src > tree-sitter

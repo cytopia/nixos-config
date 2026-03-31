@@ -4,7 +4,10 @@ let
   # The script itself
   myScript = pkgs.writeShellApplication {
     name = "colorpicker";
-    runtimeInputs = [ pkgs.hyprpicker pkgs.yad ];
+    runtimeInputs = [
+      pkgs.hyprpicker
+      pkgs.yad
+    ];
     text = ''
       COLOR=$(hyprpicker) && yad --color --init-color="$COLOR" --title="colorpicker"
     '';
@@ -23,8 +26,11 @@ in
 # The final bundle
 pkgs.symlinkJoin {
   name = "colorpicker";
-  paths = [ myScript myDesktopItem ];
-  
+  paths = [
+    myScript
+    myDesktopItem
+  ];
+
   meta = with lib; {
     description = "My custom script bundled with a desktop entry";
     license = licenses.mit;
