@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   cfg = config.mySystem.programs.thunar;
@@ -59,8 +64,8 @@ in
       # Tumbler is the 'engine', but it needs 'workers' to see specific files.
       # Without these, you won't get thumbnails for videos or PDFs.
       ffmpegthumbnailer # For Video thumbnails
-      poppler-utils     # For PDF thumbnails
-      libgsf            # For ODF (Office) thumbnails
+      poppler-utils # For PDF thumbnails
+      libgsf # For ODF (Office) thumbnails
 
       # Archive Integration
       # The archive-plugin is useless without a backend.

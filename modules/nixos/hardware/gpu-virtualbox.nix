@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   cfg = config.mySystem.hardware.virtualbox-gpu;
@@ -38,7 +43,6 @@ in
     };
   };
 
-
   ###
   ### 2. CONFIGURATION
   ###
@@ -53,13 +57,11 @@ in
     # By placing this after/with the x11 toggle, we ensure we use the best renderer.
     services.xserver.videoDrivers = [ "vmware" ];
 
-
     # --- GRAPHICS FRAMEWORK ---
     hardware.graphics = {
       enable = true;
       enable32Bit = cfg.enable32Bit;
     };
-
 
     # --- ENVIRONMENT SETTINGS ---
     environment.sessionVariables = {
@@ -77,13 +79,17 @@ in
       # Renderer Selection
       # We force 'gles2' instead of letting it struggle with full GL.
       # If 'forceSoftwareRenderer' is on, 'pixman' takes priority.
-      WLR_RENDERER = lib.mkIf cfg.waylandSupport (lib.mkForce (
-        if cfg.forceSoftwareRenderer then "pixman"
-        else if cfg.forceGLES2 then "gles2"
-        else "auto"
-      ));
+      WLR_RENDERER = lib.mkIf cfg.waylandSupport (
+        lib.mkForce (
+          if cfg.forceSoftwareRenderer then
+            "pixman"
+          else if cfg.forceGLES2 then
+            "gles2"
+          else
+            "auto"
+        )
+      );
     };
-
 
     # --- TOOLS & DIAGNOSTICS ---
     environment.systemPackages = with pkgs; [

@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   cfg = config.mySystem.networking.simple;
@@ -16,7 +21,6 @@ in
       description = "The hostname for this specific machine.";
     };
   };
-
 
   ###
   ### 2. CONFIGURATION

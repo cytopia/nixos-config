@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   cfg = config.mySystem.programs.podman;
@@ -33,7 +38,6 @@ in
         message = "Podman and Docker are mutually exclusive in the 'mySystem' architecture. Please disable one.";
       }
     ];
-
 
     # --- THE ENGINE ---
     virtualisation.podman = {

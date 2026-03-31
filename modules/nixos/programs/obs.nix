@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   cfg = config.mySystem.programs.obs;
@@ -39,22 +44,22 @@ in
       # https://mynixos.com/search?q=obs-studio-plugins
       plugins = with pkgs.obs-studio-plugins; [
         # --- CORE CAPTURE ---
-        wlrobs                      # Sway standard - wlroot
-        obs-pipewire-audio-capture  # essential for PipeWire/Wayland
-        obs-vkcapture               # High-perf gaming/3D capture
+        wlrobs # Sway standard - wlroot
+        obs-pipewire-audio-capture # essential for PipeWire/Wayland
+        obs-vkcapture # High-perf gaming/3D capture
 
         # --- INFRASTRUCTURE & ENCODING ---
         obs-gstreamer
-        obs-vaapi               # Dedicated HW encoding for Intel/AMD
+        obs-vaapi # Dedicated HW encoding for Intel/AMD
 
         # --- WORKFLOW & AUTOMATION ---
         advanced-scene-switcher # "Senior" automation logic
-        obs-move-transition     # Aesthetic "Smooth" scene changes
+        obs-move-transition # Aesthetic "Smooth" scene changes
 
         # --- UTILITY & SECURITY ---
-        obs-composite-blur      # Masking sensitive info/keys
-        obs-backgroundremoval   # Clean webcam look
-        obs-source-record       # Record raw footage while streaming
+        obs-composite-blur # Masking sensitive info/keys
+        obs-backgroundremoval # Clean webcam look
+        obs-source-record # Record raw footage while streaming
       ];
     };
 
