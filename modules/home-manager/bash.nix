@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   cfg = config.cytopia.cli.bash;
@@ -21,9 +26,11 @@ in
     # Aliases
     aliases = lib.mkOption {
       type = lib.types.attrsOf lib.types.str;
-      default = {};
+      default = { };
       description = "An attribute set of extra shell aliases.";
-      example = { g = "git"; };
+      example = {
+        g = "git";
+      };
     };
 
     # ~/.bashrc
@@ -46,7 +53,6 @@ in
     enableZoxide = lib.mkEnableOption "Zoxide integration";
   };
 
-
   ###
   ### 2. CONFIGURATION
   ###
@@ -59,15 +65,16 @@ in
 
       # Sane defaults for history
       historyControl = [
-        "ignoredups"   # Do not save duplicates
-        "ignorespace"  # Do not save, if prefixed by a space
+        "ignoredups" # Do not save duplicates
+        "ignorespace" # Do not save, if prefixed by a space
       ];
 
       # Aliases
-      shellAliases = shell.aliases.default
-        // (if cfg.autoAttachTmux then shell.aliases.tmux else {})
-        // (if cfg.enableEza then {} else shell.aliases.ls)
-        // (if cfg.enableBat then shell.aliases.bat else {})
+      shellAliases =
+        shell.aliases.default
+        // (if cfg.autoAttachTmux then shell.aliases.tmux else { })
+        // (if cfg.enableEza then { } else shell.aliases.ls)
+        // (if cfg.enableBat then shell.aliases.bat else { })
         // cfg.aliases;
 
       # Very top of ~/.bashrc
@@ -87,7 +94,14 @@ in
     # 3. External helper
     programs.bat = lib.mkIf cfg.enableBat {
       enable = true;
-      extraPackages = with pkgs.bat-extras; [ batdiff batman batgrep batwatch batpipe prettybat ];
+      extraPackages = with pkgs.bat-extras; [
+        batdiff
+        batman
+        batgrep
+        batwatch
+        batpipe
+        prettybat
+      ];
     };
     programs.dircolors = lib.mkIf cfg.enableDircolors {
       enable = true;
@@ -116,10 +130,12 @@ in
 
     # 3. Install required packages
     home.packages = [
-      pkgs.xdg-utils  # used for 'open' alias (xdg-open) in shell.aliases.default
+      pkgs.xdg-utils # used for 'open' alias (xdg-open) in shell.aliases.default
     ]
-    ++ lib.optionals cfg.enableCompletion [ pkgs.bash-completion pkgs.nix-bash-completions ]
+    ++ lib.optionals cfg.enableCompletion [
+      pkgs.bash-completion
+      pkgs.nix-bash-completions
+    ]
     ++ lib.optionals cfg.autoAttachTmux [ pkgs.tmux ];
   };
 }
-
