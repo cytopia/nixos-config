@@ -1,6 +1,6 @@
-{ config, pkgs, pkgs-unstable, inputs, ... }:
+{ pkgs-unstable, ... }:
 {
-  home.packages = with pkgs; [
+  home.packages =  [
     pkgs-unstable.telegram-desktop
   ];
 }

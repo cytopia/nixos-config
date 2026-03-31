@@ -1,5 +1,5 @@
 # This section acts as your [urgency_normal] from Dunst
-font=Monospace 10
+font=monospace 14
 text-alignment=left
 width=400
 height=150

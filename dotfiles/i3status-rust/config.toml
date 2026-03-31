@@ -49,7 +49,7 @@ format = " $icon $mem_used.eng(w:3, p:G) ($mem_used_percents) "
 [[block]]
 block = "disk_space"
 path = "/"
-format = " $icon $used.eng(w:2)/$available.eng(w:2) "
+format = " $icon $used.eng(w:2,hide_unit,hide_prefix)/$available.eng(w:2) "
 
 [[block]]
 block = "custom"

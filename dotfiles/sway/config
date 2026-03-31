@@ -137,7 +137,7 @@ titlebar_padding 10 0
 
 # Read `man 5 sway-bar` for more information about this section.
 bar {
-  font pango:Dejavu Sans Mono 9
+  font pango:Dejavu Sans Mono 11
   position top
 
   # tray_output none|<output>|*
