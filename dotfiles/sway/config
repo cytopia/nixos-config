@@ -596,6 +596,51 @@ for_window [window_role="task_dialog"] floating enable
 for_window [window_type="menu"] floating enable
 for_window [window_role="About"] floating enable
 
+############################################################################################
+#
+# Default Assignments
+#
+############################################################################################
+
+###
+### Workspace 1
+###
+assign [app_id="org.telegram.desktop"] workspace $WS1
+assign [class="TelegramDesktop"] workspace $WS1
+
+assign [app_id="Slack"] workspace $WS1
+assign [class="Slack"] workspace $WS1
+assign [app_id="slack"] workspace $WS1
+
+assign [app_id="org.keepassxc.KeePassXC"] workspace $WS1
+assign [class="KeePassXC"] workspace $WS1
+
+###
+### Workspace 3
+###
+assign [app_id="chromium"] workspace $WS3
+assign [app_id="chromium-browser"] workspace $WS3
+assign [class="Chromium"] workspace $WS3
+
+###
+### Workspace 5
+###
+assign [app_id="thunderbird"] workspace $WS5
+assign [class="Thunderbird"] workspace $WS5
+assign [app_id="mail"] workspace $WS5 # Occasionally used by some TB builds
+
+###
+### Workspace 6
+###
+assign [app_id="signal"] workspace $WS6
+assign [class="Signal"] workspace $WS6
+
+###
+### Workspace 9
+###
+assign [app_id="google-chrome"] workspace $WS9
+assign [class="Google-chrome"] workspace $WS9
+
 
 
 ##########################################################################################
