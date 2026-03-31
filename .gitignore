@@ -1,5 +1,1 @@
-/ai.sh
-/ai-*
-/scripts/
-/.cache
-/.gemini
+*.swp
