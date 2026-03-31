@@ -193,7 +193,13 @@ in
           "toolbar_pin" = "force_pinned";
         };
         # KeePassXC
-        "oboonakemofpalcgghocfoadofidjkkk" = {
+        #"oboonakemofpalcgghocfoadofidjkkk" = {
+        #  "installation_mode" = "force_installed";
+        #  "update_url" = "https://clients2.google.com/service/update2/crx";
+        #  "toolbar_pin" = "default_unpinned";
+        #};
+        # 1Password
+        "aeblfdkhhhdcdjpifhhbdiojplfjncoa" = {
           "installation_mode" = "force_installed";
           "update_url" = "https://clients2.google.com/service/update2/crx";
           "toolbar_pin" = "default_unpinned";
