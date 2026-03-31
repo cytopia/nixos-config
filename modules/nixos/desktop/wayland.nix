@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   cfg = config.mySystem.desktop.wayland;
@@ -36,7 +41,6 @@ in
     };
   };
 
-
   ###
   ### 2. CONFIGURATION
   ###
@@ -51,8 +55,8 @@ in
     # require a PAM service entry or they will be unable to verify your password.
     # We define them here globally so any locker you choose 'just works'.
     security.pam.services = {
-      swaylock = {};
-      hyprlock = {};
+      swaylock = { };
+      hyprlock = { };
       # 'gtklock' or 'greetd''s ags/regreet often use the 'login' or 'lock' PAM paths
     };
 
@@ -81,8 +85,8 @@ in
 
       # We combine the GTK portal (for standardized UI elements)
       # with any compositor-specific portals you pass via the module parameters.
-      extraPortals = (if cfg.useGtkPortal then [ pkgs.xdg-desktop-portal-gtk ] else [])
-                     ++ cfg.extraPortals;
+      extraPortals =
+        (if cfg.useGtkPortal then [ pkgs.xdg-desktop-portal-gtk ] else [ ]) ++ cfg.extraPortals;
 
       # ARCHITECTURAL BEST PRACTICE:
       # Modern Portal (2.0+) requires an explicit 'default' config to prevent
@@ -97,12 +101,12 @@ in
     # --- SYSTEM PACKAGES ---
     # Essential low-level utilities that every Wayland user needs.
     environment.systemPackages = with pkgs; [
-      slurp            # Region selector for grim/screen-sharing
-      grim             # Screenshot utility (Required for most sharing setups)
-      wayland-utils    # Provides 'wayland-info' for debugging
-      wl-clipboard     # Standard Wayland copy/paste CLI (wl-copy/wl-paste)
-      libinput         # For 'libinput debug-events' and debugging
-      wayprompt        # provides wayprompt-ssh-askpass and wayprompt-gpg-pinentry
+      slurp # Region selector for grim/screen-sharing
+      grim # Screenshot utility (Required for most sharing setups)
+      wayland-utils # Provides 'wayland-info' for debugging
+      wl-clipboard # Standard Wayland copy/paste CLI (wl-copy/wl-paste)
+      libinput # For 'libinput debug-events' and debugging
+      wayprompt # provides wayprompt-ssh-askpass and wayprompt-gpg-pinentry
       gtk4-layer-shell # library that allows GTK4 applications to use the Wayland Layer Shell protocol
     ];
 
@@ -111,35 +115,35 @@ in
     # This prevents 'blurry' windows caused by XWayland scaling.
     environment.sessionVariables = {
       # --- General Session ---
-      XDG_SESSION_TYPE            = "wayland";
+      XDG_SESSION_TYPE = "wayland";
 
       # We use lib.mkDefault for toolkit backends.
       # This allows your Sway/Hyprland modules to override these
       # (e.g., to remove the ',x11' fallback) without using mkForce.
 
       # --- GTK (Gnome-based apps) ---
-      GDK_BACKEND                 = lib.mkDefault "wayland,x11";  # Wayland preferred, X11 fallback for safety
+      GDK_BACKEND = lib.mkDefault "wayland,x11"; # Wayland preferred, X11 fallback for safety
 
       # --- QT (KDE/OBS/vlc) ---
-      QT_QPA_PLATFORM             = lib.mkDefault "wayland;xcb";
-      QT_QPA_PLATFORMTHEME        = lib.mkDefault "xdgdesktopportal"; # Add this here
+      QT_QPA_PLATFORM = lib.mkDefault "wayland;xcb";
+      QT_QPA_PLATFORMTHEME = lib.mkDefault "xdgdesktopportal"; # Add this here
       QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
 
       # --- Electrom & Chromium ---
-      NIXOS_OZONE_WL              = "1";
+      NIXOS_OZONE_WL = "1";
       ELECTRON_OZONE_PLATFORM_HINT = "auto";
 
       # --- Firefox ---
-      MOZ_ENABLE_WAYLAND          = "1";
+      MOZ_ENABLE_WAYLAND = "1";
 
       # --- Gaming (SDL & Clutter) ---
-      SDL_VIDEODRIVER             = lib.mkDefault "wayland";
-      CLUTTER_BACKEND             = lib.mkDefault "wayland";
+      SDL_VIDEODRIVER = lib.mkDefault "wayland";
+      CLUTTER_BACKEND = lib.mkDefault "wayland";
 
       # --- Java (The modern way) ---
-      _JAVA_AWT_WM_NONREPARENTING = "1";  # Fixes gray-scale bug
+      _JAVA_AWT_WM_NONREPARENTING = "1"; # Fixes gray-scale bug
       # WARNING: Only enable this if you are using OpenJDK 21 or newer.
-      JAVA_TOOL_OPTIONS           = "-Dawt.toolkit.name=WLToolkit";  # Might break older Java apps
+      JAVA_TOOL_OPTIONS = "-Dawt.toolkit.name=WLToolkit"; # Might break older Java apps
     };
   };
 }

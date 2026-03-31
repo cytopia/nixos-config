@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   cfg = config.mySystem.desktop.sway;
@@ -10,22 +15,20 @@ in
   options.mySystem.desktop.sway = {
     enable = lib.mkEnableOption "Sway Wayland Compositor";
 
-    enableXwayland= lib.mkOption {
+    enableXwayland = lib.mkOption {
       type = lib.types.bool;
       default = false;
       description = "Enables XWayland";
     };
 
-
-
     extraPackages = lib.mkOption {
       type = lib.types.listOf lib.types.package;
       default = with pkgs; [
-        swaylock  # Screen locker (Base PAM service in wayland.nix)
-        swayidle  # Idle management daemon
-        fuzzel    # App launcher/Menu
-        foot      # Fast, Wayland-native terminal
-        mako      # Lightweight notification daemon
+        swaylock # Screen locker (Base PAM service in wayland.nix)
+        swayidle # Idle management daemon
+        fuzzel # App launcher/Menu
+        foot # Fast, Wayland-native terminal
+        mako # Lightweight notification daemon
         libnotify # Provides 'notify-send'
       ];
       description = "Extra packages to install specifically for the Sway environment.";
@@ -68,12 +71,12 @@ in
     xdg.portal = {
       wlr.enable = true;
       #config.sway.default = lib.mkForce [ "wlr" "gtk" ];
-	  config.sway = {
+      config.sway = {
         default = [ "gtk" ]; # Use GTK for most things (files, settings, themes)
         # Use WLR specifically for screen interaction
         "org.freedesktop.impl.portal.Screenshot" = [ "wlr" ];
         "org.freedesktop.impl.portal.ScreenCast" = [ "wlr" ];
-	  };
+      };
     };
 
     # --- HARDWARE INTEGRATION (OPTIONAL BUT BEST PRACTICE) ---

@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   cfg = config.mySystem.hardware.bluetooth;
@@ -41,7 +46,6 @@ in
       description = "Install CLI diagnostic and pairing tools (bluetoothctl, bluez-tools).";
     };
   };
-
 
   ###
   ### 2. CONFIGURATION
@@ -90,9 +94,12 @@ in
     };
 
     # --- TOOLS & DIAGNOSTICS ---
-    environment.systemPackages = lib.mkIf cfg.enableDiagnostics (with pkgs; [
-      bluez         # Provides 'bluetoothctl' (The core CLI manager)
-      bluez-tools   # Provides 'bt-device', 'bt-agent' (Great for advanced scripting and debugging)
-    ]);
+    environment.systemPackages = lib.mkIf cfg.enableDiagnostics (
+      with pkgs;
+      [
+        bluez # Provides 'bluetoothctl' (The core CLI manager)
+        bluez-tools # Provides 'bt-device', 'bt-agent' (Great for advanced scripting and debugging)
+      ]
+    );
   };
 }

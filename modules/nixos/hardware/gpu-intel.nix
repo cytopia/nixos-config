@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   cfg = config.mySystem.hardware.intel-gpu;
@@ -53,7 +58,6 @@ in
 
   };
 
-
   ###
   ### 2. CONFIGURATION
   ###
@@ -73,15 +77,19 @@ in
     # --- KERNEL & DRIVER STACK ---
     boot.initrd.kernelModules = [ (if cfg.useXeDriver then "xe" else "i915") ];
 
-    boot.kernelParams = if cfg.useXeDriver then [
-      "i915.force_probe=!${cfg.deviceId}" # Tell i915 to NOT bind
-      "xe.force_probe=${cfg.deviceId}"    # Tell xe to bind
-    ] else [
-      # "GuC" (Graphics MicroController) and "HuC" (Header Unpack Control) firmware
-      # for video acceleration on Gen12+ (Tiger Lake).
-      "i915.enable_guc=3"  # Enable GuC/HuC for offloading
-      "i915.enable_fbc=1"  # frame buffer compression
-    ];
+    boot.kernelParams =
+      if cfg.useXeDriver then
+        [
+          "i915.force_probe=!${cfg.deviceId}" # Tell i915 to NOT bind
+          "xe.force_probe=${cfg.deviceId}" # Tell xe to bind
+        ]
+      else
+        [
+          # "GuC" (Graphics MicroController) and "HuC" (Header Unpack Control) firmware
+          # for video acceleration on Gen12+ (Tiger Lake).
+          "i915.enable_guc=3" # Enable GuC/HuC for offloading
+          "i915.enable_fbc=1" # frame buffer compression
+        ];
 
     # Allow the kernel to load necessary Intel binary blobs (GuC/HuC firmware).
     # This is even MORE critical for the xe driver than i915.
@@ -91,22 +99,24 @@ in
     # mkDefault safely merges it without conflicting.
     hardware.enableRedistributableFirmware = lib.mkDefault true;
 
-
     # --- GRAPHICS FRAMEWORK ---
     hardware.graphics = {
       enable = true;
       enable32Bit = cfg.enable32Bit;
 
       extraPackages = with pkgs; [
-        intel-media-driver      # VA-API (iHD)
-        vpl-gpu-rt              # QuickSync Video (QSV)
-        intel-compute-runtime   # OpenCL / Level Zero (NEO)
+        intel-media-driver # VA-API (iHD)
+        vpl-gpu-rt # QuickSync Video (QSV)
+        intel-compute-runtime # OpenCL / Level Zero (NEO)
       ];
 
       # If 32-bit is enabled, we need the 32-bit versions of the drivers
-      extraPackages32 = lib.mkIf cfg.enable32Bit (with pkgs.pkgsi686Linux; [
-        intel-media-driver
-      ]);
+      extraPackages32 = lib.mkIf cfg.enable32Bit (
+        with pkgs.pkgsi686Linux;
+        [
+          intel-media-driver
+        ]
+      );
 
     };
 
@@ -116,16 +126,19 @@ in
     };
 
     # --- TOOLS & DIAGNOSTICS ---
-    environment.systemPackages = lib.mkIf cfg.enableMonitoring (with pkgs; [
-      # Standard Monitoring
-      intel-gpu-tools     # Provides 'intel_gpu_top'
-      nvtopPackages.intel # TTY GPU monitor (shows usage/power/freq)
+    environment.systemPackages = lib.mkIf cfg.enableMonitoring (
+      with pkgs;
+      [
+        # Standard Monitoring
+        intel-gpu-tools # Provides 'intel_gpu_top'
+        nvtopPackages.intel # TTY GPU monitor (shows usage/power/freq)
 
-      # Verification Tools
-      vulkan-tools        # vulkaninfo
-      libva-utils         # vainfo (verifies video acceleration)
-      mesa-demos          # glxinfo (verifies OpenGL)
-      clinfo              # clinfo (Verifies OpenCL)
-    ]);
+        # Verification Tools
+        vulkan-tools # vulkaninfo
+        libva-utils # vainfo (verifies video acceleration)
+        mesa-demos # glxinfo (verifies OpenGL)
+        clinfo # clinfo (Verifies OpenCL)
+      ]
+    );
   };
 }
