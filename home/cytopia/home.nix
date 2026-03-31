@@ -34,11 +34,6 @@
     ./modules/cli/neovim.nix
     #./modules/cli/stash.nix  # Weired terminal issues
 
-    # --- gui: messenger ---
-    ./modules/gui/signal.nix
-    ./modules/gui/slack.nix
-    ./modules/gui/telegram.nix
-
     # --- gui: others ---
     ./modules/gui/image.nix
     ./modules/gui/keepassxc.nix
@@ -84,6 +79,22 @@
 
     enableEza = false;
     enableZoxide = false;
+  };
+
+  ###
+  ### My Modules: gui
+  ###
+  cytopia.gui.signal-desktop = {
+    enable = true;
+    scalingFactor = appScaleFactor;
+  };
+  cytopia.gui.telegram-desktop = {
+    enable = true;
+    scalingFactor = appScaleFactor;
+  };
+ cytopia.gui.slack = {
+    enable = true;
+    scalingFactor = appScaleFactor;
   };
 
   ###
