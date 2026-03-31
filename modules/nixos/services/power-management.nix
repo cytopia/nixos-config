@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   cfg = config.mySystem.services.power-management;
@@ -11,7 +16,12 @@ in
     enable = lib.mkEnableOption "Advanced Power Management (logind & upower and ppd & thermald)";
 
     sleepAction = lib.mkOption {
-      type = lib.types.enum [ "suspend" "suspend-then-hibernate" "hibernate" "ignore" ];
+      type = lib.types.enum [
+        "suspend"
+        "suspend-then-hibernate"
+        "hibernate"
+        "ignore"
+      ];
       default = "suspend-then-hibernate";
       description = ''
         The default action for lid closing and idling on battery.
@@ -27,12 +37,15 @@ in
     };
 
     criticalBatteryAction = lib.mkOption {
-      type = lib.types.enum [ "PowerOff" "Hibernate" "HybridSleep" ];
+      type = lib.types.enum [
+        "PowerOff"
+        "Hibernate"
+        "HybridSleep"
+      ];
       default = "Hibernate";
       description = "What upower should do when battery hits the critical action threshold (5%).";
     };
   };
-
 
   ###
   ### 2. CONFIGURATION
@@ -42,9 +55,9 @@ in
     # --- 1. LOGIN DAEMON (Hardware Events) ---
     services.logind.settings.Login = {
       # Closing the Lid
-      HandleLidSwitchDocked = "ignore";                # Docked or ext display attached
-      HandleLidSwitchExternalPower = cfg.sleepAction;  # AC connected
-      HandleLidSwitch = cfg.sleepAction;               # On battery
+      HandleLidSwitchDocked = "ignore"; # Docked or ext display attached
+      HandleLidSwitchExternalPower = cfg.sleepAction; # AC connected
+      HandleLidSwitch = cfg.sleepAction; # On battery
 
       # Idle Action
       # IMPORTANT: Will be ignored when e.g. swayidle is running
@@ -57,7 +70,6 @@ in
       SuspendKeyIgnoreInhibited = "no";
       HibernateKeyIgnoreInhibited = "no";
     };
-
 
     # --- 2. SLEEP LOGIC (systemd-sleep) ---
     # Defines the behavior of 'suspend-then-hibernate'.
@@ -80,16 +92,15 @@ in
 
       # Define the thresholds
       usePercentageForPolicy = true;
-      percentageLow = 15;       # Status bar usually turns orange/yellow
-      percentageCritical = 10;  # Status bar usually turns red
-      percentageAction = 5;     # The point of no return where hibernation triggers
+      percentageLow = 15; # Status bar usually turns orange/yellow
+      percentageCritical = 10; # Status bar usually turns red
+      percentageAction = 5; # The point of no return where hibernation triggers
 
       # Security/Safety toggle
       # If you want to use "Suspend" as a critical action (risky if battery dies),
       # you must set this to true. For Hibernate, it's not needed.
       allowRiskyCriticalPowerAction = false;
     };
-
 
     ###
     ### toggles
@@ -102,17 +113,17 @@ in
 
     # --- 4. HARDWARE POWER PROFILES (Active Power Management) ---
     # Manages CPU/GPU frequencies and thermals while the system is awake.
-    
+
     # Thermald: Prevents the Intel Tiger Lake CPU from prematurely throttling.
     # Interfaces directly with Intel's Dynamic Platform and Thermal Framework.
     services.thermald.enable = true;
 
     # Power-Profiles-Daemon: The modern standard for ACPI power management.
-    # Native Wayland/Desktop integration. Relies on upower (configured above) 
+    # Native Wayland/Desktop integration. Relies on upower (configured above)
     # to automatically shift the Intel P-State and GPU power budgets when unplugged.
     services.power-profiles-daemon.enable = true;
 
-    # Explicitly disable legacy and conflicting tools to ensure PPD and 
+    # Explicitly disable legacy and conflicting tools to ensure PPD and
     # the Linux kernel have exclusive control over the hardware states.
     services.tlp.enable = false;
     services.auto-cpufreq.enable = false;

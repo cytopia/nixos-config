@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   cfg = config.mySystem.services.sound;
@@ -29,7 +34,6 @@ in
     };
   };
 
-
   ###
   ### 2. CONFIGURATION
   ###
@@ -49,7 +53,7 @@ in
       alsa.enable = true;
       alsa.support32Bit = cfg.enable32Bit;
       pulse.enable = true; # Seamlessly mimics PulseAudio for apps like Zoom/Discord
-      jack.enable = true;  # For pro-audio apps like Ardour/Bitwig
+      jack.enable = true; # For pro-audio apps like Ardour/Bitwig
 
       # --- WIREPLUMBER (The Session Manager) ---
       wireplumber = {
@@ -63,7 +67,13 @@ in
               "bluez5.enable-sbc-xq" = true;
               "bluez5.enable-msbc" = true; # High-quality mic audio for calls
               "bluez5.enable-hw-volume" = true;
-              "bluez5.roles" = [ "hsp_hs" "hfp_ag" "hfp_hf" "a2dp_sink" "a2dp_source" ];
+              "bluez5.roles" = [
+                "hsp_hs"
+                "hfp_ag"
+                "hfp_hf"
+                "a2dp_sink"
+                "a2dp_source"
+              ];
             };
           };
         };
@@ -86,10 +96,10 @@ in
 
     # --- DIAGNOSTIC & MIXER TOOLS ---
     environment.systemPackages = with pkgs; [
-      wireplumber  # Provides 'wpctl' (The modern CLI controller)
-      pavucontrol  # The gold standard GUI mixer
-      pulsemixer   # A beautiful TUI (terminal) mixer
-      helvum       # A graphical patchbay for PipeWire (great for debugging)
+      wireplumber # Provides 'wpctl' (The modern CLI controller)
+      pavucontrol # The gold standard GUI mixer
+      pulsemixer # A beautiful TUI (terminal) mixer
+      helvum # A graphical patchbay for PipeWire (great for debugging)
     ];
   };
 }

@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   cfg = config.mySystem.system.keyboard;
@@ -31,7 +36,6 @@ in
       description = "How many times a key repeats per second.";
     };
   };
-
 
   ###
   ### 2. CONFIGURATION

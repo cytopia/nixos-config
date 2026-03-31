@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   cfg = config.mySystem.system.keyring;
@@ -11,7 +16,6 @@ in
     enable = lib.mkEnableOption "system-wide security and key management";
     gnomeKeyringEnable = lib.mkEnableOption "Gnome Keyring daemon";
   };
-
 
   ###
   ### 2. CONFIGURATION

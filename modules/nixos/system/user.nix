@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   cfg = config.mySystem.system.user;
@@ -64,7 +69,6 @@ in
     };
   };
 
-
   ###
   ### 2. CONFIGURATION
   ###
@@ -74,8 +78,8 @@ in
     # before this value is merged.
     mySystem.system.user.shell = lib.mkDefault pkgs.bash;
 
-	programs.zsh.enable = lib.mkIf (lib.getName cfg.shell == "zsh") true;
-	programs.bash.enable = lib.mkIf (lib.getName cfg.shell == "bash") true;
+    programs.zsh.enable = lib.mkIf (lib.getName cfg.shell == "zsh") true;
+    programs.bash.enable = lib.mkIf (lib.getName cfg.shell == "bash") true;
 
     # Define the primary group explicitly if a GID is provided
     #users.groups.${cfg.name} = lib.mkIf (cfg.gid != null) {
@@ -95,11 +99,12 @@ in
 
       # Core groups for a modern Linux workstation
       extraGroups = [
-        "audio"           # PipeWire access
-        "video"           # Hardware acceleration (Intel/VBox GPU)
-        "input"           # Libinput/Keyboard/Mouse access
-        "render"          # GPU Acceleration
-      ] ++ cfg.extraGroups;
+        "audio" # PipeWire access
+        "video" # Hardware acceleration (Intel/VBox GPU)
+        "input" # Libinput/Keyboard/Mouse access
+        "render" # GPU Acceleration
+      ]
+      ++ cfg.extraGroups;
 
       openssh.authorizedKeys.keys = cfg.sshKeys;
 
