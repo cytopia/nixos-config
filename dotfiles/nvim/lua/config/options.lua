@@ -1,6 +1,5 @@
 -- Options are automatically loaded before lazy.nvim startup
 -- Default options that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua
--- Add any additional options here
 
 -- No relative line numbers
 vim.opt.relativenumber = false
@@ -18,9 +17,19 @@ vim.g.autoformat = false
 -- Disable animations
 vim.g.snacks_animate = false
 
--- Disable Spell check
--- vim.opt.spell = false
---
---vim.opt.ruler = true
---
---ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
+-- Disable spell check
+vim.opt_local.spell = false
+
+-- This empties the snack status column
+-- Also check ../plugins/snacks.lua
+vim.opt.statuscolumn = ""
+
+-- Required for LSP, linter and formatter to work
+vim.filetype.add({
+  filename = {
+    ["docker-compose.yml"] = "yaml.docker-compose",
+    ["docker-compose.yaml"] = "yaml.docker-compose",
+    ["compose.yml"] = "yaml.docker-compose",
+    ["compose.yaml"] = "yaml.docker-compose",
+  },
+})
