@@ -1,5 +1,8 @@
 let
 
+  # TODO: Make one profile for Chromium (mainly Youtube)
+  #       Make one profile for Google Chrome (mainly Google Meet)
+
   ###
   ### Display Server (Wayland vs XWayland/X11)
   ###
@@ -86,8 +89,14 @@ let
   ###
   videoAcceleration = {
     all = {
-      flags = [ ];
+      flags = [
+        # CRITICAL for Intel xe: Allows compositor to read raw NV12 hardware formats natively.
+        # IMPORTANT: This gives issues with Google Meet background blur, but on the other hand
+        # improves playback speed of Youtube videos (and safes battery life)
+        "--use-multi-plane-format-for-hardware-video"
+      ];
       enableFeatures = [
+        # The core hardware decode/encode engines
         "VaapiVideoDecoder"
         "VaapiVideoEncoder"
         "AcceleratedVideoEncoder"
@@ -96,26 +105,30 @@ let
       ];
       disableFeatures = [
         "UseChromeOSDirectVideoDecoder"
+        # KILLS software AV1 encoding so Google Meet is forced to use hardware VP9/H264
+        "AomVideoEncoder"
+        # Legacy decoding architectures. We want the modern VaapiVideoDecoder instead.
+        "AcceleratedVideoDecodeLinuxGL"
+        "AcceleratedVideoDecodeLinuxZeroCopyGL"
       ];
     };
     vulkan = {
       flags = [ ];
       enableFeatures = [
-        "VulkanVideoDecoder"
-        "VulkanVideoEncoder"
+        # We have disabled them
+        #"VulkanVideoDecoder"
+        #"VulkanVideoEncoder"
       ];
       disableFeatures = [
+        # PREVENTS the "Importing textures... into GL" crash loop in your logs
         "VaapiVideoDecodeLinuxGL"
-        "AcceleratedVideoDecodeLinuxGL"
-        "AcceleratedVideoDecodeLinuxZeroCopyGL"
       ];
     };
     gl = {
       flags = [ ];
       enableFeatures = [
+        # The bridge connecting VA-API to OpenGL. Required for GL/GLES.
         "VaapiVideoDecodeLinuxGL"
-        "AcceleratedVideoDecodeLinuxGL"
-        "AcceleratedVideoDecodeLinuxZeroCopyGL"
       ];
       disableFeatures = [
         "VulkanVideoDecoder"
@@ -125,9 +138,8 @@ let
     gles = {
       flags = [ ];
       enableFeatures = [
+        # The bridge connecting VA-API to OpenGL. Required for GL/GLES.
         "VaapiVideoDecodeLinuxGL"
-        "AcceleratedVideoDecodeLinuxGL"
-        "AcceleratedVideoDecodeLinuxZeroCopyGL"
       ];
       disableFeatures = [
         "VulkanVideoDecoder"
