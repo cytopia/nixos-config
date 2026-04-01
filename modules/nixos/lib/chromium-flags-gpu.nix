@@ -261,18 +261,18 @@ let
 in
 {
   # The main exposed function
-  getChromeHardwareFlags =
+  getFlags =
     {
       display_server ? "wayland", # Accepts "wayland" or "xwayland"
       engine ? "vulkan", # Accepts "vulkan", "gl", or "gles"
-      enableVideoAcceleration ? true,
       enableGpuRasterization ? true,
       enableMemoryManagement ? true,
-      enableIgnoreGpuBlocklist ? true,
-      enableSafetyOverrides ? false,
+      enableFeatureVideoAcceleration ? true,
       enableFeatureTreesInViz ? true,
       enableFeatureSkiaGraphite ? false,
       enableFeatureWebNn ? true,
+      enableIgnoreGpuBlocklist ? true,
+      enableSafetyOverrides ? false,
     }:
     let
       # Map user-friendly input to the internal data structure key
@@ -292,33 +292,33 @@ in
       flags =
         extract displayServerStrategy displayTarget "flags"
         ++ extract renderingEngine engine "flags"
-        ++ extractIf enableVideoAcceleration videoAcceleration engine "flags"
         ++ extractIf enableGpuRasterization gpuRasterization engine "flags"
         ++ extractIf enableMemoryManagement memoryManagement engine "flags"
         ++ extractIf enableIgnoreGpuBlocklist ignoreGpuBlocklist engine "flags"
         ++ extractIf enableSafetyOverrides safetyOverrides engine "flags"
+        ++ extractIf enableFeatureVideoAcceleration videoAcceleration engine "flags"
         ++ extractIf enableFeatureSkiaGraphite skiaGraphite engine "flags"
         ++ extractIf enableFeatureTreesInViz treesInViz engine "flags"
         ++ extractIf enableFeatureWebNn webNN engine "flags";
       enableFeatures =
         extract displayServerStrategy displayTarget "enableFeatures"
         ++ extract renderingEngine engine "enableFeatures"
-        ++ extractIf enableVideoAcceleration videoAcceleration engine "enableFeatures"
         ++ extractIf enableGpuRasterization gpuRasterization engine "enableFeatures"
         ++ extractIf enableMemoryManagement memoryManagement engine "enableFeatures"
         ++ extractIf enableIgnoreGpuBlocklist ignoreGpuBlocklist engine "enableFeatures"
         ++ extractIf enableSafetyOverrides safetyOverrides engine "enableFeatures"
+        ++ extractIf enableFeatureVideoAcceleration videoAcceleration engine "enableFeatures"
         ++ extractIf enableFeatureSkiaGraphite skiaGraphite engine "enableFeatures"
         ++ extractIf enableFeatureTreesInViz treesInViz engine "enableFeatures"
         ++ extractIf enableFeatureWebNn webNN engine "enableFeatures";
       disableFeatures =
         extract displayServerStrategy displayTarget "disableFeatures"
         ++ extract renderingEngine engine "disableFeatures"
-        ++ extractIf enableVideoAcceleration videoAcceleration engine "disableFeatures"
         ++ extractIf enableGpuRasterization gpuRasterization engine "disableFeatures"
         ++ extractIf enableMemoryManagement memoryManagement engine "disableFeatures"
         ++ extractIf enableIgnoreGpuBlocklist ignoreGpuBlocklist engine "disableFeatures"
         ++ extractIf enableSafetyOverrides safetyOverrides engine "disableFeatures"
+        ++ extractIf enableFeatureVideoAcceleration videoAcceleration engine "disableFeatures"
         # If the feature is ON, extract any explicitly defined disableFeatures
         ++ extractIf enableFeatureSkiaGraphite skiaGraphite engine "disableFeatures"
         ++ extractIf enableFeatureTreesInViz treesInViz engine "disableFeatures"

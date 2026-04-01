@@ -190,43 +190,30 @@
 
   mySystem.programs.chromium = {
     enable = true;
+    browser = "chromium";
     scalingFactor = appScaleFactor;
-    gpuEngine = {
-      displayServer = "wayland";
-      engine = "vulkan";
-    };
-    engineOptimizations = {
-      enableGpuRasterization = true;
-      enableMemoryManagement = true;
-      enableIgnoreGpuBlocklist = true;
-      enableSafetyOverrides = false;
-    };
-    engineFeatures = {
-      enableVideoAcceleration = true;
-      enableTreesInViz = true;
-      enableWebNn = true;
-      enableSkiaGraphite = false;
-    };
+    waylandFractionalScalingSupport = true;
+
+    extensions = [
+      "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
+      "ddkjiahejlhfcafbddmgiahcphecmpfh" # uBlock Origin Lite
+      "mnjggcdmjocbbbhaepdhchncahnbgone" # SponsorBlock for YouTube
+      "gebbhagfogifgggkldgodflihgfeippi" # Return YouTube Dislike
+    ];
   };
+
   mySystem.programs.google-chrome = {
     enable = true;
+    browser = "google-chrome";
     scalingFactor = appScaleFactor;
-    gpuEngine = {
-      displayServer = "wayland";
-      engine = "vulkan";
-    };
-    engineOptimizations = {
-      enableGpuRasterization = true;
-      enableMemoryManagement = true;
-      enableIgnoreGpuBlocklist = true;
-      enableSafetyOverrides = false;
-    };
-    engineFeatures = {
-      enableVideoAcceleration = true;
-      enableTreesInViz = true;
-      enableWebNn = true;
-      enableSkiaGraphite = false;
-    };
+    waylandFractionalScalingSupport = true;
+
+    extensions = [
+      "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
+      "ddkjiahejlhfcafbddmgiahcphecmpfh" # uBlock Origin Lite
+      "jpmkfafbacpgapdghgdpembnojdlgkdl" # AWS Extend Roles
+      "aeblfdkhhhdcdjpifhhbdiojplfjncoa" # 1Password
+    ];
   };
 
   # Adds standard Linux paths

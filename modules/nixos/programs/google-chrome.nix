@@ -8,35 +8,32 @@
 let
   cfg = config.mySystem.programs.google-chrome;
 
-  # Import the hardware flag library
-  chromeHwLib = import ../lib/chromium-flags-gpu.nix;
-  chromePrivacyLib = import ../lib/chromium-flags-privacy.nix { inherit lib; };
-  managedPolicies = import ../lib/chromium-managed-policies.nix;
+  # Map the package names to their exact /etc directory roots
+  policyPaths = {
+    "google-chrome" = "opt/chrome";
+    "chromium" = "chromium";
+    "brave" = "brave";
+  };
 
-  activePolicies =
-    managedPolicies.disableAccount
-    // managedPolicies.disablePasswords
-    // managedPolicies.disableAutofill
-    // managedPolicies.disableDownloadRestrictions
-    // managedPolicies.disableSafeBrowsing
-    // managedPolicies.disableSpellcheck
-    // managedPolicies.disableGoogleUi
-    // managedPolicies.disableTelemetry
-    // managedPolicies.disableCloudReporting
-    // managedPolicies.disableDiagnostics
-    // managedPolicies.disableTracking
-    // managedPolicies.disableDns
-    // managedPolicies.disableIntranet
-    // managedPolicies.disableHardwarePermissions
-    // managedPolicies.disableOsPermissions
-    // managedPolicies.disableContentPermissions
-    // managedPolicies.disableNetworkPermissions
-    // managedPolicies.disableCloudAssist
-    // managedPolicies.disableCloudAi
-    // managedPolicies.disableLocalAi
-    // managedPolicies.disableAutoplay
-    // managedPolicies.disableUpdates
-    // managedPolicies.enableCoreSecurity;
+  # Resolve the correct path based on the user's selection
+  policyPath = policyPaths.${cfg.browser};
+
+  # Import libraries
+  gpuFlags = import ../lib/chromium-flags-gpu.nix;
+  privacyFlags = import ../lib/chromium-flags-privacy.nix { inherit lib; };
+  privacyVars = import ../lib/chromium-env-vars-privacy.nix;
+  privacyPolicies = import ../lib/chromium-managed-policies.nix { inherit lib; };
+
+  searchEnginePolicy = {
+    "DefaultSearchProviderEnabled" = true;
+    "DefaultSearchProviderSearchURL" = "https://duckduckgo.com/?q={searchTerms}";
+    "DefaultSearchProviderSuggestURL" = "https://duckduckgo.com/ac/?q={searchTerms}&type=list";
+    "SearchSuggestEnabled" = false;
+  };
+  defaultSettingsPolicy = {
+    "RestoreOnStartup" = 1;
+    "DefaultBrowserSettingEnabled" = false;
+  };
 
   firstRunDefaults = {
     "browser" = {
@@ -79,7 +76,17 @@ in
   ### 1. OPTIONS
   ###
   options.mySystem.programs.google-chrome = {
-    enable = lib.mkEnableOption "Google Chrome with advanced Hardware Acceleration";
+    enable = lib.mkEnableOption "Chromium-based browser with advanced GPU Acceleration and Privacy.";
+
+    browser = lib.mkOption {
+      type = lib.types.enum [
+        "google-chrome"
+        "chromium"
+        "brave"
+      ];
+      default = "google-chrome";
+      description = "Which browser to install and wrap.";
+    };
 
     scalingFactor = lib.mkOption {
       type = lib.types.float;
@@ -89,79 +96,127 @@ in
         Leave at 1.0 for native scaling. Use 1.5 for 150%, etc.
       '';
     };
+    waylandFractionalScalingSupport = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = ''
+        Enables native Wayland fractional scaling support.
+        Allows Chrome to render text and UI perfectly crisp at non-integer display scales
+        (like 125% or 150%) in Sway, rather than relying on blurry Xwayland downscaling.
+        --enable-feature=WaylandFractionalScaleV1
+      '';
+    };
 
-    gpuEngine = {
-      displayServer = lib.mkOption {
-        type = lib.types.enum [
-          "wayland"
-          "xwayland"
-        ];
-        default = "xwayland";
-        description = ''
-          The display server protocol Chrome should use. 
-          "xwayland" is currently recommended for Intel Xe to prevent EGL context crashes.
-        '';
+    extensions = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+      description = ''
+        A list of Chrome extension IDs to silently force-install.
+        All extensions in this list will be unpinned from the toolbar by default.
+      '';
+      example = [
+        "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
+        "ddkjiahejlhfcafbddmgiahcphecmpfh" # uBlock Origin Lite
+      ];
+    };
+
+    startup = {
+      extraFlags = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = [ ];
+        description = "Add addtional startup flags to the browser";
       };
-      engine = lib.mkOption {
-        type = lib.types.enum [
-          "vulkan"
-          "gl"
-          "gles"
-        ];
-        default = "vulkan";
-        description = ''
-          The underlying graphics rendering API to translate to via ANGLE.
-        '';
+      extraEnableFeatures = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = [ ];
+        description = "Add addtional features that will be appended to the startup flag --enable-features=";
+      };
+      extraDisableFeatures = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = [ ];
+        description = "Add addtional features that will be appended to the startup flag --disable-features=";
+      };
+      extraEnvVars = lib.mkOption {
+        type = lib.types.attrsOf lib.types.str;
+        description = "Environment variables to export before launching Chrome. These are applied via makeWrapper.";
+        default = { };
       };
     };
-    engineOptimizations = {
-      enableGpuRasterization = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = "Offload painting operations from the CPU to the GPU.";
+
+    gpu = {
+      engine = {
+        displayServer = lib.mkOption {
+          type = lib.types.enum [
+            "wayland"
+            "xwayland"
+          ];
+          default = "xwayland";
+          description = ''
+            The display server protocol Chrome should use.
+            "xwayland" is currently recommended for Intel Xe to prevent EGL context crashes.
+          '';
+        };
+        backend = lib.mkOption {
+          type = lib.types.enum [
+            "vulkan"
+            "gl"
+            "gles"
+          ];
+          default = "vulkan";
+          description = ''
+            The underlying graphics rendering API to translate to via ANGLE.
+          '';
+        };
       };
-      enableMemoryManagement = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = "Enable zero-copy and native GPU memory buffers.";
+      optimizations = {
+        gpuRasterization = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description = "Offload painting operations from the CPU to the GPU.";
+        };
+        memoryManagement = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description = "Enable zero-copy and native GPU memory buffers.";
+        };
+        ignoreGpuBlocklist = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description = "Force hardware acceleration on experimental/uncertified drivers.";
+        };
+        safetyOverrides = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = ''
+            DANGEROUS: If true, disables Chromium's internal driver bug workarounds.
+            Keep this FALSE on Intel Xe to maintain high WebGL draw-call performance.
+          '';
+        };
       };
-      enableIgnoreGpuBlocklist = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = "Force hardware acceleration on experimental/uncertified drivers.";
-      };
-      enableSafetyOverrides = lib.mkOption {
-        type = lib.types.bool;
-        default = false;
-        description = ''
-          DANGEROUS: If true, disables Chromium's internal driver bug workarounds. 
-          Keep this FALSE on Intel Xe to maintain high WebGL draw-call performance.
-        '';
-      };
-    };
-    engineFeatures = {
-      enableVideoAcceleration = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = "Enable hardware-accelerated video decoding/encoding (VA-API).";
-      };
-      enableTreesInViz = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = "Moves the Display Tree to the Viz compositor thread to reduce input latency.";
-      };
-      enableSkiaGraphite = lib.mkOption {
-        type = lib.types.bool;
-        default = false;
-        description = ''
-          Replaces Ganesh with the next-gen Skia Graphite 2D renderer.
-          Currently hard-blocked by Chromium on X11; keep FALSE until supported.
-        '';
-      };
-      enableWebNn = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = "Enables Web Neural Network API for GPU-accelerated ML (e.g., Google Meet blur).";
+      features = {
+        videoAcceleration = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description = "Enable hardware-accelerated video decoding/encoding (VA-API).";
+        };
+        treesInViz = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description = "Moves the Display Tree to the Viz compositor thread to reduce input latency.";
+        };
+        skiaGraphite = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = ''
+            Replaces Ganesh with the next-gen Skia Graphite 2D renderer.
+            Currently hard-blocked by Chromium on X11; keep FALSE until supported.
+          '';
+        };
+        webNn = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description = "Enables Web Neural Network API for GPU-accelerated ML (e.g., Google Meet blur).";
+        };
       };
     };
   };
@@ -172,82 +227,45 @@ in
   config = lib.mkIf cfg.enable {
 
     # --- Chrome Enterprise Policies
-    environment.etc."opt/chrome/policies/managed/policies.json".text = builtins.toJSON (
-      activePolicies
-      // {
-        "RestoreOnStartup" = 1;
-        "DefaultBrowserSettingEnabled" = false;
-      }
-    );
-    environment.etc."opt/chrome/policies/managed/search.json".text = builtins.toJSON ({
-      "DefaultSearchProviderEnabled" = true;
-      "DefaultSearchProviderSearchURL" = "https://duckduckgo.com/?q={searchTerms}";
-      "DefaultSearchProviderSuggestURL" = "https://duckduckgo.com/ac/?q={searchTerms}&type=list";
-      "SearchSuggestEnabled" = false;
-    });
-    environment.etc."opt/chrome/policies/managed/extensions.json".text = builtins.toJSON ({
-      "ExtensionSettings" = {
-        # Vimium
-        "dbepggeogbaibhgnhhndojpepiihcmeb" = {
+    environment.etc = {
+      "${policyPath}/policies/managed/policies.json".text = builtins.toJSON (privacyPolicies.policies);
+      "${policyPath}/policies/managed/settings.json".text = builtins.toJSON (defaultSettingsPolicy);
+      "${policyPath}/policies/managed/search.json".text = builtins.toJSON (searchEnginePolicy);
+      "${policyPath}/policies/managed/extensions.json".text = builtins.toJSON {
+        "ExtensionSettings" = lib.genAttrs cfg.extensions (extId: {
           "installation_mode" = "force_installed";
           "update_url" = "https://clients2.google.com/service/update2/crx";
           "toolbar_pin" = "default_unpinned";
-        };
-        # uBlock Origin Lite
-        "ddkjiahejlhfcafbddmgiahcphecmpfh" = {
-          "installation_mode" = "force_installed";
-          "update_url" = "https://clients2.google.com/service/update2/crx";
-          "toolbar_pin" = "force_pinned";
-        };
-        # AWS Extend Roles
-        "jpmkfafbacpgapdghgdpembnojdlgkdl" = {
-          "installation_mode" = "force_installed";
-          "update_url" = "https://clients2.google.com/service/update2/crx";
-          "toolbar_pin" = "force_pinned";
-        };
-        # KeePassXC
-        #"oboonakemofpalcgghocfoadofidjkkk" = {
-        #  "installation_mode" = "force_installed";
-        #  "update_url" = "https://clients2.google.com/service/update2/crx";
-        #  "toolbar_pin" = "default_unpinned";
-        #};
-        # 1Password
-        "aeblfdkhhhdcdjpifhhbdiojplfjncoa" = {
-          "installation_mode" = "force_installed";
-          "update_url" = "https://clients2.google.com/service/update2/crx";
-          "toolbar_pin" = "default_unpinned";
-        };
+        });
       };
-    });
-    environment.etc."opt/chrome/initial_preferences".text = builtins.toJSON firstRunDefaults;
+      "${policyPath}/initial_preferences".text = builtins.toJSON firstRunDefaults;
+    };
 
     # --- Overwrite Chrome with startup flags
     nixpkgs.overlays = [
       (
         final: prev:
         let
-          # We use let...in here to process the library logic before passing it to the package
-          #  environment.systemPackages =
-          #    let
-
-          # 1. Call the library function using the evaluated NixOS options
-          hwConfig = chromeHwLib.getChromeHardwareFlags {
-            display_server = cfg.gpuEngine.displayServer;
-            engine = cfg.gpuEngine.engine;
-            enableGpuRasterization = cfg.engineOptimizations.enableGpuRasterization;
-            enableMemoryManagement = cfg.engineOptimizations.enableMemoryManagement;
-            enableIgnoreGpuBlocklist = cfg.engineOptimizations.enableIgnoreGpuBlocklist;
-            enableSafetyOverrides = cfg.engineOptimizations.enableSafetyOverrides;
-            enableVideoAcceleration = cfg.engineFeatures.enableVideoAcceleration;
-            enableFeatureTreesInViz = cfg.engineFeatures.enableTreesInViz;
-            enableFeatureSkiaGraphite = cfg.engineFeatures.enableSkiaGraphite;
-            enableFeatureWebNn = cfg.engineFeatures.enableWebNn;
+          # 1. get desired GPU flags
+          hwConfig = gpuFlags.getFlags {
+            display_server = cfg.gpu.engine.displayServer;
+            engine = cfg.gpu.engine.backend;
+            enableGpuRasterization = cfg.gpu.optimizations.gpuRasterization;
+            enableMemoryManagement = cfg.gpu.optimizations.memoryManagement;
+            enableIgnoreGpuBlocklist = cfg.gpu.optimizations.ignoreGpuBlocklist;
+            enableFeatureVideoAcceleration = cfg.gpu.features.videoAcceleration;
+            enableFeatureTreesInViz = cfg.gpu.features.treesInViz;
+            enableFeatureSkiaGraphite = cfg.gpu.features.skiaGraphite;
+            enableFeatureWebNn = cfg.gpu.features.webNn;
+            enableSafetyOverrides = cfg.gpu.optimizations.safetyOverrides;
           };
 
-          # 2. Get Privacy Set
-          privacyConfig = chromePrivacyLib.getPrivacyFlags {
-            enableDisableCrossOriginReferrer = true;
-            enableReduceSystemInfo = true;
+          # 2. get desired Privacy flags
+          privacyConfig = privacyFlags.getFlags {
+            enableReferrerPrivacy = true;
+            enableSystemIsolation = true;
+            enableBackgroundTelemetryRemoval = true;
+            enableTrackingApiRemoval = true;
           };
 
           # 3. Merge the two sets (Combines flags, enableFeatures, and disableFeatures lists)
@@ -255,30 +273,56 @@ in
             hwConfig
             privacyConfig
             {
-              enableFeatures = [
-                "WaylandFractionalScaleV1"
-              ];
+              flags = cfg.startup.extraFlags;
+              enableFeatures =
+                cfg.startup.extraEnableFeatures
+                ++ lib.optional cfg.waylandFractionalScalingSupport "WaylandFractionalScaleV1";
+              disableFeatures = cfg.startup.extraDisableFeatures;
             }
           ];
 
           # 4. Generate final strings from the combined set
-          enableFlag = lib.optional (
+          enableFeatureFlag = lib.optional (
             combined.enableFeatures != [ ]
           ) "--enable-features=${lib.concatStringsSep "," combined.enableFeatures}";
-          disableFlag = lib.optional (
+
+          disableFeatureFlag = lib.optional (
             combined.disableFeatures != [ ]
           ) "--disable-features=${lib.concatStringsSep "," combined.disableFeatures}";
+
           scalingFlag = lib.optional (
             cfg.scalingFactor != 1.0
-          ) "--force-device-scale-factor=${builtins.toString cfg.scalingFactor}";
+          ) "--force-device-scale-factor=${builtins.toJSON cfg.scalingFactor}";
 
-          # 3. Concatenate the standalone flags with the feature flags
-          finalCommandLineArgs = combined.flags ++ enableFlag ++ disableFlag ++ scalingFlag;
+          # 5. Define the base package with flags first to keep the code readable
+          baseChrome = prev.${cfg.browser}.override {
+            commandLineArgs = combined.flags ++ enableFeatureFlag ++ disableFeatureFlag ++ scalingFlag;
+          };
+
+          # 6. Map the extraEnvVars to makeWrapper arguments safely
+          # Converts { "TZ" = "UTC"; } into "--set 'TZ' 'UTC'"
+          wrapperEnvArgs = lib.concatStringsSep " " (
+            lib.mapAttrsToList (key: value: "--set ${lib.escapeShellArg key} ${lib.escapeShellArg value}") (
+              privacyVars.default // cfg.startup.extraEnvVars
+            )
+          );
+
         in
         {
-          # Rewrite the google-chrome package system-wide
-          google-chrome = prev.google-chrome.override {
-            commandLineArgs = finalCommandLineArgs;
+          # Rewrite the chromium package system-wide using symlinkJoin
+          ${cfg.browser} = prev.symlinkJoin {
+            name = "${baseChrome.name}-env-wrapped";
+            paths = [ baseChrome ];
+            nativeBuildInputs = [ prev.makeWrapper ];
+
+            # Wrap all executables in the bin directory to ensure the env var
+            # is applied whether launched via terminal or the .desktop file.
+            postBuild = ''
+              for bin in $out/bin/*; do
+                wrapProgram "$bin" \
+                  ${wrapperEnvArgs}
+              done
+            '';
           };
         }
       )
@@ -286,7 +330,7 @@ in
 
     # --- Install the globally overridden package
     environment.systemPackages = [
-      pkgs.google-chrome
+      pkgs.${cfg.browser}
     ];
   };
 }
