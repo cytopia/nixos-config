@@ -1,7 +1,7 @@
 # chromium-policies.nix
 # A reusable library of hardened Chromium enterprise policies.
 # https://chromeenterprise.google/policies/
-
+{ lib, ... }:
 let
   # ==========================================
   # 1. ACCOUNTS
@@ -9,10 +9,13 @@ let
   account = {
     # 0 (Disable) explicitly disables browser sign-in and stops background account token generation.
     "BrowserSignin" = 0;
+
     # true (Disable) disables Google Sync for passwords, bookmarks, history, and settings.
     "SyncDisabled" = true;
+
     # false (Disable) prevents the "Add Profile" picker screen from showing up.
     "BrowserAddPersonEnabled" = false;
+
     # false (Disable) prevents users from bypassing rules via Guest Mode.
     "BrowserGuestModeEnabled" = false;
   };
@@ -25,8 +28,10 @@ let
     "PasswordManagerEnabled" = false;
     "PasswordManagerPasskeysEnabled" = false;
     "PasswordManagerBlocklist" = [ "*" ];
+
     # false (Disable) disables sending password hashes to Google to check for breaches.
     "PasswordLeakDetectionEnabled" = false;
+
     # 0 (Disable) disables password reuse warnings (which require telemetry).
     "PasswordProtectionWarningTrigger" = 0;
   };
@@ -37,10 +42,13 @@ let
   autofill = {
     # 2 (Disable) disables autofill predictions (prevents sending form field names to Google).
     "AutofillPredictionSettings" = 2;
+
     # false (Disable) disables saving and autofilling addresses.
     "AutofillAddressEnabled" = false;
+
     # false (Disable) disables saving and autofilling credit cards.
     "AutofillCreditCardEnabled" = false;
+
     # false (Disable) disables querying for saved payment methods via Google Pay.
     "PaymentMethodQueryEnabled" = false;
   };
@@ -59,14 +67,19 @@ let
   safeBrowsing = {
     # 0 (Disable) enforces no Safe Browsing protection.
     "SafeBrowsingProtectionLevel" = 0;
+
     # false (Disable) disables Google's Advanced Protection Program integration (heavy telemetry).
     "AdvancedProtectionAllowed" = false;
+
     # false (Disable) disables real-time Safe Browsing checks via proxy.
     "SafeBrowsingProxiedRealTimeChecksAllowed" = false;
+
     # false (Disable) disables surveys triggered by Safe Browsing security events.
     "SafeBrowsingSurveysEnabled" = false;
+
     # false (Disable) disables sending extra telemetry and file metadata to Google for Safe Browsing.
     "SafeBrowsingExtendedReportingEnabled" = false;
+
     # false (Disable) disables uploading files to Google for deep malware scanning.
     "SafeBrowsingDeepScanningEnabled" = false;
   };
@@ -77,6 +90,7 @@ let
   spellcheck = {
     # false (Disable) disables local spellchecking entirely.
     "SpellcheckEnabled" = false;
+
     # [ ] (Disable) ensures no spellcheck dictionaries are downloaded or loaded.
     "SpellcheckLanguage" = [ ];
   };
@@ -87,8 +101,10 @@ let
   googleUi = {
     # false (Disable) disables the Google Search side panel.
     "GoogleSearchSidePanelEnabled" = false;
+
     # false (Disable) disables promotional UI elements in Chrome.
     "PromotionsEnabled" = false;
+
     # str (Enforce) always show about:blank upon opening a new Tab to not reveal recently visited pages
     "NewTabPageLocation" = "about:blank";
   };
@@ -99,14 +115,19 @@ let
   telemetry = {
     # false (Disable) core policy to disable crash reporting and usage statistics sent to Google.
     "MetricsReportingEnabled" = false;
+
     # false (Disable) disables the "Help Improve Chrome" feedback loop and bug reporting.
     "UserFeedbackAllowed" = false;
+
     # 2 (Disable) disables field trials (A/B testing) which alter browser behavior and send telemetry.
     "ChromeVariations" = 2;
+
     # false (Disable) disables sending URLs to Google for the "Make searches and browsing better" feature.
     "UrlKeyedAnonymizedDataCollectionEnabled" = false;
+
     # false (Disable) disables reporting of domain reliability metrics to Google.
     "DomainReliabilityAllowed" = false;
+
     # false (Disable) prevents Chrome from prompting users with satisfaction surveys.
     "FeedbackSurveysEnabled" = false;
   };
@@ -136,6 +157,7 @@ let
   diagnostics = {
     # false (Disable) disables collection of WebRTC event logs (audio/video diagnostic telemetry).
     "WebRtcEventLogCollectionAllowed" = false;
+
     # false (Disable) disables collection of WebRTC text logs for diagnostics.
     "WebRtcTextLogCollectionAllowed" = false;
   };
@@ -146,10 +168,13 @@ let
   tracking = {
     # true (Block) enforces a strict ban on all third-party tracking cookies.
     "BlockThirdPartyCookies" = true;
+
     # 2 (Block) strictly blocks ads on sites known to have intrusive or abusive ad practices.
     "AdsSettingForIntrusiveAdsSites" = 2;
+
     # 2 (Disable) disables the Privacy Sandbox consent prompt, effectively opting out of all browser-based ad tracking and topic generation.
     "PrivacySandboxPromptEnabled" = 2;
+
     # false (Disable) disables media recommendations, which can send viewing habits to Google.
     "MediaRecommendationsEnabled" = false;
   };
@@ -160,14 +185,26 @@ let
   dns = {
     # 2 (Disable) stops DNS prefetching and network prediction, preventing accidental data leaks.
     "NetworkPredictionOptions" = 2;
-    # false (Disable) disables Chrome's built-in async DNS client, forcing it to respect the NixOS system DNS.
-    "BuiltInDnsClientEnabled" = false;
-    # false (Disable) disables checks that detect if DNS is being intercepted.
-    "DNSInterceptionChecksEnabled" = false;
-    # "off" (Disable) disables Chrome's internal DoH so it doesn't bypass system-level network filtering.
+
+    # NECESSARY FOR PRIVACY (ECH):
+    # true (Enable) allows Chrome to use its internal DNS stub resolver instead of legacy OS calls.
+    # Legacy OS calls (getaddrinfo) cannot fetch HTTPS/Type 65 records required for ECH keys.
+    # Keeping this TRUE ensures ECH works while still routing all traffic locally.
+    "BuiltInDnsClientEnabled" = true;
+
+    # NECESSARY FOR PRIVACY (ECH):
+    # true (Enable) allows the browser to query for special HTTPS DNS records (Type 65).
+    # These records contain the public keys used to encrypt your SNI (destination hostname).
+    "AdditionalDnsQueryTypesEnabled" = true;
+
+    # FORCES LOCAL ROUTING:
+    # "off" (Disable) prevents Chrome from using its own built-in DoH list.
+    # This ensures Chrome ONLY talks to your local dnscrypt-proxy via standard system ports.
     "DnsOverHttpsMode" = "off";
-    # false (Disable) disables querying for HTTPS DNS records (Type 65) over standard DNS.
-    "AdditionalDnsQueryTypesEnabled" = false;
+
+    # false (Disable) stops Chrome from complaining that DNS is being intercepted
+    # (since you are intentionally intercepting it locally).
+    "DNSInterceptionChecksEnabled" = false;
   };
 
   # ==========================================
@@ -176,10 +213,13 @@ let
   intranet = {
     # false (Disable) disables Chromecast/Media Router discovery protocols (mDNS/SSDP) on your local network.
     "EnableMediaRouter" = false;
+
     # 1 (Disable) disables DNS interception checks for intranet domains, reducing startup queries.
     "IntranetRedirectBehavior" = 1;
+
     # [ "*://*" ] (Block) blocks public websites from making requests to the local network space (intranet).
     "LocalNetworkAccessBlockedForUrls" = [ "*://*" ];
+
     # [ "*://*" ] (Block) blocks public websites from making requests to the loopback address (localhost/127.0.0.1).
     "LoopbackNetworkBlockedForUrls" = [ "*://*" ];
   };
@@ -190,14 +230,19 @@ let
   hardwarePermissions = {
     # 3 (Ask) requires permission before tracking physical location.
     "DefaultGeolocationSetting" = 3;
+
     # 3 (Ask) requires permission before accessing Bluetooth devices.
     "DefaultWebBluetoothGuardSetting" = 3;
+
     # 3 (Ask) requires permission before accessing HID devices.
     "DefaultWebHidGuardSetting" = 3;
+
     # 3 (Ask) requires permission before accessing USB devices.
     "DefaultWebUsbGuardSetting" = 3;
+
     # 3 (Ask) requires permission before accessing Serial devices.
     "DefaultSerialGuardSetting" = 3;
+
     # 2 (Deny) blocks access to device sensors. (NOTE: Sensors do not support an "Ask" policy).
     "DefaultSensorsSetting" = 2;
   };
@@ -208,16 +253,22 @@ let
   osPermissions = {
     # 3 (Ask) requires permission before sites can manage windows/screens.
     "DefaultWindowManagementSetting" = 3;
+
     # 3 (Ask) requires permission before sites can enumerate local fonts (anti-fingerprinting).
     "DefaultLocalFontsSetting" = 3;
+
     # 3 (Ask) requires permission before a site can read from the clipboard.
     "DefaultClipboardSetting" = 3;
+
     # 2 (Block) blocks sites from detecting when you are away from your machine.
     "DefaultIdleDetectionSetting" = 2;
+
     # 3 (Ask) requires permission for File System API read access.
     "DefaultFileSystemReadGuardSetting" = 3;
+
     # 3 (Ask) requires permission for File System API write access.
     "DefaultFileSystemWriteGuardSetting" = 3;
+
     # false (Disable) strictly prevents Chrome from running background processes/apps after the last window is closed.
     "BackgroundModeEnabled" = false;
   };
@@ -228,7 +279,8 @@ let
   contentPermissions = {
     # 3 (Ask) prompts before allowing web notifications.
     "DefaultNotificationsSetting" = 3;
-    # 2 (Deny) strictly blocks popups. (NOTE: Popups do not support an "Ask" policy).
+
+    # 2 (Deny) strictly blocks popups. (Popups do not support an "Ask" policy).
     "DefaultPopupsSetting" = 2;
   };
 
@@ -238,8 +290,10 @@ let
   networkPermissions = {
     # 2 (Block) blocks sites from opening raw TCP/UDP sockets (Direct Sockets API).
     "DefaultDirectSocketsSetting" = 2;
+
     # "disable_non_proxied_udp" (Block) prevents WebRTC from leaking local/LAN IP addresses to websites.
     "WebRtcIPHandling" = "disable_non_proxied_udp";
+
     # true (Enable) encrypts the SNI domain name during TLS handshakes so ISPs cannot see your destination.
     "EncryptedClientHelloEnabled" = true;
   };
@@ -250,10 +304,13 @@ let
   cloudAssist = {
     # false (Disable) disables sending images to Google for accessibility descriptions.
     "AccessibilityImageLabelsEnabled" = false;
+
     # false (Disable) disables local real-time caption translation.
     "LiveTranslateEnabled" = false;
+
     # false (Disable) disables the built-in Google Translate prompt (stops sending page text).
     "TranslateEnabled" = false;
+
     # false (Disable) disables the cloud-enhanced spellcheck service (stops sending typed text to Google).
     "SpellCheckServiceEnabled" = false;
   };
@@ -264,18 +321,25 @@ let
   cloudAi = {
     # 1 (Disable) prevents Chrome from sharing multi-tab context with Google Drive/GenAI.
     "SearchContentSharingSettings" = 1;
+
     # 1 (Disable) turns off the new "AI Mode" integrations in the Omnibox and New Tab page.
     "AIModeSettings" = 1;
+
     # 1 (Block) strictly blocks the background Gemini app integrations within the browser UI.
     "GeminiSettings" = 1;
+
     # 2 (Disable) turns off the AI-powered history search feature (stops local index scanning).
     "HistorySearchSettings" = 2;
+
     # 2 (Disable) turns off the AI Tab Compare feature.
     "TabCompareSettings" = 2;
+
     # 2 (Disable) turns off the "Help me write" AI text generation assistant.
     "HelpMeWriteSettings" = 2;
+
     # 2 (Disable) turns off the ability to create custom themes and wallpapers via generative AI.
     "CreateThemesSettings" = 2;
+
     # 2 (Disable) turns off generative AI debugging explanations in Chrome Developer Tools.
     "DevToolsGenAiSettings" = 2;
   };
@@ -286,10 +350,13 @@ let
   localAi = {
     # 1 (Block) explicitly stops Chrome from silently downloading local foundational AI models to disk.
     "GenAILocalFoundationalModelSettings" = 1;
+
     # 1 (Block) prevents Gemini from acting on active web pages and reading DOM content.
     "GeminiActOnWebSettings" = 1;
+
     # false (Disable) disables built-in local AI APIs (LanguageModel, Summarization, Rewriter).
     "BuiltInAIAPIsEnabled" = false;
+
     # false (Disable) disables the built-in Translator API.
     "TranslatorAPIAllowed" = false;
   };
@@ -309,8 +376,11 @@ let
   autoplay = {
     # false (Disable) blocks HTML5 media from auto-playing globally.
     "AutoplayAllowed" = false;
+
     # ADD: Explicitly whitelist YouTube so playlists and auto-advance still function.
-    "AutoplayAllowlist" = [ "[*.]youtube.com" ];
+    "AutoplayAllowlist" = [
+      "[*.]youtube.com"
+    ];
   };
 
   # ==========================================
@@ -322,8 +392,10 @@ let
     #  *  The RAM Tax (10% to 20% Increase)
     #  *  CPU and IPC Overhead
     "SitePerProcess" = true;
+
     # false (Disable) turns off experimental Chrome features that lack full security audits.
     "BrowserLabsEnabled" = false;
+
     # 2 (Block) Strictly blocks mixed insecure (HTTP) content on secure pages.
     "DefaultInsecureContentSetting" = 2;
 
@@ -333,34 +405,30 @@ let
 
 in
 {
-  # Exposed library properties completely free of conjunctions
-  disableAccount = account;
-  disablePasswords = passwords;
-  disableAutofill = autofill;
-
-  disableDownloadRestrictions = downloadRestrictions;
-  disableSafeBrowsing = safeBrowsing;
-  disableSpellcheck = spellcheck;
-  disableGoogleUi = googleUi;
-
-  disableTelemetry = telemetry;
-  disableCloudReporting = cloudReporting;
-  disableDiagnostics = diagnostics;
-  disableTracking = tracking;
-
-  disableDns = dns;
-  disableIntranet = intranet;
-
-  disableHardwarePermissions = hardwarePermissions;
-  disableOsPermissions = osPermissions;
-  disableContentPermissions = contentPermissions;
-  disableNetworkPermissions = networkPermissions;
-
-  disableCloudAssist = cloudAssist;
-  disableCloudAi = cloudAi;
-  disableLocalAi = localAi;
-
-  disableUpdates = updates;
-  disableAutoplay = autoplay;
-  enableCoreSecurity = coreSecurity;
+  # Returns one master attribute containing every hardened policy merged together.
+  policies = lib.mergeAttrsList [
+    account
+    passwords
+    autofill
+    downloadRestrictions
+    safeBrowsing
+    spellcheck
+    googleUi
+    telemetry
+    cloudReporting
+    diagnostics
+    tracking
+    dns
+    intranet
+    hardwarePermissions
+    osPermissions
+    contentPermissions
+    networkPermissions
+    cloudAssist
+    cloudAi
+    localAi
+    updates
+    autoplay
+    coreSecurity
+  ];
 }

@@ -15,56 +15,14 @@
     videos = "${config.home.homeDirectory}/Videos";
     extraConfig = {
       XDG_PROJECTS_DIR = "${config.home.homeDirectory}/repo";
-      #XDG_WORK_DIR = "${config.home.homeDirectory}/Work";
     };
   };
+  gtk.gtk3.bookmarks = [
+    "file://${config.home.homeDirectory}/Desktop Desktop"
+    "file://${config.home.homeDirectory}/repo repo"
+  ];
 
   xdg.mime = {
     enable = true;
   };
-
-  # NOTE: If enabled, generated config $XDG_CONFIG_HOME/mimeapps.list will be read-only.
-  #xdg.mimeApps = {
-  #  enable = true;
-
-  #  # Default applications
-  #  defaultApplications = {
-  #    "image/png" = [
-  #      "swayimg.desktop"
-  #      "gimp.desktop"
-  #    ];
-  #    "image/jpeg" = [
-  #      "swayimg.desktop"
-  #      "gimp.desktop"
-  #    ];
-  #    "image/gif" = [
-  #      "swayimg.desktop"
-  #      "gimp.desktop"
-  #    ];
-  #    "image/webp" = [
-  #      "swayimg.desktop"
-  #      "gimp.desktop"
-  #    ];
-  #    "image/svg" = [
-  #      "swayimg.desktop"
-  #      "gimp.desktop"
-  #    ];
-  #    "image/raw" = [
-  #      "swayimg.desktop"
-  #      "gimp.desktop"
-  #    ];
-  #    "image/tiff" = [
-  #      "swayimg.desktop"
-  #      "gimp.desktop"
-  #    ];
-  #    "image/heif" = [
-  #      "swayimg.desktop"
-  #      "gimp.desktop"
-  #    ];
-  #    "image/bmp" = [
-  #      "swayimg.desktop"
-  #      "gimp.desktop"
-  #    ];
-  #  };
-  #};
 }

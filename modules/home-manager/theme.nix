@@ -7,6 +7,14 @@
   ...
 }:
 
+# TODO:: check if this is needed for file picker after restart (chrome / signal)
+# dconf.settings = {
+#     "org/gnome/desktop/interface" = {
+#       text-scaling-factor = 1.3;
+#     };
+#   };
+
+
 with lib;
 
 let
