@@ -11,6 +11,9 @@ vim.opt.colorcolumn = "100"
 vim.opt.scrolloff = 10
 vim.opt.sidescrolloff = 0
 
+-- always wrap text
+vim.opt.wrap = true
+
 -- Disable auto formatting
 vim.g.autoformat = false
 
@@ -18,7 +21,7 @@ vim.g.autoformat = false
 vim.g.snacks_animate = false
 
 -- Disable spell check
-vim.opt_local.spell = false
+vim.opt.spell = false
 
 -- This empties the snack status column
 -- Also check ../plugins/snacks.lua
