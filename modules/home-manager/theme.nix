@@ -7,19 +7,21 @@
   ...
 }:
 
-# TODO:: check if this is needed for file picker after restart (chrome / signal)
-# dconf.settings = {
-#     "org/gnome/desktop/interface" = {
-#       text-scaling-factor = 1.3;
-#     };
-#   };
-
-
 with lib;
 
 let
   cfg = config.cytopia.ui.theme;
 
+  # Scaling:
+  # XWayland (Legacy X11/GTK/Qt): Scaled via xresources.
+  # Native GTK (Wayland): Scaled via dconf.
+  # Native Qt (Wayland): Scaled via QT_WAYLAND_FORCE_DPI.
+  # Cursors: Handled natively and via environment variables.
+  scaling = {
+    factor = cfg.scalingFactor;
+    dpi = builtins.floor (cfg.scalingFactor * 96.0);
+    cursor = builtins.floor (cfg.scalingFactor * (cfg.cursor.size * 1.0));
+  };
 in
 {
   ###
@@ -96,7 +98,8 @@ in
   config = mkIf cfg.enable {
     # --- Cursor ---
     home.pointerCursor = {
-      inherit (cfg.cursor) name package size;
+      inherit (cfg.cursor) name package;
+      size = if (cfg.scalingFactor != 1.0) then scaling.cursor else cfg.cursor.size;
       gtk.enable = true;
       x11.enable = true;
       sway.enable = true;
@@ -137,17 +140,31 @@ in
       };
     };
 
+    # Scaling
+    dconf.settings = lib.optionalAttrs (cfg.scalingFactor != 1.0) {
+      "org/gnome/desktop/interface" = {
+        text-scaling-factor = lib.hm.gvariant.mkDouble scaling.factor; # Enforce strict GVariant double type to prevent trailing zero strings
+        cursor-size = scaling.cursor;
+      };
+    };
+
+    xresources.properties = lib.optionalAttrs (cfg.scalingFactor != 1.0) {
+      "Xft.dpi" = scaling.dpi;
+    };
+
     # --- Misc Apps ---
     home.sessionVariables =
+      # Only added if scalingFactor is not 1.0
       lib.optionalAttrs (cfg.scalingFactor != 1.0) {
-        # Only added if scalingFactor is not 1.0
-        GDK_DPI_SCALE = toString cfg.scalingFactor;
-        QT_SCALE_FACTOR = toString cfg.scalingFactor;
+        QT_WAYLAND_FORCE_DPI = toString scaling.dpi;
+        #GDK_DPI_SCALE = toString cfg.scalingFactor;
+        #QT_SCALE_FACTOR = toString cfg.scalingFactor;
       }
       // {
         # GTK2 and Motif
+        XCURSOR_SIZE =
+          if (cfg.scalingFactor != 1.0) then toString scaling.cursor else toString cfg.cursor.size;
         XCURSOR_THEME = cfg.cursor.name;
-        XCURSOR_SIZE = toString cfg.cursor.size;
 
         # Flatpak apps
         GTK_THEME = "Arc-Dark";
