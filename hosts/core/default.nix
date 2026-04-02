@@ -23,6 +23,8 @@
     ../../modules/nixos/system/user.nix
     ../../modules/nixos/system/keyring.nix
     # Networking
+    ../../modules/nixos/networking/services/ntp.nix
+    ../../modules/nixos/networking/services/dns.nix
     ../../modules/nixos/networking/simple.nix
     # Services
     ../../modules/nixos/services/power-management.nix
@@ -123,6 +125,8 @@
     enable = true;
     hostName = hostname;
   };
+  mySystem.networking.service.ntp.enable = true;
+  mySystem.networking.service.dns.enable = true;
 
   ###
   ### My Modules: Services
