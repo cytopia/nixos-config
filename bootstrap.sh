@@ -1,25 +1,26 @@
 #!/bin/sh
 
-# currently not working
+# Not yet finished and working
 exit 1
 
 
 # How to run this script as root:
-# nix-shell -p curl --run "curl -sSL https://raw.githubusercontent.com/cytopia/nixos-config/main/bootstrap.sh" | bash
+# nix-shell -p curl --run \
+#   "curl -sSL https://raw.githubusercontent.com/cytopia/nixos-config/main/bootstrap.sh" \
+#   | bash -s -- my_custom_host my_custom_user
 
 set -e
 set -u
 
+# Assign variables from command line arguments (fails if not provided)
+MY_HOST="${1:?ERROR: You must provide a hostname as the second argument}"
+MY_USER="${2:?ERROR: You must provide a username as the first argument}"
+
 
 # The system user to use
-MY_USER="cytopia"
-
 REPO_LINK="https://github.com/cytopia/nixos-config"
 REPO_PATH="/home/${MY_USER}/.config/nixos-config"
 
-# The default nixos custom config within above specified repository
-# that must be included in /etc/nixos/configuration.nix
-MY_CONFIG="${REPO_PATH}/default.nix"
 
 
 ####################################################################################################
@@ -33,22 +34,6 @@ MY_CONFIG="${REPO_PATH}/default.nix"
 ###
 if [ "$(id -u)" -ne "0" ]; then
 	echo "ERROR: This script must be run as root"
-	exit 1
-fi
-
-###
-### 2. Check if user exists
-###
-if ! getent passwd "${MY_USER}" > /dev/null 2>&1; then
-	echo "ERROR: User does not exist: ${MY_USER}"
-	exit 1
-fi
-
-###
-### 3. Check if home directory exist
-###
-if [ ! -e "/home/${MY_USER}" ]; then
-	echo "ERROR: Home directory does not exist: /home/${MY_USER}"
 	exit 1
 fi
 

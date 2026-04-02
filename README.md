@@ -43,12 +43,6 @@ home-manager expire-generations "-14 days"
 nix-collect-garbage -d
 ```
 
-## Logs
-```
-# Session
-journalctl -u greetd
-```
-
 ## Credits
 
 Inpsired by [Misterio77](https://github.com/Misterio77/nix-starter-configs)

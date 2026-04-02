@@ -200,6 +200,7 @@
     extensions = [
       "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
       "ddkjiahejlhfcafbddmgiahcphecmpfh" # uBlock Origin Lite
+      "ckkdlimhmcjmikdlpkmbgfkaikojcbjk" # Markdown Viewer
       "mnjggcdmjocbbbhaepdhchncahnbgone" # SponsorBlock for YouTube
       "gebbhagfogifgggkldgodflihgfeippi" # Return YouTube Dislike
     ];
