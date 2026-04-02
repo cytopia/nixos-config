@@ -17,27 +17,30 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 -- -------------------------------------------------------------------------------------------------
 -- Mark trailing whitespace
 -- -------------------------------------------------------------------------------------------------
+
 vim.api.nvim_set_hl(0, "RedTrailing", { bg = "#ff0000" })
 
 local trailing_space_group = vim.api.nvim_create_augroup("TrailingSpace", { clear = true })
 
--- Function to check if we should highlight or hide
 local function apply_trailing_highlight()
-  -- List of filetypes to explicitly ignore
-  local excluded_fts = { "snacks_dashboard", "alpha", "lazy", "mason", "neo-tree" }
+  -- vim.schedule defers the check until LazyVim has fully loaded the UI
+  vim.schedule(function()
+    -- Failsafe: check if the buffer still exists after the delay
+    if not vim.api.nvim_buf_is_valid(0) then return end
 
-  -- If it's a special buffer OR an excluded filetype, clear the match and stop
-  if vim.bo.buftype ~= "" or vim.tbl_contains(excluded_fts, vim.bo.filetype) then
-    vim.cmd([[match none]])
-    return
-  end
+    local excluded_fts = { "snacks_dashboard", "alpha", "lazy", "mason", "neo-tree", "snacks_explorer" }
 
-  -- Otherwise, apply the red highlight
-  vim.cmd([[match RedTrailing /\s\+$/]])
+    if vim.bo.buftype ~= "" or not vim.bo.modifiable or not vim.bo.buflisted or vim.tbl_contains(excluded_fts, vim.bo.filetype) then
+      pcall(vim.cmd, "match none")
+      return
+    end
+
+    vim.cmd([[match RedTrailing /\s\+$/]])
+  end)
 end
 
--- Trigger the check when entering windows, buffers, or leaving insert mode
-vim.api.nvim_create_autocmd({ "BufWinEnter", "WinEnter", "InsertLeave" }, {
+-- Added 'FileType' to the list so it catches the dashboard the moment it identifies itself
+vim.api.nvim_create_autocmd({ "BufWinEnter", "WinEnter", "InsertLeave", "FileType" }, {
   group = trailing_space_group,
   callback = apply_trailing_highlight,
 })
@@ -46,6 +49,6 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "WinEnter", "InsertLeave" }, {
 vim.api.nvim_create_autocmd("InsertEnter", {
   group = trailing_space_group,
   callback = function()
-    vim.cmd([[match none]])
+    pcall(vim.cmd, "match none")
   end,
 })
