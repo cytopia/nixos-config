@@ -83,10 +83,10 @@ set $WS2 2  tty
 set $WS3 3  web
 set $WS4 4  dev
 set $WS5 5  mail
-set $WS6 6  x
+set $WS6 6 
 set $WS7 7  files
-set $WS8 8  x
-set $WS9 9  x
+set $WS8 8 
+set $WS9 9 
 set $WS10 10  tmp
 
 
