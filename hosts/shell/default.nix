@@ -1,5 +1,4 @@
 {
-  config,
   pkgs,
   pkgs-unstable,
   hostname,
@@ -24,6 +23,8 @@
     ../../modules/nixos/system/user.nix
     ../../modules/nixos/system/keyring.nix
     # Networking
+    ../../modules/nixos/networking/services/ntp.nix
+    ../../modules/nixos/networking/services/dns.nix
     ../../modules/nixos/networking/simple.nix
     # Services
     ../../modules/nixos/services/power-management.nix
@@ -124,6 +125,8 @@
     enable = true;
     hostName = hostname;
   };
+  mySystem.networking.service.ntp.enable = true;
+  mySystem.networking.service.dns.enable = true;
 
   ###
   ### My Modules: Services
@@ -190,43 +193,30 @@
 
   mySystem.programs.chromium = {
     enable = true;
-    scalingFactor = 1.0; #appScaleFactor;
-    gpuEngine = {
-      displayServer = "wayland";
-      engine = "vulkan";
-    };
-    engineOptimizations = {
-      enableGpuRasterization = true;
-      enableMemoryManagement = true;
-      enableIgnoreGpuBlocklist = true;
-      enableSafetyOverrides = false;
-    };
-    engineFeatures = {
-      enableVideoAcceleration = true;
-      enableTreesInViz = true;
-      enableWebNn = true;
-      enableSkiaGraphite = false;
-    };
+    browser = "chromium";
+    scalingFactor = appScaleFactor;
+    waylandFractionalScalingSupport = true;
+
+    extensions = [
+      "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
+      "ddkjiahejlhfcafbddmgiahcphecmpfh" # uBlock Origin Lite
+      "mnjggcdmjocbbbhaepdhchncahnbgone" # SponsorBlock for YouTube
+      "gebbhagfogifgggkldgodflihgfeippi" # Return YouTube Dislike
+    ];
   };
+
   mySystem.programs.google-chrome = {
     enable = true;
-    scalingFactor = 1.0; #appScaleFactor;
-    gpuEngine = {
-      displayServer = "wayland";
-      engine = "vulkan";
-    };
-    engineOptimizations = {
-      enableGpuRasterization = true;
-      enableMemoryManagement = true;
-      enableIgnoreGpuBlocklist = true;
-      enableSafetyOverrides = false;
-    };
-    engineFeatures = {
-      enableVideoAcceleration = true;
-      enableTreesInViz = true;
-      enableWebNn = true;
-      enableSkiaGraphite = false;
-    };
+    browser = "google-chrome";
+    scalingFactor = appScaleFactor;
+    waylandFractionalScalingSupport = true;
+
+    extensions = [
+      "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
+      "ddkjiahejlhfcafbddmgiahcphecmpfh" # uBlock Origin Lite
+      "jpmkfafbacpgapdghgdpembnojdlgkdl" # AWS Extend Roles
+      "aeblfdkhhhdcdjpifhhbdiojplfjncoa" # 1Password
+    ];
   };
 
   # Adds standard Linux paths
