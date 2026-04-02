@@ -488,6 +488,7 @@ bindsym Print exec grim -t png ~/Desktop/screenshot-$(date +%Y-%m-%d__%H-%M-%S)-
 bindsym $mod+Print exec grim -t png -g "$(slurp)" ~/Desktop/screenshot-$(date +%Y-%m-%d__%H-%M-%S)-selection.png
 
 
+
 ############################################################
 # Apps
 ############################################################
@@ -496,7 +497,9 @@ bindsym $mod+Print exec grim -t png -g "$(slurp)" ~/Desktop/screenshot-$(date +%
 bindsym $mod+Return exec $term
 
 # Start your launcher
-bindsym $mod+d exec $menu
+bindsym $mod+d exec ~/bin/fuzzel-emoji
+
+# Emoji keyboard
 bindsym $mod+space exec fuzzel
 
 # Notification
