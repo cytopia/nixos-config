@@ -11,8 +11,6 @@ let
   # Map the package names to their exact /etc directory roots
   policyPaths = {
     "google-chrome" = "opt/chrome";
-    "chromium" = "chromium";
-    "brave" = "brave";
   };
 
   # Resolve the correct path based on the user's selection
@@ -295,8 +293,17 @@ in
           ) "--force-device-scale-factor=${builtins.toJSON cfg.scalingFactor}";
 
           # 5. Define the base package with flags first to keep the code readable
+          #baseChrome = prev.${cfg.browser}.override {
+          #  commandLineArgs = combined.flags ++ enableFeatureFlag ++ disableFeatureFlag ++ scalingFlag;
+          #};
+
+          # 5. Define the base package with command line flags.
+          # We must use escapeShellArg on the flags so Nixpkgs' internal wrapper
+          # doesn't strip quotes from flags that contain spaces (like the update blocker).
           baseChrome = prev.${cfg.browser}.override {
-            commandLineArgs = combined.flags ++ enableFeatureFlag ++ disableFeatureFlag ++ scalingFlag;
+            commandLineArgs = map lib.escapeShellArg (
+              combined.flags ++ enableFeatureFlag ++ disableFeatureFlag ++ scalingFlag
+            );
           };
 
           # 6. Map the extraEnvVars to makeWrapper arguments safely
@@ -307,23 +314,34 @@ in
             )
           );
 
+          # The command that will re-wrap the binaries natively
+          wrapCmd = ''
+            for bin in $out/bin/*; do
+              if [ -f "$bin" ] && [ -x "$bin" ]; then
+                wrapProgram "$bin" ${wrapperEnvArgs}
+              fi
+            done
+          '';
+
         in
         {
-          # Rewrite the chromium package system-wide using symlinkJoin
-          ${cfg.browser} = prev.symlinkJoin {
-            name = "${baseChrome.name}-env-wrapped";
-            paths = [ baseChrome ];
-            nativeBuildInputs = [ prev.makeWrapper ];
-
-            # Wrap all executables in the bin directory to ensure the env var
-            # is applied whether launched via terminal or the .desktop file.
-            postBuild = ''
-              for bin in $out/bin/*; do
-                wrapProgram "$bin" \
-                  ${wrapperEnvArgs}
-              done
-            '';
-          };
+          # Natively override the derivation's build attributes.
+          # This rebuilds the wrapper natively, meaning the package's own .desktop
+          # file generation logic will automatically resolve to our new $out path.
+          ${cfg.browser} = baseChrome.overrideAttrs (
+            oldAttrs:
+            {
+              nativeBuildInputs = (oldAttrs.nativeBuildInputs or [ ]) ++ [ prev.makeWrapper ];
+            }
+            # Chromium uses a monolithic `buildCommand`
+            // lib.optionalAttrs (oldAttrs ? buildCommand) {
+              buildCommand = oldAttrs.buildCommand + wrapCmd;
+            }
+            # Google Chrome uses standard phases like `postFixup`
+            // lib.optionalAttrs (!(oldAttrs ? buildCommand)) {
+              postFixup = (oldAttrs.postFixup or "") + wrapCmd;
+            }
+          );
         }
       )
     ];
