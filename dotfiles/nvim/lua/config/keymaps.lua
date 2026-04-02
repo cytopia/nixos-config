@@ -41,6 +41,9 @@ vim.keymap.set("n", "<leader>r", function()
 end, { desc = "Reload Full Neovim Config" })
 
 
+-- Open current file in browser (usefull for markdown files with a browser markdown plugin)
+vim.keymap.set("n", "<F10>", ":!chromium %<CR>", { desc = "Open current file in Chromium" })
+
 -- --------------------------------------------------------------------------------
 -- Custom Ctrl Maps
 -- --------------------------------------------------------------------------------
