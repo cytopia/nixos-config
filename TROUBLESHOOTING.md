@@ -41,3 +41,12 @@ Specific Quad9 verification
 ```bash
 curl https://on.quad9.net
 ```
+
+
+## GUI
+
+### Logs
+```bash
+# Session
+journalctl -u greetd
+```
