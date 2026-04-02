@@ -197,6 +197,11 @@
     scalingFactor = appScaleFactor;
     waylandFractionalScalingSupport = true;
 
+    # Ensure all Vulkan layers (e.g. OBS are removed)
+    startup.extraEnvVars = {
+    "VK_LOADER_LAYERS_DISABLE" = "~implicit~";
+    };
+
     extensions = [
       "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
       "ddkjiahejlhfcafbddmgiahcphecmpfh" # uBlock Origin Lite
@@ -211,6 +216,11 @@
     browser = "google-chrome";
     scalingFactor = appScaleFactor;
     waylandFractionalScalingSupport = true;
+
+    # Ensure all Vulkan layers (e.g. OBS are removed)
+    startup.extraEnvVars = {
+    "VK_LOADER_LAYERS_DISABLE" = "~implicit~";
+    };
 
     extensions = [
       "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium

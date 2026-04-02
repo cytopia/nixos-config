@@ -10,7 +10,6 @@ let
 
   # Map the package names to their exact /etc directory roots
   policyPaths = {
-    "google-chrome" = "opt/chrome";
     "chromium" = "chromium";
     "brave" = "brave";
   };
@@ -295,33 +294,68 @@ in
           ) "--force-device-scale-factor=${builtins.toJSON cfg.scalingFactor}";
 
           # 5. Define the base package with flags first to keep the code readable
+          #baseChrome = prev.${cfg.browser}.override {
+          #  commandLineArgs = combined.flags ++ enableFeatureFlag ++ disableFeatureFlag ++ scalingFlag;
+          #};
+
+          # 1. Define the base package with command line flags.
+          # We map escapeShellArg to safely handle flags with spaces (like dates).
           baseChrome = prev.${cfg.browser}.override {
-            commandLineArgs = combined.flags ++ enableFeatureFlag ++ disableFeatureFlag ++ scalingFlag;
+            commandLineArgs = map lib.escapeShellArg (
+              combined.flags ++ enableFeatureFlag ++ disableFeatureFlag ++ scalingFlag
+            );
           };
 
-          # 6. Map the extraEnvVars to makeWrapper arguments safely
-          # Converts { "TZ" = "UTC"; } into "--set 'TZ' 'UTC'"
+          # 2. Map the extraEnvVars to makeWrapper arguments safely
           wrapperEnvArgs = lib.concatStringsSep " " (
             lib.mapAttrsToList (key: value: "--set ${lib.escapeShellArg key} ${lib.escapeShellArg value}") (
               privacyVars.default // cfg.startup.extraEnvVars
             )
           );
-
         in
         {
-          # Rewrite the chromium package system-wide using symlinkJoin
+          # 3. Use symlinkJoin to wrap the browser and inject environment variables.
+          # This works universally across Chromium, Brave, and Google Chrome.
           ${cfg.browser} = prev.symlinkJoin {
             name = "${baseChrome.name}-env-wrapped";
             paths = [ baseChrome ];
             nativeBuildInputs = [ prev.makeWrapper ];
 
-            # Wrap all executables in the bin directory to ensure the env var
-            # is applied whether launched via terminal or the .desktop file.
             postBuild = ''
-              for bin in $out/bin/*; do
-                wrapProgram "$bin" \
-                  ${wrapperEnvArgs}
+              # A. Wrap all binaries to inject our environment variables (like VK_LOADER_LAYERS_DISABLE)
+              for binPath in $out/bin/*; do
+                if [ -f "$binPath" ] && [ -x "$binPath" ]; then
+                  wrapProgram "$binPath" ${wrapperEnvArgs}
+                fi
               done
+
+              # B. Fix the Desktop files so application launchers CANNOT bypass our wrapper
+              if [ -e "$out/share/applications" ]; then
+                # 1. Get the true path of the original read-only applications folder
+                orig_apps=$(readlink -f "$out/share/applications")
+                # 2. Delete the symlink from our $out directory
+                rm -rf "$out/share/applications"
+                # 3. Recreate it as a REAL directory owned by our wrapper
+                mkdir -p "$out/share/applications"
+                # 4. Copy the actual files into our new real directory
+                cp -a "$orig_apps"/* "$out/share/applications/"
+                # 5. Make the new copies writable so sed can edit them
+                chmod -R +w "$out/share/applications"
+                # 6. Finally, update the Exec= lines
+                for desktop in "$out/share/applications"/*.desktop; do
+                  for binPath in $out/bin/*; do
+                    # Skip hidden wrapped files created by wrapProgram
+                    [[ "$binPath" == *"-wrapped" ]] && continue
+                    binName=$(basename "$binPath")
+                    # Fix relative paths (Chromium: Exec=chromium -> Exec=$out/bin/chromium)
+                    sed -i "s|^Exec=''${binName} |Exec=$out/bin/''${binName} |g" "$desktop"
+                    sed -i "s|^Exec=''${binName}$|Exec=$out/bin/''${binName}|g" "$desktop"
+                    # Fix absolute paths (Google Chrome: Exec=/nix/store/.../bin/google-chrome)
+                    sed -i "s|^Exec=[^ ]*/bin/''${binName} |Exec=$out/bin/''${binName} |g" "$desktop"
+                    sed -i "s|^Exec=[^ ]*/bin/''${binName}$|Exec=$out/bin/''${binName}|g" "$desktop"
+                  done
+                done
+              fi
             '';
           };
         }
