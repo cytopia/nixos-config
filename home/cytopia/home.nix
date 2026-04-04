@@ -118,11 +118,12 @@
     mpv
     shotcut
 
-    # Work
+    # productive
     pkgs-unstable.devbox
     gum
     saml2aws
     awscli2
+    lens
     jq
     yq
 
