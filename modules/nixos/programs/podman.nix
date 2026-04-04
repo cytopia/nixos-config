@@ -54,7 +54,17 @@ in
 
     # --- INFRASTRUCTURE ---
     # Required for subuid/subgid mappings (Rootless mode)
-    virtualisation.containers.enable = true;
+    virtualisation.containers = {
+      enable = true;
+
+      # Force Netavark to use pure nftables,
+      # eliminating the legacy iptables-nft translation tables.
+      containersConf.settings = {
+        network = {
+          firewall_driver = "nftables";
+        };
+      };
+    };
 
     # Automatic Storage Management
     # Containers eat disk space rapidly. This ensures that

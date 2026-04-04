@@ -31,7 +31,7 @@
       # Default args
       grep = "grep --color=auto --binary-file=without-match";
       rgrep = "grep -r --color=auto --binary-file=without-match";
-      df = "df -h";
+      df = "df -hT";
       du = "du -h";
     };
     ls = {
