@@ -6,7 +6,50 @@
   appScaleFactor,
   ...
 }:
+let
 
+  dnscryptLocalDoh = {
+    enable = true;
+    port = 3000;
+    path = "/dns-query";
+    caCertPath = "/run/local-doh-ca/rootCA.pem";
+  };
+
+  bowserSettingsWithLocalDoh = {
+    extraPolicies =
+      if dnscryptLocalDoh.enable then
+        {
+          "BuiltInDnsClientEnabled" = true;
+          "AdditionalDnsQueryTypesEnabled" = true;
+          "EncryptedClientHelloEnabled" = true;
+          # Enable Secure DNS (DoH) so Chromium trusts the connection and enables ECH.
+          "DnsOverHttpsMode" = "secure";
+
+          # Point Chromium strictly to our local dnscrypt-proxy instance using the TLS cert.
+          "DnsOverHttpsTemplates" = "https://localhost:${toString dnscryptLocalDoh.port}${dnscryptLocalDoh.path}";
+
+          # Bypass DoH for internal/VPN domains.
+          # Chromium will send these to systemd-resolved (plaintext), which will correctly route them to the VPN's nameserver.
+          "DnsOverHttpsExcludedDomains" = [
+            "*.local" # mDNS local domains
+            "*.internal" # Common internal networks
+          ];
+        }
+      else
+        { };
+    customCaCerts =
+      if dnscryptLocalDoh.enable then
+        [
+          {
+            name = "dnscrypt-proxy";
+            path = dnscryptLocalDoh.caCertPath;
+          }
+        ]
+      else
+        [ ];
+  };
+
+in
 {
   imports = [
     # NixOS hardware config: sudo nixos-generate-config
@@ -128,7 +171,51 @@
     hostName = hostname;
   };
   mySystem.networking.service.ntp.enable = true;
-  mySystem.networking.service.dns.enable = true;
+  mySystem.networking.service.dns = {
+    enable = true;
+    query = {
+      #protocol = "dnscrypt-ecs";
+      protocol = "doh";
+      http3 = true;
+      ipv6 = false;
+      #viaProxy = true;
+      viaProxy = false;
+    };
+
+    # Enable local DoH server (see let..in for options)
+    localDoh = dnscryptLocalDoh;
+
+    localBlockList = {
+      enable = true;
+      urls = [
+        "https://raw.githubusercontent.com/PolishFiltersTeam/KADhosts/master/KADhosts.txt"
+        "https://raw.githubusercontent.com/FadeMind/hosts.extras/master/add.Spam/hosts"
+        "https://v.firebog.net/hosts/static/w3kbl.txt"
+        "https://adaway.org/hosts.txt"
+        "https://v.firebog.net/hosts/AdguardDNS.txt"
+        "https://v.firebog.net/hosts/Admiral.txt"
+        "https://raw.githubusercontent.com/anudeepND/blacklist/master/adservers.txt"
+        "https://v.firebog.net/hosts/Easylist.txt"
+        "https://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&showintro=0&mimetype=plaintext"
+        "https://raw.githubusercontent.com/FadeMind/hosts.extras/master/UncheckyAds/hosts"
+        "https://raw.githubusercontent.com/bigdargon/hostsVN/master/hosts"
+        "https://v.firebog.net/hosts/Easyprivacy.txt"
+        "https://v.firebog.net/hosts/Prigent-Ads.txt"
+        "https://raw.githubusercontent.com/FadeMind/hosts.extras/master/add.2o7Net/hosts"
+        "https://raw.githubusercontent.com/crazy-max/WindowsSpyBlocker/master/data/hosts/spy.txt"
+        "https://hostfiles.frogeye.fr/firstparty-trackers-hosts.txt"
+        "https://download.dnscrypt.info/blacklists/domains/mybase.txt"
+      ];
+    };
+    whitelist = [
+      "ip-api.com"
+    ];
+    localMonitoring = {
+      enable = true;
+      port = 4400;
+    };
+  };
+  #services.opensnitch.enable = true;
 
   ###
   ### My Modules: Services
@@ -198,12 +285,13 @@
     browser = "chromium";
     scalingFactor = appScaleFactor;
     waylandFractionalScalingSupport = true;
-
     # Ensure all Vulkan layers (e.g. OBS are removed)
     startup.extraEnvVars = {
-    "VK_LOADER_LAYERS_DISABLE" = "~implicit~";
+      "VK_LOADER_LAYERS_DISABLE" = "VK_LAYER_OBS_vkcapture_32,VK_LAYER_OBS_vkcapture_64";
     };
-
+    # Use dnscrypt-proxy as a local DoH resolver?
+    extraPolicies = bowserSettingsWithLocalDoh.extraPolicies;
+    customCaCerts = bowserSettingsWithLocalDoh.customCaCerts;
     extensions = [
       "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
       "ddkjiahejlhfcafbddmgiahcphecmpfh" # uBlock Origin Lite
@@ -218,12 +306,13 @@
     browser = "google-chrome";
     scalingFactor = appScaleFactor;
     waylandFractionalScalingSupport = true;
-
     # Ensure all Vulkan layers (e.g. OBS are removed)
     startup.extraEnvVars = {
-    "VK_LOADER_LAYERS_DISABLE" = "~implicit~";
+      "VK_LOADER_LAYERS_DISABLE" = "VK_LAYER_OBS_vkcapture_32,VK_LAYER_OBS_vkcapture_64";
     };
-
+    # Use dnscrypt-proxy as a local DoH resolver?
+    extraPolicies = bowserSettingsWithLocalDoh.extraPolicies;
+    customCaCerts = bowserSettingsWithLocalDoh.customCaCerts;
     extensions = [
       "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
       "ddkjiahejlhfcafbddmgiahcphecmpfh" # uBlock Origin Lite

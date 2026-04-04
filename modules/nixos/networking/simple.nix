@@ -40,14 +40,31 @@ in
       # iwd is faster at scanning and handles roaming better than wpa_supplicant.
       wifi.backend = "iwd";
 
-      # "random" generates a new MAC every time you connect.
-      # "stable" generates a unique, persistent MAC per network (usually preferred).
-      wifi.macAddress = "stable";
+      # Do not touch /etc/resolv.conf
+      dns = lib.mkForce "none";
+      # Do not secretly push DHCP updates to systemd-resolved over D-Bus.
+      settings = {
+        main = {
+          systemd-resolved = false;
+        };
+      };
     };
 
     # Required daemon for the NM backend choice above.
     networking.wireless.iwd = {
       enable = true;
+      settings = {
+        # Privacy Tweaks
+        # This enables MAC address randomization every time you connect
+        # to a new network, making you harder to track in public spaces.
+        Network = {
+          EnableIPv6 = true;
+          RoutePriority = 20;
+        };
+        General = {
+          AddressRandomization = "network";
+        };
+      };
     };
 
     # --- THE USER INTERFACE ---
