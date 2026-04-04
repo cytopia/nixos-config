@@ -184,18 +184,28 @@ let
   # ==========================================
   dns = {
     # 2 (Disable) stops DNS prefetching and network prediction, preventing accidental data leaks.
+    # No more "guessing" what you'll click.
     "NetworkPredictionOptions" = 2;
 
     # NECESSARY FOR PRIVACY (ECH):
     # true (Enable) allows Chrome to use its internal DNS stub resolver instead of legacy OS calls.
     # Legacy OS calls (getaddrinfo) cannot fetch HTTPS/Type 65 records required for ECH keys.
     # Keeping this TRUE ensures ECH works while still routing all traffic locally.
-    "BuiltInDnsClientEnabled" = true;
+    #
+    # Force System Resolver:
+    # false (Disable) tells Chromium to STOP using its internal async DNS client.
+    # It will now use the standard OS 'getaddrinfo()' call, making it identical
+    # to 'ping' or 'curl'. It will strictly follow /etc/resolv.conf.
+    "BuiltInDnsClientEnabled" = false;
 
     # NECESSARY FOR PRIVACY (ECH):
     # true (Enable) allows the browser to query for special HTTPS DNS records (Type 65).
     # These records contain the public keys used to encrypt your SNI (destination hostname).
-    "AdditionalDnsQueryTypesEnabled" = true;
+    #
+    # false (Disable) stops Chromium from asking for Type 65 (HTTPS/SVCB) records.
+    # Since we aren't using ECH, these queries are just unnecessary noise that
+    # some standard system resolvers don't handle well.
+    "AdditionalDnsQueryTypesEnabled" = false;
 
     # FORCES LOCAL ROUTING:
     # "off" (Disable) prevents Chrome from using its own built-in DoH list.
