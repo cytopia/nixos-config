@@ -285,6 +285,8 @@ in
     browser = "chromium";
     scalingFactor = appScaleFactor;
     waylandFractionalScalingSupport = true;
+    gpu.engine.displayServer = "wayland";
+
     # Ensure all Vulkan layers (e.g. OBS are removed)
     startup.extraEnvVars = {
       "VK_LOADER_LAYERS_DISABLE" = "VK_LAYER_OBS_vkcapture_32,VK_LAYER_OBS_vkcapture_64";
@@ -306,6 +308,8 @@ in
     browser = "google-chrome";
     scalingFactor = appScaleFactor;
     waylandFractionalScalingSupport = true;
+    gpu.engine.displayServer = "wayland";
+
     # Ensure all Vulkan layers (e.g. OBS are removed)
     startup.extraEnvVars = {
       "VK_LOADER_LAYERS_DISABLE" = "VK_LAYER_OBS_vkcapture_32,VK_LAYER_OBS_vkcapture_64";
