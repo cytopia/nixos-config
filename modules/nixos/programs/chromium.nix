@@ -119,6 +119,37 @@ in
       ];
     };
 
+    customCaCerts = lib.mkOption {
+      type = lib.types.listOf (
+        lib.types.submodule {
+          options = {
+            name = lib.mkOption {
+              type = lib.types.str;
+              description = "Unique name for the cert. Used in the NSS database alias.";
+            };
+            path = lib.mkOption {
+              type = lib.types.str;
+              description = "Full path to the .pem file.";
+            };
+          };
+        }
+      );
+      default = [ ];
+      description = "List of CA certificates to sync with the browser's NSS database on launch.";
+    };
+
+    extraPolicies = lib.mkOption {
+      type = lib.types.attrs;
+      default = { };
+      description = ''
+        An attribute set of Chromium Enterprise Policies to append or overwrite.
+        Keys defined here will strictly overwrite identical keys from the hardened base library.
+      '';
+      example = {
+        "DnsOverHttpsMode" = "secure";
+      };
+    };
+
     startup = {
       extraFlags = lib.mkOption {
         type = lib.types.listOf lib.types.str;
@@ -227,7 +258,10 @@ in
 
     # --- Chrome Enterprise Policies
     environment.etc = {
-      "${policyPath}/policies/managed/policies.json".text = builtins.toJSON (privacyPolicies.policies);
+      # Merging the base policies with our new extraPolicies.
+      "${policyPath}/policies/managed/policies.json".text = builtins.toJSON (
+        privacyPolicies.policies // cfg.extraPolicies
+      );
       "${policyPath}/policies/managed/settings.json".text = builtins.toJSON (defaultSettingsPolicy);
       "${policyPath}/policies/managed/search.json".text = builtins.toJSON (searchEnginePolicy);
       "${policyPath}/policies/managed/extensions.json".text = builtins.toJSON {
@@ -293,25 +327,81 @@ in
             cfg.scalingFactor != 1.0
           ) "--force-device-scale-factor=${builtins.toJSON cfg.scalingFactor}";
 
-          # 5. Define the base package with flags first to keep the code readable
-          #baseChrome = prev.${cfg.browser}.override {
-          #  commandLineArgs = combined.flags ++ enableFeatureFlag ++ disableFeatureFlag ++ scalingFlag;
-          #};
-
-          # 1. Define the base package with command line flags.
-          # We map escapeShellArg to safely handle flags with spaces (like dates).
+          # 5. Define the base package with command line flags.
+          # We must use escapeShellArg on the flags so Nixpkgs' internal wrapper
+          # doesn't strip quotes from flags that contain spaces (like the update blocker).
           baseChrome = prev.${cfg.browser}.override {
             commandLineArgs = map lib.escapeShellArg (
               combined.flags ++ enableFeatureFlag ++ disableFeatureFlag ++ scalingFlag
             );
           };
 
-          # 2. Map the extraEnvVars to makeWrapper arguments safely
-          wrapperEnvArgs = lib.concatStringsSep " " (
-            lib.mapAttrsToList (key: value: "--set ${lib.escapeShellArg key} ${lib.escapeShellArg value}") (
-              privacyVars.default // cfg.startup.extraEnvVars
-            )
+          # Certificate Synchronization Script Logic
+          # This logic constructs a bash snippet to be executed via --run in makeWrapper.
+          # We use nssTools because the standard 'nss' package only contains libs, not binaries.
+          nssBin = "${pkgs.nssTools}/bin/certutil";
+
+          # 6.1 Generate 'add' commands for current Nix-defined certs
+          addCertsSnippet = lib.concatStringsSep "\n" (
+            map (cert: ''
+              if [ -f "${cert.path}" ]; then
+                echo "  [+] Syncing: NixOS-Managed-${cert.name}"
+                # trust flags are "CT,C,C" (Standard for Root CAs)
+                ${nssBin} -d sql:$HOME/.pki/nssdb -A -t "CT,C,C" -n "NixOS-Managed-${cert.name}" -i "${cert.path}" 2>/dev/null
+              fi
+            '') cfg.customCaCerts
           );
+
+          # 6.2 Identify active Nix-managed cert nicknames
+          activeNicknames = map (cert: "NixOS-Managed-${cert.name}") cfg.customCaCerts;
+
+          # 6.3 Generate 'cleanup' logic to prune orphaned Nix-managed certs
+          cleanupSnippet = ''
+            if [ -d "$HOME/.pki/nssdb" ]; then
+              ${nssBin} -d sql:$HOME/.pki/nssdb -L | grep "NixOS-Managed-" | while read -r line; do
+                # Robust nickname extraction.
+                # certutil -L uses fixed-width columns. This regex strips the trust
+                # flags AND all trailing whitespace/padding from the nickname.
+                nickname=$(echo "$line" | sed 's/ \{2,\}.*//; s/[[:space:]]*$//')
+
+                case "$nickname" in
+                  ${
+                    if activeNicknames == [ ] then
+                      "\"FORCE_EMPTY_MATCH\""
+                    else
+                      lib.concatStringsSep "|" (map (n: "\"${n}\"") activeNicknames)
+                  })
+                    # This cert is in our Nix config, do nothing
+                    ;;
+                  *)
+                    # log message for visibility
+                    echo "  [-] Pruning orphaned certificate: $nickname"
+                    ${nssBin} -d sql:$HOME/.pki/nssdb -D -n "$nickname" 2>/dev/null
+                    ;;
+                esac
+              done
+            fi
+          '';
+          # 6.4 Final combined command for the wrapper
+          fullCertSyncCmd = ''
+            # header for terminal visibility
+            echo "[*] Synchronizing Browser Certificates..."
+            if [ ! -d "$HOME/.pki/nssdb" ]; then
+              mkdir -p "$HOME/.pki/nssdb"
+              ${nssBin} -d sql:$HOME/.pki/nssdb -N --empty-password 2>/dev/null
+            fi
+            ${cleanupSnippet}
+            ${addCertsSnippet}
+          '';
+
+          # 7. Map the extraEnvVars to makeWrapper arguments safely
+          wrapperEnvArgs =
+            (lib.concatStringsSep " " (
+              lib.mapAttrsToList (key: value: "--set ${lib.escapeShellArg key} ${lib.escapeShellArg value}") (
+                privacyVars.default // cfg.startup.extraEnvVars
+              )
+            ))
+            + " --run ${lib.escapeShellArg fullCertSyncCmd}";
         in
         {
           # 3. Use symlinkJoin to wrap the browser and inject environment variables.

@@ -3,7 +3,8 @@ let
 
     # Timezone Spoofing: Forces Chrome's JS engine to report UTC instead of your real local timezone.
     # Blends your browser fingerprint into the largest generic pool of users, masking your physical location.
-    "TZ" = "UTC";
+    # Disabled: This can show a difference to the Javascript fetched timezone
+    #"TZ" = "UTC";
 
     # Locale/Language Spoofing: Normalizes date, time, number, and currency formatting.
     # Hides your specific regional OS settings, making your fingerprint generic (US English).

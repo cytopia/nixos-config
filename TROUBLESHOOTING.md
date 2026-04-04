@@ -51,6 +51,14 @@ Verif ECH (in browser)
 ## Flush DNS
 ```bash
 sudo resolvectl flush-caches
+sudo systemctl restart dnscrypt-proxy.service
+chrome://net-internals/#dns
+```
+
+## Check config
+```
+cat $(systemctl status dnscrypt-proxy | grep '\-config' | awk '{print $NF}')
+cat /etc/systemd/resolved.conf
 ```
 
 
