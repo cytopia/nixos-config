@@ -293,8 +293,9 @@ in
           chain input {
             type filter hook input priority -10; policy accept;
 
+            # DISABLED
             # 1. LOG LOCAL DoH HITS (Chrome -> Port 3000)
-            iifname "lo" meta l4proto { tcp, udp } th dport 3000 ct state new log prefix "[DNS-DoH-Local] "
+            #iifname "lo" meta l4proto { tcp, udp } th dport 3000 ct state new log prefix "[DNS-DoH-Local] "
           }
 
           chain output {
