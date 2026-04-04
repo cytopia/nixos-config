@@ -2,7 +2,7 @@
 
 
 ## Updates
-```
+```bash
 # stage new versions to update
 nix flake update
 
@@ -19,7 +19,7 @@ sudo systemctl restart nix-daemon
 ## Housekeeping
 
 ### System
-```
+```bash
 # List generations
 sudo nixos-rebuild list-generations
 
@@ -33,7 +33,7 @@ sudo nix-collect-garbage -d
 ```
 
 ### Home-Manager
-```
+```bash
 # List generations
 home-manager generations
 

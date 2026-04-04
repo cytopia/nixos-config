@@ -1,6 +1,10 @@
 { config, pkgs, ... }:
 
 {
+ home.packages = with pkgs; [
+    difftastic
+  ];
+
   programs.git = {
     enable = true;
 
@@ -82,6 +86,8 @@
         tree = "log --graph --decorate --oneline --all";
         tags = "tag --list --sort=-creatordate --format='%(color:yellow)%(refname:short)%(color:reset) \t%(creatordate:short) \t%(contents:subject)'";
         sig = "log --show-signature";
+
+        difft = "!GIT_EXTERNAL_DIFF=difft git diff";
       };
 
       delta = {

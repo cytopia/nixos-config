@@ -40,6 +40,8 @@
     ../../modules/nixos/programs/vim.nix
     ../../modules/nixos/programs/chromium.nix
     ../../modules/nixos/programs/google-chrome.nix
+    # Utils
+    ../../modules/nixos/utils/camera-toggle.nix
   ];
 
   ###
@@ -230,6 +232,14 @@
     ];
   };
 
+  ###
+  ### My Modules: Utils
+  ###
+  mySystem.utils.camera-toggle = {
+    enable = true;
+    userName = username;
+  };
+
   # Adds standard Linux paths
   # e.g. /lib64 and others
   # TODO: double-check if this is currently required
@@ -265,6 +275,7 @@
     wget
     dig
     tree
+    lsof
 
     # Essentials
     git

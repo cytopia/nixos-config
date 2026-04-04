@@ -7,11 +7,11 @@ icons = "material-nf"
 [[block]]
 block = "cpu"
 interval = 2
-format = " $icon $frequency ($utilization) "
+format = " $icon$frequency ($utilization) "
 
 [[block]]
 block = "temperature"
-format = " $icon $max "
+format = " $icon$max "
 
 # GPU
 [[block]]
@@ -44,16 +44,16 @@ echo "{\"text\": \"<span>󰢮 ${cur}MHz</span>\"}"
 
 [[block]]
 block = "memory"
-format = " $icon $mem_used.eng(w:3, p:G) ($mem_used_percents) "
+format = " $icon$mem_used.eng(w:3, p:G, prefix_space) ($mem_used_percents) "
 
 [[block]]
 block = "disk_space"
 path = "/"
-format = " $icon $used.eng(w:2,hide_unit,hide_prefix)/$available.eng(w:2) "
+format = " $icon $used.eng(w:2,hide_unit,hide_prefix)/$available.eng(w:2,prefix_space) "
 
 [[block]]
 block = "custom"
-command = "echo '\uf0ac ' `curl -s --connect-timeout 2 --max-time 3 ip-api.com/line/?fields=query`"
+command = "echo '\uf0ac '`curl -s --connect-timeout 2 --max-time 3 ip-api.com/line/?fields=query`"
 interval = 10
 
 [[block]]
@@ -87,6 +87,7 @@ good_fg = "#005ce6"
 
 [[block]]
 block = "sound"
+driver = "pulseaudio"
 [block.theme_overrides]
 warning_fg = "#A86F6F"
 
@@ -96,6 +97,19 @@ driver = "pulseaudio"
 device_kind = "source" # This targets your microphone
 [block.theme_overrides]
 warning_fg = "#A86F6F"
+
+[[block]]
+block = "custom"
+command = "custom-camera-toggle"
+json = true
+interval = 1
+[block.theme_overrides]
+idle_fg = "#A86F6F"
+[[block.click]]
+button = "left"
+update = false
+cmd = "custom-camera-toggle toggle"
+
 
 #[[block]]
 #block = "backlight"

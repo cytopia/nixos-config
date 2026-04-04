@@ -42,6 +42,17 @@ Specific Quad9 verification
 curl https://on.quad9.net
 ```
 
+Verif ECH (in browser)
+* https://www.cloudflare.com/ssl/encrypted-sni/
+* https://www.cloudflare.com/cdn-cgi/trace
+* https://browserleaks.com/tls
+* https://tls.browserleaks.com/
+
+## Flush DNS
+```bash
+sudo resolvectl flush-caches
+```
+
 
 ## GUI
 
