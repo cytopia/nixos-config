@@ -53,7 +53,8 @@ format = " $icon $used.eng(w:2,hide_unit,hide_prefix)/$available.eng(w:2,prefix_
 
 [[block]]
 block = "custom"
-command = "echo '\uf0ac '`curl -s --connect-timeout 2 --max-time 3 ip-api.com/line/?fields=query`"
+#command = "echo '\uf0ac '`curl -s --connect-timeout 2 --max-time 3 ip-api.com/line/?fields=query`"
+command = "echo '\uf0ac '`curl -s --connect-timeout 2 --max-time 3  208.95.112.1/line/?fields=query`"
 interval = 10
 
 [[block]]
