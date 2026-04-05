@@ -174,12 +174,12 @@ in
   mySystem.networking.service.dns = {
     enable = true;
     query = {
-      #protocol = "dnscrypt-ecs";
-      protocol = "doh";
+      protocol = "dnscrypt-ecs";
+      #protocol = "doh";
       http3 = true;
       ipv6 = false;
-      #viaProxy = true;
-      viaProxy = false;
+      viaProxy = true;
+      #viaProxy = false;
     };
 
     # Enable local DoH server (see let..in for options)

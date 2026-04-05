@@ -30,6 +30,7 @@
 let
   cfg = config.mySystem.networking.service.dns;
 
+  # https://dnscrypt.info/public-servers/
   ###
   ### AvailableDNS server
   ###
@@ -74,16 +75,19 @@ let
       [
         "quad9-doh-ip6-port443-filter-ecs-pri"
         "quad9-doh-ip6-port443-filter-ecs-alt"
+        "quad9-doh-ip6-port443-filter-ecs-alt2"
       ]
     else if cfg.query.protocol == "dnscrypt" then
       [
         "quad9-dnscrypt-ip6-filter-pri"
         "quad9-dnscrypt-ip6-filter-alt"
+        "quad9-dnscrypt-ip6-filter-alt2"
       ]
     else if cfg.query.protocol == "dnscrypt-ecs" then
       [
         "quad9-dnscrypt-ip6-filter-ecs-pri"
         "quad9-dnscrypt-ip6-filter-ecs-alt"
+        "quad9-dnscrypt-ip6-filter-ecs-alt2"
       ]
     else if cfg.query.protocol == "odoh" then
       [ ] # TODO: Nothing available
@@ -91,52 +95,44 @@ let
       [ ];
 
   ###
-  ### Additional DNS Server (fast, but less secure - when we Proxy)
-  ###
-  inetServersWhenProxied =
-    # Proxied/Anonymization is only supported by dnscrypt
-    if cfg.query.protocol == "dnscrypt" || cfg.query.protocol == "dnscrypt-ecs" then
-      [
-        "cs-de"
-        "ffmuc.net"
-        "ffmuc.net-v6"
-        "adguard-dns"
-        "adguard-dns-ipv6"
-        "dnscry.pt-frankfurt02-ipv4"
-        "dnscry.pt-frankfurt02-ipv6"
-      ]
-    else
-      [ ];
-
-  ###
-  ### Final Relay Server list
+  ### Available Relays
   ###
   ### https://status.dnscrypt.info/?type=relay
-  activeRelayNames = [
-    "anon-cs-de"
-    "anon-cs-berlin"
-    "dnscry.pt-anon-bremen-ipv4"
-    "dnscry.pt-anon-jena-ipv4"
-    "dnscry.pt-anon-frankfurt02-ipv4"
-  ]
-  ++ (lib.optionals cfg.query.ipv6 [
-    "anon-cs-de6"
-    "anon-cs-berlin6"
-    "dnscry.pt-anon-bremen-ipv6"
-    "dnscry.pt-anon-jena-ipv6"
-    "dnscry.pt-anon-frankfurt02-ipv6"
-  ]);
+  ipv4Relays = [
+    { server_name = "quad9-dnscrypt-ip4-filter-ecs-pri"; via = [ "anon-cs-de" ]; }
+    { server_name = "quad9-dnscrypt-ip4-filter-ecs-alt"; via = [ "anon-cs-berlin" ]; }
+    { server_name = "quad9-dnscrypt-ip4-filter-ecs-alt2"; via = [ "anon-cs-dus" ]; }
+    { server_name = "quad9-dnscrypt-ip4-filter-pri"; via = [ "dnscry.pt-anon-frankfurt02-ipv4" ]; }
+    { server_name = "quad9-dnscrypt-ip4-filter-alt"; via = [ "dnscry.pt-anon-jena-ipv4" ]; }
+    { server_name = "quad9-dnscrypt-ip4-filter-alt2"; via = [ "dnscry.pt-anon-bremen-ipv4" ]; }
+
+    { server_name = "quad9-dnscrypt-ip6-filter-ecs-pri"; via = [ "dnscry.pt-anon-dusseldorf-ipv4" ]; }
+    { server_name = "quad9-dnscrypt-ip6-filter-ecs-alt"; via = [ "dnscry.pt-anon-dusseldorf02-ipv4" ]; }
+    { server_name = "quad9-dnscrypt-ip6-filter-ecs-alt2"; via = [ "dnscry.pt-anon-dusseldorf03-ipv4" ]; }
+    { server_name = "quad9-dnscrypt-ip6-filter-pri"; via = [ "dnscry.pt-anon-nuremberg-ipv4" ]; }
+    { server_name = "quad9-dnscrypt-ip6-filter-alt"; via = [ "dnscry.pt-anon-munich-ipv4" ]; }
+    { server_name = "quad9-dnscrypt-ip6-filter-alt2"; via = [ "anon-cs-de" ]; }
+
+    { server_name = "cs-de"; via = [ "dnscry.pt-anon-frankfurt02-ipv4" ]; }
+    { server_name = "ffmuc.net"; via = [ "anon-cs-de" ]; }
+    { server_name = "ffmuc.net-v6"; via = [ "anon-cs-de" ]; }
+    { server_name = "dnscry.pt-frankfurt02-ipv4"; via = [ "anon-cs-berlin" ]; }
+    { server_name = "dnscry.pt-frankfurt02-ipv6"; via = [ "anon-cs-berlin" ]; }
+    { server_name = "*"; via = [ "anon-cs-de" ]; }
+  ];
+  relayedServer = builtins.map (x: x.server_name) ipv4Relays;
 
   ###
   ### Final DNS Server list
   ###
-  # NOTE: We add IPv6 DNS server if we explicitly enable IPv6 queries or if we enable
-  # Proxies. When IPv6 is disabled and Proxies is on. We only talk to IPv4 proxies, but they
-  # can talk to IPv6 DNS servers.
-  activeServerNames =
-    ipv4Servers
-    ++ (lib.optionals (cfg.query.ipv6 || cfg.query.viaProxy) ipv6Servers)
-    ++ (lib.optionals (cfg.query.viaProxy) inetServersWhenProxied);
+  # Non-Relay configuration
+  activeServerNames = if cfg.query.viaProxy then
+    relayedServer
+  else
+    ipv4Servers ++ (lib.optionals cfg.query.ipv6 ipv6Servers);
+
+  # Relay configuration (TODO: ipv6 is missing)
+  activeRelays = ipv4Relays;
 in
 {
   #################################################################################################
@@ -170,7 +166,7 @@ in
         description = ''
           Only applies when using DoH.
           Without http3 the DoH traffic looks like normal HTTPS traffic, but is slower.
-          With http3 it is using QUIC/UDP and is much faster
+          With http3 it is using QUIC/UDP and is much faster.
         '';
       };
       ipv6 = lib.mkOption {
@@ -260,12 +256,14 @@ in
     };
   };
 
-  #################################################################################################
-  ###
-  ### CONFIGURATION
-  ###
-  #################################################################################################
   config = lib.mkMerge [
+
+    #################################################################################################
+    ###
+    ### CONFIGURATION (ENABLED)
+    ###
+    #################################################################################################
+
     (lib.mkIf cfg.enable {
 
       # Ensure mkcert and nss (certutil) are available system-wide for CA management
@@ -363,8 +361,13 @@ in
             cache_neg_min_ttl = 60;
             cache_neg_max_ttl = 600;
 
-            # Use HTTP/3 (QUIC) for 0-RTT handshakes upstream, saving ~30ms per query.
+            # Use HTTP/3 (QUIC / UDP) for 0-RTT handshakes upstream, saving ~30ms per query.
             http3 = cfg.query.http3;
+
+            # Do not blindly shoot out HTTP3 (QUIC/UDP) requests.
+            # If http3 is on, the proxy will use HTTP2 by default and update the connection
+            # to HTTP/3 (QUIC/UDP). This is saver.
+            http3_probe = false;
 
             # LOAD BALANCING:
             # "p2" means it will randomly alternate between the top 2 fastest servers.
@@ -426,6 +429,16 @@ in
               refresh_delay = 24; # in hours
               prefix = "";
             };
+            sources.quad9-resolvers = {
+              urls = [
+                "https://quad9.net/dnscrypt/quad9-resolvers.md"
+                "https://raw.githubusercontent.com/Quad9DNS/dnscrypt-settings/main/dnscrypt/quad9-resolvers.md"
+              ];
+              minisign_key = "RWQBphd2+f6eiAqBsvDZEBXBGHQBJfeG6G+wJPPKxCZMoEQYpmoysKUN";
+              cache_file = "/var/lib/dnscrypt-proxy/quad9-resolvers.md";
+              refresh_delay = 24;
+              prefix = "quad9-";
+            };
             sources.relays = {
               urls = [
                 "https://raw.githubusercontent.com/DNSCrypt/dnscrypt-resolvers/master/v3/relays.md"
@@ -481,12 +494,7 @@ in
               # This guarantees the real IP is never accidentally leaked in relay mode.
               skip_incompatible = true;
 
-              # We loop over every server currently in activeServerNames
-              # and create a routing object for it.
-              routes = builtins.map (name: {
-                server_name = name;
-                via = activeRelayNames;
-              }) activeServerNames;
+              routes = activeRelays;
             };
           })
 
@@ -562,12 +570,13 @@ in
             };
           })
         ];
-      };
+      }; # end of services.dnscrypt-proxy
+
 
       ###
       ### Blocklist download / update
       ###
-      # 1. The Service: Defines HOW to download the list
+      # (1/2) The Service: Defines HOW to download the list
       systemd.services.dnscrypt-proxy-update-blocklist = lib.mkIf cfg.localBlockList.enable {
         description = "Download fresh OISD blocklist for dnscrypt-proxy";
         after = [ "network-online.target" ];
@@ -596,7 +605,7 @@ in
           StateDirectoryMode = "0775";
         };
       };
-      # 2. The Timer: Defines WHEN to run the service
+      # (2/2) The Timer: Defines WHEN to run the service
       systemd.timers.dnscrypt-proxy-update-blocklist = lib.mkIf cfg.localBlockList.enable {
         description = "Run OISD update weekly";
         timerConfig = {
@@ -705,7 +714,7 @@ in
       ###
       ### 2. Uplink Routing
       ###
-      # This tells systemd-resolved that its "ISP" is actually our dnscrypt-proxy port.
+      # This tells systemd-resolved that its uplink is our dnscrypt-proxy server.
       # /nix/var/nix/profiles/system/etc/systemd/resolved.conf
       networking.nameservers = [
         "127.0.0.1:5353"
