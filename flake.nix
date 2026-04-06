@@ -116,8 +116,10 @@
     # and use `listToAttrs` to build the homeConfigurations block.
     homeConfigurations = builtins.listToAttrs (
       nixpkgs.lib.mapAttrsToList (hostname: hostConfig: {
-        # The key (name) in homeConfigurations is the username
-        name = hostConfig.user;
+        # The key (name) in homeConfigurations is the username@host
+        # If we only use username, all the extra vars like appScaleFactor will be merged.
+        # home-manager switch --flake .#cytopia@$(hostname)
+        name = "${hostConfig.user}@${hostname}";
 
         # The value is the actual configuration
         value = home-manager.lib.homeManagerConfiguration {
