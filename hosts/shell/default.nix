@@ -6,40 +6,59 @@
   appScaleFactor,
   ...
 }:
+let
 
+  dnscryptLocalDoh = {
+    enable = true;
+    port = 3000;
+    path = "/dns-query";
+    #caCertPath = "/run/local-doh-ca/rootCA.pem";
+  };
+  dnscryptCerts = {
+    caCertPath = "/run/local-doh-ca/rootCA.pem";
+  };
+
+  bowserSettingsWithLocalDoh = {
+    extraPolicies =
+      if dnscryptLocalDoh.enable then
+        {
+          "BuiltInDnsClientEnabled" = true;
+          "AdditionalDnsQueryTypesEnabled" = true;
+          "EncryptedClientHelloEnabled" = true;
+          # Enable Secure DNS (DoH) so Chromium trusts the connection and enables ECH.
+          "DnsOverHttpsMode" = "secure";
+
+          # Point Chromium strictly to our local dnscrypt-proxy instance using the TLS cert.
+          "DnsOverHttpsTemplates" =
+            "https://localhost:${toString dnscryptLocalDoh.port}${dnscryptLocalDoh.path}";
+
+          # Bypass DoH for internal/VPN domains.
+          # Chromium will send these to systemd-resolved (plaintext), which will correctly route them to the VPN's nameserver.
+          "DnsOverHttpsExcludedDomains" = [
+            "*.local" # mDNS local domains
+            "*.internal" # Common internal networks
+          ];
+        }
+      else
+        { };
+    customCaCerts =
+      if dnscryptLocalDoh.enable then
+        [
+          {
+            name = "dnscrypt-proxy";
+            path = dnscryptCerts.caCertPath;
+          }
+        ]
+      else
+        [ ];
+  };
+
+in
 {
   imports = [
-    # NixOS hardware config: sudo nixos-generate-config
     ./hardware-configuration.nix
     ./disko-config.nix
-    # Hardware
-    ../../modules/nixos/hardware/gpu-intel.nix
-    ../../modules/nixos/hardware/gpu-virtualbox.nix
-    ../../modules/nixos/hardware/bluetooth.nix
-    # System
-    ../../modules/nixos/system/keyboard.nix
-    ../../modules/nixos/system/locale.nix
-    ../../modules/nixos/system/fonts.nix
-    ../../modules/nixos/system/user.nix
-    ../../modules/nixos/system/keyring.nix
-    # Networking
-    ../../modules/nixos/networking/services/ntp.nix
-    ../../modules/nixos/networking/services/dns.nix
-    ../../modules/nixos/networking/simple.nix
-    # Services
-    ../../modules/nixos/services/power-management.nix
-    ../../modules/nixos/services/sound.nix
-    ../../modules/nixos/services/login.nix
-    # Desktop
-    ../../modules/nixos/desktop/wayland.nix
-    ../../modules/nixos/desktop/sway.nix
-    # Programs
-    ../../modules/nixos/programs/thunar.nix
-    ../../modules/nixos/programs/obs.nix
-    ../../modules/nixos/programs/podman.nix
-    ../../modules/nixos/programs/vim.nix
-    ../../modules/nixos/programs/chromium.nix
-    ../../modules/nixos/programs/google-chrome.nix
+    ../../modules/nixos/default.nix
   ];
 
   ###
@@ -58,11 +77,6 @@
   # Enable LVM in the initrd so it can find the encrypted partition at boot.
   # Disko created the LVM and NixOS needs to scan for it at boot.
   boot.initrd.services.lvm.enable = true;
-
-  # Activate swap (disko defined it)
-  # Disko defines the partition and NixOS needs this to run 'swapon' at boot.
-  #  swapDevices = [ { device = "/dev/mapper/pool-swap"; } ];
-  #  boot.resumeDevice = "/dev/mapper/pool-swap";
 
   # Better SSD lifespan with encryption (comes with a security risk)
   boot.initrd.luks.devices."crypted".allowDiscards = true;
@@ -126,7 +140,54 @@
     hostName = hostname;
   };
   mySystem.networking.service.ntp.enable = true;
-  mySystem.networking.service.dns.enable = true;
+  cytopia.service.dns = {
+    enable = true;
+    firewall.enable = true;
+    query = {
+      protocol = "dnscrypt-ecs";
+      #protocol = "doh";
+      http3 = true;
+      ipv6 = false;
+      viaProxy = true;
+      #viaProxy = false;
+    };
+    certs = dnscryptCerts;
+
+    # Enable local DoH server (see let..in for options)
+    localDoh = dnscryptLocalDoh;
+
+    localBlockList = {
+      enable = true;
+      urls = [
+        # Info at https://firebog.net/
+        "https://download.dnscrypt.info/blacklists/domains/mybase.txt"
+        "https://v.firebog.net/hosts/AdguardDNS.txt"
+        "https://v.firebog.net/hosts/Admiral.txt"
+        "https://v.firebog.net/hosts/Easylist.txt"
+        "https://v.firebog.net/hosts/Easyprivacy.txt"
+        "https://v.firebog.net/hosts/Prigent-Ads.txt"
+        "https://v.firebog.net/hosts/static/w3kbl.txt"
+        "https://raw.githubusercontent.com/PolishFiltersTeam/KADhosts/master/KADhosts.txt"
+        "https://raw.githubusercontent.com/FadeMind/hosts.extras/master/UncheckyAds/hosts"
+        "https://raw.githubusercontent.com/FadeMind/hosts.extras/master/add.2o7Net/hosts"
+        "https://raw.githubusercontent.com/FadeMind/hosts.extras/master/add.Spam/hosts"
+        "https://raw.githubusercontent.com/anudeepND/blacklist/master/adservers.txt"
+        "https://raw.githubusercontent.com/bigdargon/hostsVN/master/hosts"
+        "https://raw.githubusercontent.com/crazy-max/WindowsSpyBlocker/master/data/hosts/spy.txt"
+        "https://adaway.org/hosts.txt"
+        "https://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&showintro=0&mimetype=plaintext"
+        "https://hostfiles.frogeye.fr/firstparty-trackers-hosts.txt"
+      ];
+    };
+    whitelist = [
+      "ip-api.com"
+    ];
+    localMonitoring = {
+      enable = true;
+      port = 4400;
+    };
+  };
+
 
   ###
   ### My Modules: Services
@@ -178,8 +239,6 @@
       libappindicator-gtk3
       #networkmanagerapplet
       blueman
-      #sway-audio-idle-inhibit
-      #swaynotificationcenter
     ];
   };
 
@@ -196,7 +255,15 @@
     browser = "chromium";
     scalingFactor = appScaleFactor;
     waylandFractionalScalingSupport = true;
+    gpu.engine.displayServer = "wayland";
 
+    # Ensure all Vulkan layers (e.g. OBS are removed)
+    startup.extraEnvVars = {
+      "VK_LOADER_LAYERS_DISABLE" = "VK_LAYER_OBS_vkcapture_32,VK_LAYER_OBS_vkcapture_64";
+    };
+    # Use dnscrypt-proxy as a local DoH resolver?
+    extraPolicies = bowserSettingsWithLocalDoh.extraPolicies;
+    customCaCerts = bowserSettingsWithLocalDoh.customCaCerts;
     extensions = [
       "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
       "ddkjiahejlhfcafbddmgiahcphecmpfh" # uBlock Origin Lite
@@ -211,13 +278,39 @@
     browser = "google-chrome";
     scalingFactor = appScaleFactor;
     waylandFractionalScalingSupport = true;
+    gpu.engine.displayServer = "wayland";
 
+    # Ensure all Vulkan layers (e.g. OBS are removed)
+    startup.extraEnvVars = {
+      "VK_LOADER_LAYERS_DISABLE" = "VK_LAYER_OBS_vkcapture_32,VK_LAYER_OBS_vkcapture_64";
+    };
+    # Use dnscrypt-proxy as a local DoH resolver?
+    extraPolicies = bowserSettingsWithLocalDoh.extraPolicies;
+    customCaCerts = bowserSettingsWithLocalDoh.customCaCerts;
     extensions = [
       "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
       "ddkjiahejlhfcafbddmgiahcphecmpfh" # uBlock Origin Lite
       "jpmkfafbacpgapdghgdpembnojdlgkdl" # AWS Extend Roles
       "aeblfdkhhhdcdjpifhhbdiojplfjncoa" # 1Password
     ];
+  };
+
+  mySystem.programs.thunderbird = {
+    enable = true;
+
+    dnsOverHttps = {
+      enable = dnscryptLocalDoh.enable;
+      url = "https://localhost:${toString dnscryptLocalDoh.port}${dnscryptLocalDoh.path}";
+      caCertPath = dnscryptCerts.caCertPath;
+    };
+  };
+
+  ###
+  ### My Modules: Utils
+  ###
+  mySystem.utils.camera-toggle = {
+    enable = true;
+    userName = username;
   };
 
   # Adds standard Linux paths
@@ -255,6 +348,7 @@
     wget
     dig
     tree
+    lsof
 
     # Essentials
     git
