@@ -13,7 +13,7 @@ sudo nixos-rebuild switch --flake .#$(hostname) --offline
 sudo nixos-rebuild switch --flake .#$(hostname) --rollback
 
 # Update home
-home-manager switch --flake .#cytopia
+home-manager switch --flake .#cytopia@$(hostname)
 
 # Restart Nix daemon in case flake update is locked
 sudo systemctl restart nix-daemon
