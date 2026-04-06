@@ -12,6 +12,9 @@ let
     enable = true;
     port = 3000;
     path = "/dns-query";
+    #caCertPath = "/run/local-doh-ca/rootCA.pem";
+  };
+  dnscryptCerts = {
     caCertPath = "/run/local-doh-ca/rootCA.pem";
   };
 
@@ -42,7 +45,7 @@ let
         [
           {
             name = "dnscrypt-proxy";
-            path = dnscryptLocalDoh.caCertPath;
+            path = dnscryptCerts.caCertPath;
           }
         ]
       else
@@ -67,7 +70,8 @@ in
     ../../modules/nixos/system/keyring.nix
     # Networking
     ../../modules/nixos/networking/services/ntp.nix
-    ../../modules/nixos/networking/services/dns.nix
+    ../../modules/nixos/networking/services/dns/default.nix
+    #../../modules/nixos/networking/services/dns.nix
     ../../modules/nixos/networking/simple.nix
     # Services
     ../../modules/nixos/services/power-management.nix
@@ -171,8 +175,9 @@ in
     hostName = hostname;
   };
   mySystem.networking.service.ntp.enable = true;
-  mySystem.networking.service.dns = {
+  cytopia.service.dns = {
     enable = true;
+    firewall.enable = true;
     query = {
       protocol = "dnscrypt-ecs";
       #protocol = "doh";
@@ -181,6 +186,7 @@ in
       viaProxy = true;
       #viaProxy = false;
     };
+    certs = dnscryptCerts;
 
     # Enable local DoH server (see let..in for options)
     localDoh = dnscryptLocalDoh;
@@ -188,6 +194,8 @@ in
     localBlockList = {
       enable = true;
       urls = [
+        # MyBase
+        "https://download.dnscrypt.info/blacklists/domains/mybase.txt"
         "https://raw.githubusercontent.com/PolishFiltersTeam/KADhosts/master/KADhosts.txt"
         "https://raw.githubusercontent.com/FadeMind/hosts.extras/master/add.Spam/hosts"
         "https://v.firebog.net/hosts/static/w3kbl.txt"
@@ -204,7 +212,6 @@ in
         "https://raw.githubusercontent.com/FadeMind/hosts.extras/master/add.2o7Net/hosts"
         "https://raw.githubusercontent.com/crazy-max/WindowsSpyBlocker/master/data/hosts/spy.txt"
         "https://hostfiles.frogeye.fr/firstparty-trackers-hosts.txt"
-        "https://download.dnscrypt.info/blacklists/domains/mybase.txt"
       ];
     };
     whitelist = [

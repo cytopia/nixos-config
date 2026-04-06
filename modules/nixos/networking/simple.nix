@@ -39,15 +39,6 @@ in
       enable = true;
       # iwd is faster at scanning and handles roaming better than wpa_supplicant.
       wifi.backend = "iwd";
-
-      # Do not touch /etc/resolv.conf
-      dns = lib.mkForce "none";
-      # Do not secretly push DHCP updates to systemd-resolved over D-Bus.
-      settings = {
-        main = {
-          systemd-resolved = false;
-        };
-      };
     };
 
     # Required daemon for the NM backend choice above.

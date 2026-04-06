@@ -10,6 +10,8 @@ nix flake update
 sudo nixos-rebuild switch --flake .#$(hostname)
 sudo nixos-rebuild switch --flake .#$(hostname) --offline
 
+sudo nixos-rebuild switch --flake .#$(hostname) --rollback
+
 # Update home
 home-manager switch --flake .#cytopia
 
