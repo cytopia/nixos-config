@@ -56,40 +56,9 @@ let
 in
 {
   imports = [
-    # NixOS hardware config: sudo nixos-generate-config
     ./hardware-configuration.nix
     ./disko-config.nix
-    # Hardware
-    ../../modules/nixos/hardware/gpu-intel.nix
-    ../../modules/nixos/hardware/gpu-virtualbox.nix
-    ../../modules/nixos/hardware/bluetooth.nix
-    # System
-    ../../modules/nixos/system/keyboard.nix
-    ../../modules/nixos/system/locale.nix
-    ../../modules/nixos/system/fonts.nix
-    ../../modules/nixos/system/user.nix
-    ../../modules/nixos/system/keyring.nix
-    # Networking
-    ../../modules/nixos/networking/services/ntp.nix
-    ../../modules/nixos/networking/services/dns/default.nix
-    #../../modules/nixos/networking/services/dns.nix
-    ../../modules/nixos/networking/simple.nix
-    # Services
-    ../../modules/nixos/services/power-management.nix
-    ../../modules/nixos/services/sound.nix
-    ../../modules/nixos/services/login.nix
-    # Desktop
-    ../../modules/nixos/desktop/wayland.nix
-    ../../modules/nixos/desktop/sway.nix
-    # Programs
-    ../../modules/nixos/programs/thunar.nix
-    ../../modules/nixos/programs/obs.nix
-    ../../modules/nixos/programs/podman.nix
-    ../../modules/nixos/programs/vim.nix
-    ../../modules/nixos/programs/chromium.nix
-    ../../modules/nixos/programs/google-chrome.nix
-    # Utils
-    ../../modules/nixos/utils/camera-toggle.nix
+    ../../modules/nixos/default.nix
   ];
 
   ###
@@ -108,11 +77,6 @@ in
   # Enable LVM in the initrd so it can find the encrypted partition at boot.
   # Disko created the LVM and NixOS needs to scan for it at boot.
   boot.initrd.services.lvm.enable = true;
-
-  # Activate swap (disko defined it)
-  # Disko defines the partition and NixOS needs this to run 'swapon' at boot.
-  #  swapDevices = [ { device = "/dev/mapper/pool-swap"; } ];
-  #  boot.resumeDevice = "/dev/mapper/pool-swap";
 
   # Better SSD lifespan with encryption (comes with a security risk)
   boot.initrd.luks.devices."crypted".allowDiscards = true;
@@ -275,8 +239,6 @@ in
       libappindicator-gtk3
       #networkmanagerapplet
       blueman
-      #sway-audio-idle-inhibit
-      #swaynotificationcenter
     ];
   };
 
@@ -333,20 +295,14 @@ in
     ];
   };
 
-  programs.thunderbird.enable = true;
-  programs.thunderbird.policies = {
-    Certificates.Install = [ "/run/local-doh-ca/rootCA.pem" ];
-    DNSOverHTTPS = {
-      Enabled = true;
-      ProviderURL = "https://localhost:3000/dns-query";
-      Locked = true;
-      Fallback = false;
+  mySystem.programs.thunderbird = {
+    enable = true;
+
+    dnsOverHttps = {
+      enable = dnscryptLocalDoh.enable;
+      url = "https://localhost:${toString dnscryptLocalDoh.port}${dnscryptLocalDoh.path}";
+      caCertPath = dnscryptCerts.caCertPath;
     };
-  };
-  programs.thunderbird.preferences = {
-    "network.trr.mode" = 3; # 3 = Strict DoH. 2 = DoH with fallback.
-    "network.trr.uri" = "https://localhost:3000/dns-query";
-    "network.trr.custom_uri" = "https://localhost:3000/dns-query";
   };
 
   ###
