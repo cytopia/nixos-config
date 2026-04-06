@@ -124,6 +124,7 @@
     saml2aws
     awscli2
     lens
+    freelens-bin
     jq
     yq
 
