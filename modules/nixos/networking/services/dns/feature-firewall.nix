@@ -20,6 +20,14 @@ let
   actionRuleAdGuard = if fwCfg.modeAdGuardDoH == "block" then "drop" else "";
   actionRuleCleanBrowsing = if fwCfg.modeCleanBrowsingDoH == "block" then "drop" else "";
   actionRuleMullvad = if fwCfg.modeMullvadDoH == "block" then "drop" else "";
+  actionRuleYandex = if fwCfg.modeYandexDoH == "block" then "drop" else "";
+  actionRuleAliDNS = if fwCfg.modeAliDNSDoH == "block" then "drop" else "";
+  actionRuleDNS114 = if fwCfg.modeDNS114DoH == "block" then "drop" else "";
+  actionRuleTencent = if fwCfg.modeTencentDoH == "block" then "drop" else "";
+  actionRuleBaidu = if fwCfg.modeBaiduDoH == "block" then "drop" else "";
+  actionRuleShecan = if fwCfg.modeShecanDoH == "block" then "drop" else "";
+  actionRuleOnline403 = if fwCfg.modeOnline403DoH == "block" then "drop" else "";
+  actionRuleRadarGame = if fwCfg.modeRadarGameDoH == "block" then "drop" else "";
 
   # Determine if we add Google/Cloudflare DoH
   addGoogle = fwCfg.modeGoogleDoH != "off";
@@ -30,32 +38,196 @@ let
   addAdGuard = fwCfg.modeAdGuardDoH != "off";
   addCleanBrowsing = fwCfg.modeCleanBrowsingDoH != "off";
   addMullvad = fwCfg.modeMullvadDoH != "off";
+  addYandex = fwCfg.modeYandexDoH != "off";
+  addAliDNS = fwCfg.modeAliDNSDoH != "off";
+  addDNS114 = fwCfg.modeDNS114DoH != "off";
+  addTencent = fwCfg.modeTencentDoH != "off";
+  addBaidu = fwCfg.modeBaiduDoH != "off";
+  addShecan = fwCfg.modeShecanDoH != "off";
+  addOnline403 = fwCfg.modeOnline403DoH != "off";
+  addRadarGame = fwCfg.modeRadarGameDoH != "off";
 
   # IP ADDRESS Definitions
-  ipsGoogleV4 = [ "8.8.8.8" "8.8.4.4" ];
-  ipsGoogleV6 = [ "2001:4860:4860::8888" "2001:4860:4860::8844" ];
+  ipsGoogleV4 = [
+    "8.8.8.8"
+    "8.8.4.4"
+  ];
+  ipsGoogleV6 = [
+    "2001:4860:4860::8888"
+    "2001:4860:4860::8844"
+  ];
 
-  ipsCloudflareV4 = [ "1.1.1.1" "1.0.0.1" "1.1.1.2" "1.0.0.2" "1.1.1.3" "1.0.0.3" ];
-  ipsCloudflareV6 = [ "2606:4700:4700::1111" "2606:4700:4700::1001" "2606:4700:4700::1112" "2606:4700:4700::1002" "2606:4700:4700::1113" "2606:4700:4700::1003" ];
+  ipsCloudflareV4 = [
+    "1.1.1.1"
+    "1.0.0.1"
+    "1.1.1.2"
+    "1.0.0.2"
+    "1.1.1.3"
+    "1.0.0.3"
+  ];
+  ipsCloudflareV6 = [
+    "2606:4700:4700::1111"
+    "2606:4700:4700::1001"
+    "2606:4700:4700::1112"
+    "2606:4700:4700::1002"
+    "2606:4700:4700::1113"
+    "2606:4700:4700::1003"
+  ];
 
-  ipsQuad9V4 = [ "9.9.9.9" "149.112.112.112" "9.9.9.10" "149.112.112.10" "9.9.9.11" "149.112.112.11" "9.9.9.12" "149.112.112.12" ];
-  ipsQuad9V6 = [ "2620:fe::fe" "2620:fe::9" "2620:fe::10" "2620:fe::fe:10" "2620:fe::11" "2620:fe::fe:11" "2620:fe::12" "2620:fe::fe:12" ];
+  ipsQuad9V4 = [
+    "9.9.9.9"
+    "149.112.112.112"
+    "9.9.9.10"
+    "149.112.112.10"
+    "9.9.9.11"
+    "149.112.112.11"
+    "9.9.9.12"
+    "149.112.112.12"
+  ];
+  ipsQuad9V6 = [
+    "2620:fe::fe"
+    "2620:fe::9"
+    "2620:fe::10"
+    "2620:fe::fe:10"
+    "2620:fe::11"
+    "2620:fe::fe:11"
+    "2620:fe::12"
+    "2620:fe::fe:12"
+  ];
 
-  ipsNextDNSV4 = [ "45.90.28.0" "45.90.30.0" ];
-  ipsNextDNSV6 = [ "2a07:a8c0::" "2a07:a8c1::" ];
+  ipsNextDNSV4 = [
+    "45.90.28.0"
+    "45.90.30.0"
+  ];
+  ipsNextDNSV6 = [
+    "2a07:a8c0::"
+    "2a07:a8c1::"
+  ];
 
-  ipsOpenDNSV4 = [ "208.67.222.222" "208.67.220.220" "208.67.222.123" "208.67.220.123" ];
-  ipsOpenDNSV6 = [ "2620:119:35::35" "2620:119:53::53" "2620:119:35::123" "2620:119:53::123" ];
+  ipsOpenDNSV4 = [
+    "208.67.222.222"
+    "208.67.220.220"
+    "208.67.222.123"
+    "208.67.220.123"
+  ];
+  ipsOpenDNSV6 = [
+    "2620:119:35::35"
+    "2620:119:53::53"
+    "2620:119:35::123"
+    "2620:119:53::123"
+  ];
 
-  ipsAdGuardV4 = [ "94.140.14.14" "94.140.15.15" "94.140.14.15" "94.140.15.16" "94.140.14.140" "94.140.14.141" ];
-  ipsAdGuardV6 = [ "2a10:50c0::ad1:ff" "2a10:50c0::ad2:ff" "2a10:50c0::bad1:ff" "2a10:50c0::bad2:ff" "2a10:50c0::1:ff" "2a10:50c0::2:ff" ];
+  ipsAdGuardV4 = [
+    "94.140.14.14"
+    "94.140.15.15"
+    "94.140.14.15"
+    "94.140.15.16"
+    "94.140.14.140"
+    "94.140.14.141"
+  ];
+  ipsAdGuardV6 = [
+    "2a10:50c0::ad1:ff"
+    "2a10:50c0::ad2:ff"
+    "2a10:50c0::bad1:ff"
+    "2a10:50c0::bad2:ff"
+    "2a10:50c0::1:ff"
+    "2a10:50c0::2:ff"
+  ];
 
-  ipsCleanBrowsingV4 = [ "185.228.168.9" "185.228.169.9" "185.228.168.10" "185.228.169.11" "185.228.168.168" "185.228.169.168" ];
-  ipsCleanBrowsingV6 = [ "2a0d:2a00:1::2" "2a0d:2a00:2::2" "2a0d:2a00:1::1" "2a0d:2a00:2::1" "2a0d:2a00:1::" "2a0d:2a00:2::" ];
+  ipsCleanBrowsingV4 = [
+    "185.228.168.9"
+    "185.228.169.9"
+    "185.228.168.10"
+    "185.228.169.11"
+    "185.228.168.168"
+    "185.228.169.168"
+  ];
+  ipsCleanBrowsingV6 = [
+    "2a0d:2a00:1::2"
+    "2a0d:2a00:2::2"
+    "2a0d:2a00:1::1"
+    "2a0d:2a00:2::1"
+    "2a0d:2a00:1::"
+    "2a0d:2a00:2::"
+  ];
 
-  ipsMullvadV4 = [ "194.242.2.2" "194.242.2.3" "194.242.2.4" "194.242.2.5" "194.242.2.9" ];
-  ipsMullvadV6 = [ "2a07:e340::2" "2a07:e340::3" "2a07:e340::4" "2a07:e340::5" ];
+  ipsMullvadV4 = [
+    "194.242.2.2"
+    "194.242.2.3"
+    "194.242.2.4"
+    "194.242.2.5"
+    "194.242.2.9"
+  ];
+  ipsMullvadV6 = [
+    "2a07:e340::2"
+    "2a07:e340::3"
+    "2a07:e340::4"
+    "2a07:e340::5"
+  ];
 
+  # Russian
+  ipsYandexV4 = [
+    "77.88.8.8"
+    "77.88.8.1"
+    "77.88.8.88"
+    "77.88.8.2"
+    "77.88.8.7"
+    "77.88.8.3"
+  ];
+  ipsYandexV6 = [
+    "2a02:6b8::feed:0ff"
+    "2a02:6b8:0:1::feed:0ff"
+    "2a02:6b8::feed:bad"
+    "2a02:6b8:0:1::feed:bad"
+    "2a02:6b8::feed:a11"
+    "2a02:6b8:0:1::feed:a11"
+  ];
+
+  # Chinese
+  ipsAliDNSV4 = [
+    "223.5.5.5"
+    "223.6.6.6"
+  ];
+  ipsAliDNSV6 = [
+    "2400:3200::1"
+    "2400:3200:baba::1"
+  ];
+
+  ipsDNS114V4 = [
+    "114.114.114.114"
+    "114.114.115.115"
+  ];
+  ipsDNS114V6 = [ ];
+
+  ipsTencentV4 = [
+    "119.29.29.29"
+    "119.28.28.28"
+    "1.2.4.8"
+    "210.2.4.8"
+  ];
+  ipsTencentV6 = [ "2402:4e00::" ];
+
+  ipsBaiduV4 = [ "180.76.76.76" ];
+  ipsBaiduV6 = [ "2400:da00::6666" ];
+
+  # Iranian
+  ipsShecanV4 = [
+    "178.22.122.100"
+    "185.51.200.2"
+  ];
+  ipsShecanV6 = [ ];
+
+  ipsOnline403V4 = [
+    "10.202.10.202"
+    "10.202.10.102"
+  ];
+  ipsOnline403V6 = [ ];
+
+  ipsRadarGameV4 = [
+    "10.202.10.10"
+    "10.202.10.11"
+  ];
+  ipsRadarGameV6 = [ ];
 
 in
 {
@@ -183,6 +355,110 @@ in
         "off": Do not add firewall rule.
       '';
     };
+    modeYandexDoH = lib.mkOption {
+      type = lib.types.enum [
+        "log"
+        "block"
+        "off"
+      ];
+      default = "log";
+      description = ''
+        "log": Passively monitors and logs rogue DOH traffic (Current behavior).
+        "block": Logs the traffic AND actively drops the packets.
+        "off": Do not add firewall rule.
+      '';
+    };
+    modeAliDNSDoH = lib.mkOption {
+      type = lib.types.enum [
+        "log"
+        "block"
+        "off"
+      ];
+      default = "log";
+      description = ''
+        "log": Passively monitors and logs rogue DOH traffic (Current behavior).
+        "block": Logs the traffic AND actively drops the packets.
+        "off": Do not add firewall rule.
+      '';
+    };
+    modeDNS114DoH = lib.mkOption {
+      type = lib.types.enum [
+        "log"
+        "block"
+        "off"
+      ];
+      default = "log";
+      description = ''
+        "log": Passively monitors and logs rogue DOH traffic (Current behavior).
+        "block": Logs the traffic AND actively drops the packets.
+        "off": Do not add firewall rule.
+      '';
+    };
+    modeTencentDoH = lib.mkOption {
+      type = lib.types.enum [
+        "log"
+        "block"
+        "off"
+      ];
+      default = "log";
+      description = ''
+        "log": Passively monitors and logs rogue DOH traffic (Current behavior).
+        "block": Logs the traffic AND actively drops the packets.
+        "off": Do not add firewall rule.
+      '';
+    };
+    modeBaiduDoH = lib.mkOption {
+      type = lib.types.enum [
+        "log"
+        "block"
+        "off"
+      ];
+      default = "log";
+      description = ''
+        "log": Passively monitors and logs rogue DOH traffic (Current behavior).
+        "block": Logs the traffic AND actively drops the packets.
+        "off": Do not add firewall rule.
+      '';
+    };
+    modeShecanDoH = lib.mkOption {
+      type = lib.types.enum [
+        "log"
+        "block"
+        "off"
+      ];
+      default = "log";
+      description = ''
+        "log": Passively monitors and logs rogue DOH traffic (Current behavior).
+        "block": Logs the traffic AND actively drops the packets.
+        "off": Do not add firewall rule.
+      '';
+    };
+    modeOnline403DoH = lib.mkOption {
+      type = lib.types.enum [
+        "log"
+        "block"
+        "off"
+      ];
+      default = "log";
+      description = ''
+        "log": Passively monitors and logs rogue DOH traffic (Current behavior).
+        "block": Logs the traffic AND actively drops the packets.
+        "off": Do not add firewall rule.
+      '';
+    };
+    modeRadarGameDoH = lib.mkOption {
+      type = lib.types.enum [
+        "log"
+        "block"
+        "off"
+      ];
+      default = "log";
+      description = ''
+        "log": Passively monitors and logs rogue DOH traffic (Current behavior).
+        "block": Logs the traffic AND actively drops the packets.
+        "off": Do not add firewall rule.
+      '';
+    };
   };
 
   ###
@@ -228,6 +504,34 @@ in
           set mullvad_v4 { type ipv4_addr; elements = { ${builtins.concatStringsSep ", " ipsMullvadV4} }; }
           set mullvad_v6 { type ipv6_addr; elements = { ${builtins.concatStringsSep ", " ipsMullvadV6} }; }
         ''}
+        ${lib.optionalString addYandex ''
+          set yandex_v4 { type ipv4_addr; elements = { ${builtins.concatStringsSep ", " ipsYandexV4} }; }
+          set yandex_v6 { type ipv6_addr; elements = { ${builtins.concatStringsSep ", " ipsYandexV6} }; }
+        ''}
+        ${lib.optionalString addAliDNS ''
+          set alidns_v4 { type ipv4_addr; elements = { ${builtins.concatStringsSep ", " ipsAliDNSV4} }; }
+          set alidns_v6 { type ipv6_addr; elements = { ${builtins.concatStringsSep ", " ipsAliDNSV6} }; }
+        ''}
+        ${lib.optionalString addDNS114 ''
+          set dns114_v4 { type ipv4_addr; elements = { ${builtins.concatStringsSep ", " ipsDNS114V4} }; }
+        ''}
+        ${lib.optionalString addTencent ''
+          set tencent_v4 { type ipv4_addr; elements = { ${builtins.concatStringsSep ", " ipsTencentV4} }; }
+          set tencent_v6 { type ipv6_addr; elements = { ${builtins.concatStringsSep ", " ipsTencentV6} }; }
+        ''}
+        ${lib.optionalString addBaidu ''
+          set baidu_v4 { type ipv4_addr; elements = { ${builtins.concatStringsSep ", " ipsBaiduV4} }; }
+          set baidu_v6 { type ipv6_addr; elements = { ${builtins.concatStringsSep ", " ipsBaiduV6} }; }
+        ''}
+        ${lib.optionalString addShecan ''
+          set shecan_v4 { type ipv4_addr; elements = { ${builtins.concatStringsSep ", " ipsShecanV4} }; }
+        ''}
+        ${lib.optionalString addOnline403 ''
+          set online403_v4 { type ipv4_addr; elements = { ${builtins.concatStringsSep ", " ipsOnline403V4} }; }
+        ''}
+        ${lib.optionalString addRadarGame ''
+          set radargame_v4 { type ipv4_addr; elements = { ${builtins.concatStringsSep ", " ipsRadarGameV4} }; }
+        ''}
 
         chain output {
           type filter hook output priority -10; policy accept;
@@ -268,6 +572,34 @@ in
           ${lib.optionalString addMullvad ''
             oifname != "lo" meta skgid != ${proxyGid} ip daddr @mullvad_v4 meta l4proto { tcp, udp } th dport { 443, 8443 } log prefix "[DNS-Leak-DoH|Crypt-Mullvad] " ${actionRuleMullvad}
             oifname != "lo" meta skgid != ${proxyGid} ip6 daddr @mullvad_v6 meta l4proto { tcp, udp } th dport { 443, 8443 } log prefix "[DNS-Leak-DoH|Crypt-Mullvad] " ${actionRuleMullvad}
+          ''}
+          ${lib.optionalString addYandex ''
+            oifname != "lo" meta skgid != ${proxyGid} ip daddr @yandex_v4 meta l4proto { tcp, udp } th dport { 445, 8443 } log prefix "[DNS-Leak-DoH|Crypt-Yandex] " ${actionRuleYandex}
+            oifname != "lo" meta skgid != ${proxyGid} ip6 daddr @yandex_v6 meta l4proto { tcp, udp } th dport { 445, 8443 } log prefix "[DNS-Leak-DoH|Crypt-Yandex] " ${actionRuleYandex}
+          ''}
+          ${lib.optionalString addAliDNS ''
+            oifname != "lo" meta skgid != ${proxyGid} ip daddr @alidns_v4 meta l4proto { tcp, udp } th dport { 445, 8443 } log prefix "[DNS-Leak-DoH|Crypt-AliDNS] " ${actionRuleAliDNS}
+            oifname != "lo" meta skgid != ${proxyGid} ip6 daddr @alidns_v6 meta l4proto { tcp, udp } th dport { 445, 8443 } log prefix "[DNS-Leak-DoH|Crypt-AliDNS] " ${actionRuleAliDNS}
+          ''}
+          ${lib.optionalString addDNS114 ''
+            oifname != "lo" meta skgid != ${proxyGid} ip daddr @dns114_v4 meta l4proto { tcp, udp } th dport { 445, 8443 } log prefix "[DNS-Leak-DoH|Crypt-114DNS] " ${actionRuleDNS114}
+          ''}
+          ${lib.optionalString addTencent ''
+            oifname != "lo" meta skgid != ${proxyGid} ip daddr @tencent_v4 meta l4proto { tcp, udp } th dport { 445, 8443 } log prefix "[DNS-Leak-DoH|Crypt-Tencent] " ${actionRuleTencent}
+            oifname != "lo" meta skgid != ${proxyGid} ip6 daddr @tencent_v6 meta l4proto { tcp, udp } th dport { 445, 8443 } log prefix "[DNS-Leak-DoH|Crypt-Tencent] " ${actionRuleTencent}
+          ''}
+          ${lib.optionalString addBaidu ''
+            oifname != "lo" meta skgid != ${proxyGid} ip daddr @baidu_v4 meta l4proto { tcp, udp } th dport { 445, 8443 } log prefix "[DNS-Leak-DoH|Crypt-Baidu] " ${actionRuleBaidu}
+            oifname != "lo" meta skgid != ${proxyGid} ip6 daddr @baidu_v6 meta l4proto { tcp, udp } th dport { 445, 8443 } log prefix "[DNS-Leak-DoH|Crypt-Baidu] " ${actionRuleBaidu}
+          ''}
+          ${lib.optionalString addShecan ''
+            oifname != "lo" meta skgid != ${proxyGid} ip daddr @shecan_v4 meta l4proto { tcp, udp } th dport { 445, 8443 } log prefix "[DNS-Leak-DoH|Crypt-Shecan] " ${actionRuleShecan}
+          ''}
+          ${lib.optionalString addOnline403 ''
+            oifname != "lo" meta skgid != ${proxyGid} ip daddr @online403_v4 meta l4proto { tcp, udp } th dport { 445, 8443 } log prefix "[DNS-Leak-DoH|Crypt-403Online] " ${actionRuleOnline403}
+          ''}
+          ${lib.optionalString addRadarGame ''
+            oifname != "lo" meta skgid != ${proxyGid} ip daddr @radargame_v4 meta l4proto { tcp, udp } th dport { 445, 8443 } log prefix "[DNS-Leak-DoH|Crypt-RadarGame] " ${actionRuleRadarGame}
           ''}
         }
       '';
