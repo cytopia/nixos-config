@@ -58,7 +58,7 @@ in
       serviceConfig = {
         Type = "oneshot";
         RemainAfterExit = true;
-        StandardInput = "tty";
+        #StandardInput = "tty";
         StandardOutput = "journal";
         StandardError = "journal"; # Captures errors (like 'keyboard not found')
         # Path to kbdrate binary from the kbd package
