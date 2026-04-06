@@ -17,6 +17,12 @@ let
     "network.trr.uri" = cfg.dnsOverHttps.url;
     "network.trr.custom_uri" = cfg.dnsOverHttps.url;
     "network.trr.fallback-on-zero-response" = false;
+    "network.trr.wait-for-confirmation" = false;
+    "network.dns.use_https_rr_as_altsvc" = true;
+    "network.dns.echconfig.enabled" = true;
+    "network.dns.http3_echconfig.enabled" = true;
+    "network.dns.native_https_query" = true;
+    "network.dns.echconfig.fallback_to_origin_when_all_failed" = false;
   };
 
   securityPreferences = {
@@ -37,16 +43,23 @@ let
     "geo.enabled" = false;
     "toolkit.telemetry.enabled" = false;
     "datareporting.healthreport.uploadEnabled" = false;
-    # Stop captive portal checks (e.g., hotel Wi-Fi login detection)
     "network.captive-portal-service.enabled" = false;
-    # Disable Safe Browsing to ensure zero background noise connecting to Google APIs
     "browser.safebrowsing.malware.enabled" = false;
     "browser.safebrowsing.phishing.enabled" = false;
 
-    # Enforce Strict Cryptography (ECH & HTTPS-Only)
+    # ADD: Advanced Telemetry & FOG (Glean) Hardening
+    "toolkit.telemetry.unified" = false;
+    "toolkit.telemetry.archive.enabled" = false;
+    "toolkit.telemetry.bhrPing.enabled" = false;
+    "toolkit.telemetry.firstShutdownPing.enabled" = false;
+    "toolkit.telemetry.newProfilePing.enabled" = false;
+    "toolkit.telemetry.shutdownPingSender.enabled" = false;
+    "toolkit.telemetry.updatePing.enabled" = false;
+    "toolkit.telemetry.dap_enabled" = false;
+    "telemetry.fog.test.localhost_port" = 0;
+
+    # Enforce Strict Cryptography (HTTPS-Only)
     "dom.security.https_only_mode" = true;
-    "network.dns.echconfig.enabled" = true;
-    "network.dns.echconfig.fallback_to_origin_when_all_failed" = false;
   };
 
 in
@@ -84,6 +97,7 @@ in
           policies = {
             DisableAppUpdate = true;
             DisableTelemetry = true;
+            DisableFirefoxStudies = true;
           };
           preferences = { };
         };
