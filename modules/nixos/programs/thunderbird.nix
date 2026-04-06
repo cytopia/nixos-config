@@ -34,28 +34,9 @@ let
     # or remote data gathering regarding application usage, performance, or errors.
     DisableTelemetry = true;
 
-    # Disables participation in Firefox/Thunderbird Studies (Shield).
-    # Prevents Mozilla from silently installing background experiments or
-    # hotfixes that could alter the application's behavior or security posture.
-    DisableFirefoxStudies = true;
   };
 
   uiPolicies = {
-    # Disables the Pocket integration, if present.
-    # Pocket is a read-it-later service owned by Mozilla that syncs data externally.
-    # Removing it eliminates unnecessary third-party network connections and UI clutter.
-    DisablePocket = true;
-
-    # Prevents the user from accidentally or intentionally refreshing the profile.
-    # A profile refresh could reset critical security and privacy configurations.
-    # This ensures the heavily hardened NixOS configuration remains strictly enforced.
-    DisableProfileRefresh = true;
-
-    # Prevents the creation of default bookmarks upon profile creation.
-    # Stops Thunderbird from populating the interface with predefined links to Mozilla or partners.
-    # Ensures a clean, distraction-free, and locally-controlled environment.
-    NoDefaultBookmarks = true;
-
     # Disables the prompt that offers to save passwords in the built-in password manager.
     # For highly secure environments, external, encrypted credential managers (like KeepassXC or pass) should be used.
     # This prevents sensitive credentials from being stored in the browser's local database.
@@ -186,11 +167,6 @@ let
     # Essential for avoiding random pings to HTTP endpoints on network changes.
     "network.captive-portal-service.enabled" = false;
 
-    # Empties the canonical URL used for captive portal detection.
-    # Provides an extra layer of defense by removing the endpoint the captive portal check would use.
-    # Ensures that even if the service is turned on, it has nowhere to connect to.
-    "captivedetect.canonicalURL" = "";
-
     # Forces Thunderbird to show Punycode for Internationalized Domain Names (IDNs).
     # Protects against homograph attacks where malicious domains look visually identical to trusted ones.
     # A critical security measure to prevent phishing via deceptive URLs in emails.
@@ -203,81 +179,6 @@ let
   };
 
   telemetryPreferences = {
-    # Disables the beacon API, which allows background data transmission upon page unload.
-    # Prevents tracking scripts in HTML emails from sending "read receipts" or tracking data back to servers.
-    # Ensures no sneaky analytics pings are fired when closing emails.
-    "beacon.enabled" = false;
-
-    # Disables the primary telemetry switch, stopping general data collection.
-    # This prevents Thunderbird from gathering usage, performance, and hardware data.
-    # Stops all broad strokes telemetry at the application level.
-    "toolkit.telemetry.enabled" = false;
-
-    # Disables unified telemetry, a subsystem that collects and bundles various metrics.
-    # Prevents the packaging of UI interactions, performance stats, and crashes into single pings.
-    # Hardens the telemetry disablement by targeting the unified engine directly.
-    "toolkit.telemetry.unified" = false;
-
-    # Disables the local archiving of telemetry pings.
-    # Prevents Thunderbird from saving telemetry data to the local disk, even if not sending it.
-    # Keeps the filesystem clean of tracking databases.
-    "toolkit.telemetry.archive.enabled" = false;
-
-    # Disables the background hang reporter ping.
-    # Stops Thunderbird from sending data to Mozilla when the application UI freezes.
-    # Prevents leaking information about local system performance and workload.
-    "toolkit.telemetry.bhrPing.enabled" = false;
-
-    # Disables the first shutdown ping, sent after the very first time the app is run.
-    # Prevents Mozilla from knowing when the application was initially provisioned.
-    # Maintains the anonymity of the installation lifecycle.
-    "toolkit.telemetry.firstShutdownPing.enabled" = false;
-
-    # Disables the new profile ping, sent when a new user profile is created.
-    # Prevents tracking the creation of separate identities or workspaces.
-    # Keeps profile generation completely private and offline.
-    "toolkit.telemetry.newProfilePing.enabled" = false;
-
-    # Disables the shutdown ping sender, which transmits telemetry upon closing the app.
-    # Ensures that quitting Thunderbird doesn't trigger a final data upload.
-    # Guarantees a silent exit with no network noise.
-    "toolkit.telemetry.shutdownPingSender.enabled" = false;
-
-    # Disables the update ping, sent when checking for or applying updates.
-    # We manage updates externally via NixOS, so this is unnecessary and leaks version data.
-    # Prevents Mozilla from tracking the update cadence of this machine.
-    "toolkit.telemetry.updatePing.enabled" = false;
-
-    # Disables Distributed Aggregation Protocol (DAP) telemetry, a newer privacy-preserving metrics system.
-    # Even though it's designed to be private, it still involves external network connections.
-    # We enforce zero external connections for telemetry, period.
-    "toolkit.telemetry.dap_enabled" = false;
-
-    # Sets the main telemetry server URL to a null data URI.
-    # Blackholes any telemetry requests that somehow bypass the 'disabled' flags.
-    # Ensures that even rogue pings hit a dead end locally.
-    "toolkit.telemetry.server" = "data:,";
-
-    # Disables coverage telemetry, which tracks which parts of the code are being executed.
-    # Prevents fingerprinting based on feature usage or application interaction.
-    # Ensures your specific usage patterns are never analyzed.
-    "toolkit.telemetry.coverage.opt-out" = true;
-
-    # Sets the localhost port for testing FOG (Glean) telemetry to 0 (disabled).
-    # Disables the local test server interface for Mozilla's next-gen telemetry system.
-    # Closes a potential local attack surface or data leak vector.
-    "telemetry.fog.test.localhost_port" = 0;
-
-    # Sets the default server for FOG (Glean) telemetry to a null data URI.
-    # Blackholes the newer Glean telemetry engine's endpoint, similar to the legacy telemetry server.
-    # Provides forward compatibility against new telemetry mechanisms.
-    "telemetry.fog.default_server" = "data:,";
-
-    # Disables uploading the Thunderbird Health Report.
-    # The health report tracks crashes, startups, and basic performance stats.
-    # We want zero external visibility into the application's health.
-    "datareporting.healthreport.uploadEnabled" = false;
-
     # Disables the data submission policy entirely.
     # Acts as a master switch for the data reporting service (different from toolkit.telemetry).
     # Completely severs the data reporting pipeline.
@@ -509,11 +410,6 @@ let
     # Blocking them prevents senders from knowing when, where, and if you opened their email.
     "mailnews.message_display.disable_remote_image" = true;
 
-    # Sets the startup action to show the default mail view (0) rather than a start page or nothing.
-    # Skips any online "welcome" screens or extraneous network requests during boot.
-    # Ensures a fast, offline initialization.
-    "messenger.startup.action" = 0;
-
     # Disables the integrated chat features in Thunderbird (XMPP, Matrix, etc.).
     # We only want this application to be an email and calendar client.
     # Reduces the attack surface and prevents accidental connection to chat networks.
@@ -560,26 +456,6 @@ let
     # Strips out the ability for Thunderbird to even attempt to update itself.
     # Enforces immutable, system-level updates only.
     "app.update.enabled" = false;
-
-    # Empties the URL used to fetch release notes after an update.
-    # Prevents Thunderbird from opening a new tab to Mozilla's site after a system upgrade.
-    # Keeps the user experience focused and quiet.
-    "app.releaseNotesURL" = "";
-
-    # Disables the Normandy service, which allows Mozilla to push hotfixes and experiments.
-    # This is a remote-execution and configuration-alteration backdoor.
-    # Disabling it ensures the configuration remains strictly local and predictable.
-    "app.normandy.enabled" = false;
-
-    # Empties the API URL used by the Normandy service.
-    # Ensures that even if Normandy were enabled, it has no server to connect to.
-    # Hardens the protection against remote configuration changes.
-    "app.normandy.api_url" = "";
-
-    # Disables participation in Firefox/Thunderbird Shield studies (experiments).
-    # Prevents Mozilla from silently enabling beta features or collecting specific study metrics.
-    # Ensures a stable, unchanging application environment.
-    "app.shield.optoutstudies.enabled" = false;
 
     # Disables the automatic updating of system add-ons.
     # System add-ons are hidden extensions pushed by Mozilla for hotfixes or features.
