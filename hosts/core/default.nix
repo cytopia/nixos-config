@@ -159,23 +159,23 @@ in
     localBlockList = {
       enable = true;
       urls = [
-        # MyBase
+        # Info at https://firebog.net/
         "https://download.dnscrypt.info/blacklists/domains/mybase.txt"
-        "https://raw.githubusercontent.com/PolishFiltersTeam/KADhosts/master/KADhosts.txt"
-        "https://raw.githubusercontent.com/FadeMind/hosts.extras/master/add.Spam/hosts"
-        "https://v.firebog.net/hosts/static/w3kbl.txt"
-        "https://adaway.org/hosts.txt"
         "https://v.firebog.net/hosts/AdguardDNS.txt"
         "https://v.firebog.net/hosts/Admiral.txt"
-        "https://raw.githubusercontent.com/anudeepND/blacklist/master/adservers.txt"
         "https://v.firebog.net/hosts/Easylist.txt"
-        "https://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&showintro=0&mimetype=plaintext"
-        "https://raw.githubusercontent.com/FadeMind/hosts.extras/master/UncheckyAds/hosts"
-        "https://raw.githubusercontent.com/bigdargon/hostsVN/master/hosts"
         "https://v.firebog.net/hosts/Easyprivacy.txt"
         "https://v.firebog.net/hosts/Prigent-Ads.txt"
+        "https://v.firebog.net/hosts/static/w3kbl.txt"
+        "https://raw.githubusercontent.com/PolishFiltersTeam/KADhosts/master/KADhosts.txt"
+        "https://raw.githubusercontent.com/FadeMind/hosts.extras/master/UncheckyAds/hosts"
         "https://raw.githubusercontent.com/FadeMind/hosts.extras/master/add.2o7Net/hosts"
+        "https://raw.githubusercontent.com/FadeMind/hosts.extras/master/add.Spam/hosts"
+        "https://raw.githubusercontent.com/anudeepND/blacklist/master/adservers.txt"
+        "https://raw.githubusercontent.com/bigdargon/hostsVN/master/hosts"
         "https://raw.githubusercontent.com/crazy-max/WindowsSpyBlocker/master/data/hosts/spy.txt"
+        "https://adaway.org/hosts.txt"
+        "https://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&showintro=0&mimetype=plaintext"
         "https://hostfiles.frogeye.fr/firstparty-trackers-hosts.txt"
       ];
     };
@@ -187,7 +187,7 @@ in
       port = 4400;
     };
   };
-  #services.opensnitch.enable = true;
+
 
   ###
   ### My Modules: Services
