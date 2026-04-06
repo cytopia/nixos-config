@@ -29,7 +29,8 @@ let
           "DnsOverHttpsMode" = "secure";
 
           # Point Chromium strictly to our local dnscrypt-proxy instance using the TLS cert.
-          "DnsOverHttpsTemplates" = "https://localhost:${toString dnscryptLocalDoh.port}${dnscryptLocalDoh.path}";
+          "DnsOverHttpsTemplates" =
+            "https://localhost:${toString dnscryptLocalDoh.port}${dnscryptLocalDoh.path}";
 
           # Bypass DoH for internal/VPN domains.
           # Chromium will send these to systemd-resolved (plaintext), which will correctly route them to the VPN's nameserver.
@@ -330,6 +331,22 @@ in
       "jpmkfafbacpgapdghgdpembnojdlgkdl" # AWS Extend Roles
       "aeblfdkhhhdcdjpifhhbdiojplfjncoa" # 1Password
     ];
+  };
+
+  programs.thunderbird.enable = true;
+  programs.thunderbird.policies = {
+    Certificates.Install = [ "/run/local-doh-ca/rootCA.pem" ];
+    DNSOverHTTPS = {
+      Enabled = true;
+      ProviderURL = "https://localhost:3000/dns-query";
+      Locked = true;
+      Fallback = false;
+    };
+  };
+  programs.thunderbird.preferences = {
+    "network.trr.mode" = 3; # 3 = Strict DoH. 2 = DoH with fallback.
+    "network.trr.uri" = "https://localhost:3000/dns-query";
+    "network.trr.custom_uri" = "https://localhost:3000/dns-query";
   };
 
   ###
