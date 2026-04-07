@@ -30,7 +30,7 @@ let
 
           # Point Chromium strictly to our local dnscrypt-proxy instance using the TLS cert.
           "DnsOverHttpsTemplates" =
-            "https://localhost:${toString dnscryptLocalDoh.port}${dnscryptLocalDoh.path}";
+            "https://127.0.0.1:${toString dnscryptLocalDoh.port}${dnscryptLocalDoh.path}";
 
           # Bypass DoH for internal/VPN domains.
           # Chromium will send these to systemd-resolved (plaintext), which will correctly route them to the VPN's nameserver.
@@ -307,7 +307,7 @@ in
 
     dnsOverHttps = {
       enable = dnscryptLocalDoh.enable;
-      url = "https://localhost:${toString dnscryptLocalDoh.port}${dnscryptLocalDoh.path}";
+      url = "https://127.0.0.1:${toString dnscryptLocalDoh.port}${dnscryptLocalDoh.path}";
       caCertPath = dnscryptCerts.caCertPath;
     };
   };
