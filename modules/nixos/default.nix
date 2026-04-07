@@ -18,7 +18,7 @@
 
     # Networking
     ./networking/simple.nix
-    ./networking/services/ntp.nix
+    ./networking/services/ntp/default.nix
     ./networking/services/dns/default.nix
 
     # Services

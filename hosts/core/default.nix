@@ -139,7 +139,10 @@ in
     enable = true;
     hostName = hostname;
   };
-  mySystem.networking.service.ntp.enable = true;
+  cytopia.service.ntp = {
+    enable = true;
+    firewall.enable = true;
+  };
   cytopia.service.dns = {
     enable = true;
     firewall.enable = true;
