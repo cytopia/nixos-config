@@ -471,7 +471,7 @@ in
 
     networking.nftables.tables."dns-logging" = {
       family = "inet";
-      content = ''
+      content = /* bash */ ''
         ${lib.optionalString addGoogle ''
           set google_dns_v4 { type ipv4_addr; elements = { ${builtins.concatStringsSep ", " ipsGoogleV4} }; }
           set google_dns_v6 { type ipv6_addr; elements = { ${builtins.concatStringsSep ", " ipsGoogleV6} }; }

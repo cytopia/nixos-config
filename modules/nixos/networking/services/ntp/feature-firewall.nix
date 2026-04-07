@@ -46,7 +46,7 @@ in
 
     networking.nftables.tables."ntp-logging" = {
       family = "inet";
-      content = ''
+      content = /* bash */ ''
         chain output {
           type filter hook output priority -10; policy accept;
 

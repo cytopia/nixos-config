@@ -31,7 +31,7 @@ in
     services.timesyncd.enable = false;
 
     # Hardcode static, unicast NTS time servers to break the Time/DNS deadlock.
-    networking.extraHosts = ''
+    networking.extraHosts = /* bash */ ''
       # PTB Germany (Unicast - High Privacy, National Atomic Clock)
       192.53.103.108 ptbtime1.ptb.de
       2001:638:610:be01::108 ptbtime1.ptb.de
@@ -60,7 +60,7 @@ in
       enable = true;
       servers = [ ]; # Clear defaults and use extraConfig
 
-      extraConfig = ''
+      extraConfig = /* bash */ ''
         # ==========================================================
         # 1. UPSTREAM SERVERS
         # ==========================================================
