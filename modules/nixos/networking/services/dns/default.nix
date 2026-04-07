@@ -192,7 +192,7 @@ in
           "9.9.9.9:53" # Quad9
           "149.112.112.9:53" # Quad9 alt-1
           "149.112.112.112:53" # Quad9 alt-2
-          "1.1.1.1:53" # Cloudflare
+          #"1.1.1.1:53" # Cloudflare
           "1.0.0.1:53" # Cloudflare alt-1
           "194.242.2.2:53" # Mullvad DNS
         ];

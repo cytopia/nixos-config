@@ -29,7 +29,7 @@ in
 
     ipv6 = lib.mkOption {
       type = lib.types.bool;
-      default = true;
+      default = false;
       description = "Also listen on IPv6";
     };
   };
