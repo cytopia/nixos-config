@@ -184,6 +184,9 @@ in
     };
     whitelist = [
       "ip-api.com"
+      "ogads-pa.clients6.google.com"
+      "csi.gstatic.com"
+      "mail-ads.google.com"
     ];
     localMonitoring = {
       enable = true;
@@ -282,6 +285,7 @@ in
     scalingFactor = appScaleFactor;
     waylandFractionalScalingSupport = true;
     gpu.engine.displayServer = "wayland";
+    gpu.engine.backend = "gl";
 
     # Ensure all Vulkan layers (e.g. OBS are removed)
     startup.extraEnvVars = {

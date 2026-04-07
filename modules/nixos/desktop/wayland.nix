@@ -83,6 +83,12 @@ in
     xdg.portal = {
       enable = true;
 
+      # Problem: Not opening links from Electron Apps (Signal/Slack)
+      # Electron apps poison their local environment variables (like LD_LIBRARY_PATH).
+      # This forces xdg-open to route requests through the D-Bus portal, ensuring
+      # our custom browser spawns in a clean system environment instead of silently crashing.#
+      xdgOpenUsePortal = true;
+
       # We combine the GTK portal (for standardized UI elements)
       # with any compositor-specific portals you pass via the module parameters.
       extraPortals =
