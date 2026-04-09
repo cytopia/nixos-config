@@ -31,6 +31,7 @@
     ./desktop/sway.nix
 
     # Programs
+    ./programs/browsers/default.nix
     ./programs/chromium.nix
     ./programs/google-chrome.nix
     ./programs/obs.nix

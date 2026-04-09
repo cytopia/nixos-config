@@ -256,6 +256,14 @@ in
   mySystem.programs.podman.enable = true;
   mySystem.programs.vim.enable = true;
 
+  cytopia.programs.browsers.brave = {
+    enable = true;
+    features.scaling = {
+      factor = appScaleFactor;
+      waylandFractionalScaling = true;
+    };
+  };
+
   mySystem.programs.chromium = {
     enable = true;
     browser = "chromium";
