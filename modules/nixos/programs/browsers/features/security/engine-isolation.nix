@@ -58,8 +58,6 @@
               (lib.optionals cfg.strictProcessIsolation [
                 # Forces Chromium to allocate dedicated OS-level processes for each site.
                 "--site-per-process"
-                # Ensures that cross-origin iframes are also put into different processes.
-                "--isolate-origins"
               ])
               (lib.optionals cfg.disableJit [
                 # Instructs the V8 JavaScript engine to run purely in interpreter mode.
@@ -70,8 +68,12 @@
             internal.enableFeatures = lib.mkMerge [
               (lib.optionals cfg.strictProcessIsolation [
                 # Hardens the Origin API to strictly separate origins on the backend.
+                # This is the nuclear version. It also separates subdomains.
                 "StrictOriginIsolation"
-                # Runs the internal browser network service in a heavily restricted sandbox.
+              ])
+
+              (lib.optionals cfg.sandboxSystemServices [
+                # Runs the internal browser network service in a heavily restricted OS sandbox.
                 "NetworkServiceSandbox"
               ])
             ];
@@ -83,6 +85,8 @@
               })
 
               (lib.mkIf cfg.strictProcessIsolation {
+                # This policy alone enforces the --site-per-process behavior globally.
+                "SitePerProcess" = true;
                 # Enhances SitePerProcess by strongly keying the process memory to the specific origin.
                 "OriginKeyedProcessesEnabled" = true;
               })

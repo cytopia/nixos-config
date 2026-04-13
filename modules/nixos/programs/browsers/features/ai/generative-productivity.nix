@@ -65,22 +65,6 @@
               '';
             };
 
-            disableWebAnnotations = lib.mkOption {
-              type = lib.types.bool;
-              default = false;
-              description = ''
-                [REMOTE/CLOUD] Kills the "Web Annotations" feature where Google's ML
-                highlights page content for you automatically.
-              '';
-            };
-
-            disableContextualSearch = lib.mkOption {
-              type = lib.types.bool;
-              default = false;
-              description = ''
-                [REMOTE/CLOUD] Kills the ML-powered "Touch to Search" and context-aware intent scanning.
-              '';
-            };
           };
 
           ###
@@ -98,7 +82,6 @@
 
               (lib.mkIf cfg.disableAiMode {
                 "AIModeSettings" = 1;
-                "ShowAiIntroScreenEnabled" = false;
               })
 
               (lib.mkIf cfg.disableAiHistorySearch {
@@ -111,14 +94,6 @@
 
               (lib.mkIf cfg.disableHelpMeWrite {
                 "HelpMeWriteSettings" = 2;
-              })
-
-              (lib.mkIf cfg.disableWebAnnotations {
-                "WebAnnotations" = false;
-              })
-
-              (lib.mkIf cfg.disableContextualSearch {
-                "ContextualSearchEnabled" = false;
               })
             ];
           };

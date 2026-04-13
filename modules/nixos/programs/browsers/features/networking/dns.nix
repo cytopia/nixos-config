@@ -76,14 +76,6 @@
                 '';
               };
 
-              excludedDomains = lib.mkOption {
-                type = lib.types.listOf lib.types.str;
-                default = [
-                  "*.local"
-                  "*.internal"
-                ];
-                description = "Bypass DoH for internal domains. Routes to systemd-resolved (plaintext).";
-              };
             };
           };
 
@@ -108,7 +100,6 @@
               (lib.mkIf cfg.doh.enable {
                 "DnsOverHttpsMode" = cfg.doh.mode;
                 "DnsOverHttpsTemplates" = cfg.doh.template;
-                "DnsOverHttpsExcludedDomains" = cfg.doh.excludedDomains;
               })
 
               (lib.mkIf (!cfg.doh.enable) {
