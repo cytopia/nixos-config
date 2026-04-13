@@ -14,13 +14,20 @@
           ###
           options.features.privacy.remoteServices = {
 
-            disableCloudPredictions = lib.mkOption {
+            disableAutofillPredictions = lib.mkOption {
               type = lib.types.bool;
               default = false;
               description = ''
-                Disables autofill predictions, payment method queries, and URL-keyed anonymized data collection.
-                Prevents the browser from sending form field names or visited URLs to Google for
-                "make searches and browsing better" features.
+                Disables autofill predictions. Prevents the browser from sending
+                form field names to Google for "make searches and browsing better" features.
+              '';
+            };
+
+            disablePaymentMethodQueries = lib.mkOption {
+              type = lib.types.bool;
+              default = false;
+              description = ''
+                Disables payment method queries to Google's backend.
               '';
             };
 
@@ -30,8 +37,16 @@
               description = ''
                 Enforces no Safe Browsing protection and disables the local heuristic engine
                 that scans page DOMs for phishing. Disables uploading files to Google for deep
-                malware scanning and sending extended telemetry. Prioritizes privacy by ensuring
-                Chrome does not evaluate files or query Google during downloads.
+                malware scanning and sending extended telemetry.
+              '';
+            };
+
+            disableDownloadEvaluations = lib.mkOption {
+              type = lib.types.bool;
+              default = false;
+              description = ''
+                Prioritizes privacy by ensuring Chrome does not evaluate files or query
+                Google during downloads. Allows all downloads without restrictions.
               '';
             };
 
@@ -86,12 +101,14 @@
             ];
 
             internal.policies = lib.mkMerge [
-              (lib.mkIf cfg.disableCloudPredictions {
+              # Implementations mapped to their new atomic options
+              (lib.mkIf cfg.disableAutofillPredictions {
                 # A value of 2 disables autofill predictions entirely.
                 # Prevents the browser from sending local form field names to Google's backend.
                 "AutofillPredictionSettings" = 2;
-                # Disables sending visited URLs to Google for the "Make searches and browsing better" feature.
-                "UrlKeyedAnonymizedDataCollectionEnabled" = false;
+              })
+
+              (lib.mkIf cfg.disablePaymentMethodQueries {
                 "PaymentMethodQueryEnabled" = false;
               })
 
@@ -105,6 +122,9 @@
                 # Disables integration with Advanced Protection and related surveys.
                 "AdvancedProtectionAllowed" = false;
                 "SafeBrowsingSurveysEnabled" = false;
+              })
+
+              (lib.mkIf cfg.disableDownloadEvaluations {
                 # A value of 0 ensures Chrome does not evaluate files or query Google during file downloads.
                 "DownloadRestrictions" = 0;
               })
