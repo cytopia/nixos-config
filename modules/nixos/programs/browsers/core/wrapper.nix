@@ -116,9 +116,6 @@ let
           fi
         '';
       };
-
-
-
 in
 {
   config = lib.mkIf (activeBrowsers != { }) {
