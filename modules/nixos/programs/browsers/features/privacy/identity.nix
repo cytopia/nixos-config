@@ -33,13 +33,36 @@
               '';
             };
 
-            disableGoogleEcosystem = lib.mkOption {
+            disablePhoneHubIntegration = lib.mkOption {
               type = lib.types.bool;
               default = false;
               description = ''
-                Disables Google ecosystem integrations that leak local state or link accounts.
-                Kills "Click to Call" (sending numbers to your phone), Family password sharing,
-                cloud-synced shopping carts, and Developer Tools profile linking.
+                Disables Google ecosystem integrations that leak local state.
+                Kills "Click to Call" (sending numbers to your phone).
+              '';
+            };
+
+            disableDeveloperProfileLinking = lib.mkOption {
+              type = lib.types.bool;
+              default = false;
+              description = ''
+                Stops Developer Tools from linking to a Google Developer Profile.
+              '';
+            };
+
+            disableFamilyPasswordSharing = lib.mkOption {
+              type = lib.types.bool;
+              default = false;
+              description = ''
+                Disables sharing passwords with a Google Family group.
+              '';
+            };
+
+            disableCloudShopping = lib.mkOption {
+              type = lib.types.bool;
+              default = false;
+              description = ''
+                Kills the built-in price tracking and cloud-synced shopping cart features.
               '';
             };
 
@@ -86,13 +109,19 @@
                 "BrowserGuestModeEnabled" = false;
               })
 
-              (lib.mkIf cfg.disableGoogleEcosystem {
+              (lib.mkIf cfg.disablePhoneHubIntegration {
                 # Disables "Click to Call" sending phone numbers to your Android device.
                 "ClickToCallEnabled" = false;
+              })
+              (lib.mkIf cfg.disableDeveloperProfileLinking {
                 # Stops Developer Tools from linking to a Google Developer Profile.
                 "DevToolsGoogleDeveloperProgramProfileAvailability" = 2;
+              })
+              (lib.mkIf cfg.disableFamilyPasswordSharing {
                 # Disables sharing passwords with a Google Family group.
                 "PasswordSharingEnabled" = false;
+              })
+              (lib.mkIf cfg.disableCloudShopping {
                 # Kills the built-in price tracking and cloud-synced shopping cart features.
                 "ShoppingListEnabled" = false;
               })

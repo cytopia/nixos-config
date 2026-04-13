@@ -18,9 +18,26 @@
               type = lib.types.bool;
               default = false;
               description = ''
-                Kills "phone-home" traffic, crash reporting, background analytics, and component update checks.
+                Kills "phone-home" traffic, crash reporting, and background analytics.
                 Disables diagnostic data collection (such as WebRTC logs or domain reliability reports)
                 sent when pages fail to load.
+              '';
+            };
+
+            disableComponentUpdates = lib.mkOption {
+              type = lib.types.bool;
+              default = false;
+              description = ''
+                Stops Chrome from quietly downloading component updates in the background.
+                Note: This can break DRM (Widevine) and Certificate Revocation lists.
+              '';
+            };
+
+            disableUrlKeyedAnonymizedData = lib.mkOption {
+              type = lib.types.bool;
+              default = false;
+              description = ''
+                Disables sending visited URLs to Google for URL-keyed anonymized data collection.
               '';
             };
 
@@ -89,8 +106,16 @@
                 "FeedbackSurveysEnabled" = false;
                 "WebRtcEventLogCollectionAllowed" = false;
                 "WebRtcTextLogCollectionAllowed" = false;
+              })
+
+              (lib.mkIf cfg.disableComponentUpdates {
                 # Stops Chrome from quietly downloading component updates in the background.
                 "ComponentUpdatesEnabled" = false;
+              })
+
+              (lib.mkIf cfg.disableUrlKeyedAnonymizedData {
+                # Disables sending visited URLs to Google for the "Make searches and browsing better" feature.
+                "UrlKeyedAnonymizedDataCollectionEnabled" = false;
               })
 
               (lib.mkIf cfg.disableAbTesting {

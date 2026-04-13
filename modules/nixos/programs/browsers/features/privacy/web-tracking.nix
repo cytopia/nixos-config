@@ -67,8 +67,15 @@
               type = lib.types.bool;
               default = false;
               description = ''
-                Strictly blocks ads on sites known to have intrusive or abusive ad practices,
-                and disables media recommendations which can send viewing habits to backend servers.
+                Strictly blocks ads on sites known to have intrusive or abusive ad practices.
+              '';
+            };
+
+            disableMediaRouterTracking = lib.mkOption {
+              type = lib.types.bool;
+              default = false;
+              description = ''
+                Disables media recommendations which can send viewing habits to backend servers.
               '';
             };
           };
@@ -131,6 +138,9 @@
                 # Enforces native blocking of abusive ad networks based on the Better Ads Standard.
                 # A value of 2 enforces a strict block on offending domains.
                 "AdsSettingForIntrusiveAdsSites" = 2;
+              })
+
+              (lib.mkIf cfg.disableMediaRouterTracking {
                 # Disables media consumption recommendations.
                 # Prevents the browser from phoning home with video/audio interaction metrics.
                 "MediaRecommendationsEnabled" = false;
