@@ -44,6 +44,15 @@ in
     ./features/scaling.nix
     ./features/search.nix
 
+    # Optional self-contained hardware acceleration features
+    ./features/hardware/display.nix
+    ./features/hardware/driver-overrides.nix
+    ./features/hardware/graphics.nix
+    ./features/hardware/machine-learning.nix
+    ./features/hardware/memory.nix
+    ./features/hardware/rasterization.nix
+    ./features/hardware/video.nix
+
     # Optional self-contained privacy features
     ./features/privacy/identity.nix
     ./features/privacy/local-state.nix
