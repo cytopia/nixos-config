@@ -105,7 +105,7 @@
           inputs.awsvpnclient-nix.nixosModules.default
 
           # Import hosts dynamically
-          ./hosts/${hostname}/default.nix
+          ./hosts/machines/${hostname}/default.nix
         ];
       }
     ) myHosts; # Pass myHosts dictionary into mapAttrs
