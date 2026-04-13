@@ -30,7 +30,7 @@ let
 
           # Point Chromium strictly to our local dnscrypt-proxy instance using the TLS cert.
           "DnsOverHttpsTemplates" =
-            "https://localhost:${toString dnscryptLocalDoh.port}${dnscryptLocalDoh.path}";
+            "https://127.0.0.1:${toString dnscryptLocalDoh.port}${dnscryptLocalDoh.path}";
 
           # Bypass DoH for internal/VPN domains.
           # Chromium will send these to systemd-resolved (plaintext), which will correctly route them to the VPN's nameserver.
@@ -58,7 +58,7 @@ in
   imports = [
     ./hardware-configuration.nix
     ./disko-config.nix
-    ../../modules/nixos/default.nix
+    ../../../modules/nixos/default.nix
   ];
 
   ###
@@ -184,6 +184,9 @@ in
     };
     whitelist = [
       "ip-api.com"
+      "ogads-pa.clients6.google.com"
+      "csi.gstatic.com"
+      "mail-ads.google.com"
     ];
     localMonitoring = {
       enable = true;
@@ -253,6 +256,14 @@ in
   mySystem.programs.podman.enable = true;
   mySystem.programs.vim.enable = true;
 
+  cytopia.programs.browsers.brave = {
+    enable = true;
+    features.scaling = {
+      factor = appScaleFactor;
+      waylandFractionalScaling = true;
+    };
+  };
+
   mySystem.programs.chromium = {
     enable = true;
     browser = "chromium";
@@ -282,6 +293,7 @@ in
     scalingFactor = appScaleFactor;
     waylandFractionalScalingSupport = true;
     gpu.engine.displayServer = "wayland";
+    gpu.engine.backend = "gl";
 
     # Ensure all Vulkan layers (e.g. OBS are removed)
     startup.extraEnvVars = {
@@ -303,7 +315,7 @@ in
 
     dnsOverHttps = {
       enable = dnscryptLocalDoh.enable;
-      url = "https://localhost:${toString dnscryptLocalDoh.port}${dnscryptLocalDoh.path}";
+      url = "https://127.0.0.1:${toString dnscryptLocalDoh.port}${dnscryptLocalDoh.path}";
       caCertPath = dnscryptCerts.caCertPath;
     };
   };
