@@ -18,6 +18,7 @@ let
         enableFeatures = lib.mkOption { type = lib.types.listOf lib.types.str; default = [ ]; internal = true; };
         disableFeatures = lib.mkOption { type = lib.types.listOf lib.types.str; default = [ ]; internal = true; };
         envVars = lib.mkOption { type = lib.types.attrsOf lib.types.str; default = { }; internal = true; };
+
         policies = lib.mkOption { type = lib.types.attrs; default = { }; internal = true; };
         initialPreferences = lib.mkOption { type = lib.types.attrs; default = { }; internal = true; };
         runScripts = lib.mkOption { type = lib.types.lines; default = ""; internal = true; };
@@ -43,6 +44,7 @@ in
     ./features/preferences.nix
     ./features/scaling.nix
     ./features/search.nix
+    ./features/startup.nix
     ./features/certificates.nix
 
     # Optional self-contained hardware acceleration features

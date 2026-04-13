@@ -127,13 +127,6 @@
                 "BlockThirdPartyCookies" = true;
               })
 
-              (lib.mkIf (cfg.blockThirdPartyCookies && name == "brave") {
-                # Forces Brave Shields to aggressively block trackers on all sites.
-                # This policy only works on Brave; it is ignored by Google Chrome.
-                "BraveShieldsEnabled" = true;
-                "TrackersAndAdsBlocking" = "aggressive";
-              })
-
               (lib.mkIf cfg.blockIntrusiveAds {
                 # Enforces native blocking of abusive ad networks based on the Better Ads Standard.
                 # A value of 2 enforces a strict block on offending domains.

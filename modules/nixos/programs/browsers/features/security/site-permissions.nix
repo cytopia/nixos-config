@@ -14,6 +14,17 @@
           ###
           options.features.security.sitePermissions = {
 
+          strictGeolocation = lib.mkOption {
+              type = lib.types.bool;
+              default = false;
+              description = ''
+                Forces a prompt (Ask) before granting access to Location (Geolocation API).
+                Also injects `--lso-url=https://no-thanks.invalid` to actively prevent
+                Chrome/Chromium from sending nearby Wi-Fi network MAC addresses to Google's
+                Location Services to triangulate your position.
+              '';
+            };
+
             strictHardwarePermissions = lib.mkOption {
               type = lib.types.bool;
               default = false;
@@ -122,10 +133,21 @@
           ### 2. CONFIGURATION
           ###
           config = {
+
+            internal.flags = lib.mkMerge [
+              (lib.mkIf cfg.strictGeolocation [
+                "--lso-url=https://no-thanks.invalid"
+              ])
+            ];
+
             internal.policies = lib.mkMerge [
-              (lib.mkIf cfg.strictHardwarePermissions {
+              (lib.mkIf cfg.strictGeolocation {
                 # A value of 3 forces the browser to "Ask" the user before granting access.
                 "DefaultGeolocationSetting" = 3;
+              })
+
+              (lib.mkIf cfg.strictHardwarePermissions {
+                # A value of 3 forces the browser to "Ask" the user before granting access.
                 "DefaultWebBluetoothGuardSetting" = 3;
                 "DefaultWebHidGuardSetting" = 3;
                 "DefaultWebUsbGuardSetting" = 3;

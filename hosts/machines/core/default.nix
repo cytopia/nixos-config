@@ -8,6 +8,13 @@
 }:
 let
 
+  browserSettings =
+    (import ../../common/vars-browsers.nix {
+      inherit appScaleFactor;
+      dohServer = "https://127.0.0.1:3000/dns-query";
+      dohCertPath = "/run/local-doh-ca/rootCA.pem";
+    }).settings;
+
   dnscryptLocalDoh = {
     enable = true;
     port = 3000;
@@ -194,7 +201,6 @@ in
     };
   };
 
-
   ###
   ### My Modules: Services
   ###
@@ -258,9 +264,51 @@ in
 
   cytopia.programs.browsers.brave = {
     enable = true;
-    features.scaling = {
-      factor = appScaleFactor;
-      waylandFractionalScaling = true;
+
+    # Settings
+    features.preferences = browserSettings.preferences;
+    features.scaling = browserSettings.scaling;
+    features.search = browserSettings.search;
+
+    features.extensions.forceInstall = [
+      "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
+      "ddkjiahejlhfcafbddmgiahcphecmpfh" # uBlock Origin Lite
+      "ckkdlimhmcjmikdlpkmbgfkaikojcbjk" # Markdown Viewer
+      "mnjggcdmjocbbbhaepdhchncahnbgone" # SponsorBlock for YouTube
+      "gebbhagfogifgggkldgodflihgfeippi" # Return YouTube Dislike
+    ];
+
+    # Hardening
+    features.security = browserSettings.security;
+    features.privacy = browserSettings.privacy;
+    features.ai = browserSettings.ai;
+
+    # Networking
+    # TODO: WebRTC is currently disabled, this should make meetings imperformant/laggy
+    features.networking = browserSettings.networking;
+    features.certificates = browserSettings.certificates;
+
+    # Graphics
+    features.hardware.display = {
+      displayServer = "wayland";
+      forcePipeWire = true;
+    };
+    features.hardware.graphics = {
+      backend = "gles";
+      skiaGraphite = false;
+      treesInViz = true;
+      forceHardwareMesa = true;
+      hideVulkanLoader = true;
+      # Block OBS from injecting into the browser
+      disabledVulkanLayers = [
+        "VK_LAYER_OBS_vkcapture_32"
+        "VK_LAYER_OBS_vkcapture_64"
+      ];
+    };
+    features.hardware.video = {
+      decodingBackend = "vaapi";
+      useMultiPlaneFormats = false; # false for Youtube, true for Google Meet
+      blockSoftwareEncoders = true;
     };
   };
 

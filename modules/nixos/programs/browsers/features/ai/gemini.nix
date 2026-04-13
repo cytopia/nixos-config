@@ -34,8 +34,6 @@
                 "GeminiSettings" = 1;
                 # 1 = Blocked. Prevents Gemini from reading the content/DOM of your active tabs.
                 "GeminiActOnWebSettings" = 1;
-                # Suppresses the full-screen "Try Gemini" welcome screen on startup.
-                "ShowGeminiIntroScreenEnabled" = false;
               })
             ];
           };
