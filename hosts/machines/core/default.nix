@@ -58,7 +58,7 @@ in
   imports = [
     ./hardware-configuration.nix
     ./disko-config.nix
-    ../../modules/nixos/default.nix
+    ../../../modules/nixos/default.nix
   ];
 
   ###

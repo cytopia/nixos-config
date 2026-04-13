@@ -18,7 +18,7 @@ in
     username = lib.mkOption {
       type = lib.types.str;
       description = ''
-        The username is required for certain features (including cli integration) to work with polit.
+        The username is required for certain features (including cli integration) to work with polkit.
       '';
     };
 
