@@ -38,15 +38,32 @@ in
     ./core/wrapper.nix
     ./core/upstream-defaults.nix
 
-    # Optional self-contained features
+    # Optional self-contained default features
     ./features/extensions.nix
     ./features/preferences.nix
     ./features/scaling.nix
     ./features/search.nix
 
-    ./features/privacy.nix
-    ./features/security.nix
-    ./features/ai.nix
+    # Optional self-contained privacy features
+    ./features/privacy/identity.nix
+    ./features/privacy/local-state.nix
+    ./features/privacy/remote-services.nix
+    ./features/privacy/telemetry.nix
+    ./features/privacy/web-tracking.nix
+
+    # Optional self-contained security features
+    ./features/security/attack-surface.nix
+    ./features/security/engine-isolation.nix
+    ./features/security/site-permissions.nix
+    ./features/security/system-integration.nix
+    ./features/security/tls.nix
+
+    # Optional self-contained ai features
+    ./features/ai/creative-ui.nix
+    ./features/ai/developer.nix
+    ./features/ai/gemini.nix
+    ./features/ai/generative-productivity.nix
+    ./features/ai/on-device.nix
   ];
 
   options.cytopia.programs.browsers = lib.mkOption {
