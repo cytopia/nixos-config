@@ -68,14 +68,6 @@
               '';
             };
 
-            disableNetworkTimeSync = lib.mkOption {
-              type = lib.types.bool;
-              default = false;
-              description = ''
-                Stops Chrome from silently making background network requests to Google's
-                time servers to sync the browser clock.
-              '';
-            };
           };
 
           ###
@@ -136,10 +128,6 @@
                 "UrlKeyedMetricsAllowed" = false;
               })
 
-              (lib.mkIf cfg.disableNetworkTimeSync {
-                # Stops Chrome from silently pinging Google's servers for time synchronization.
-                "BrowserNetworkTimeQueriesEnabled" = false;
-              })
             ];
           };
         }

@@ -43,6 +43,7 @@ in
     ./features/preferences.nix
     ./features/scaling.nix
     ./features/search.nix
+    ./features/certificates.nix
 
     # Optional self-contained hardware acceleration features
     ./features/hardware/display.nix
@@ -52,6 +53,11 @@ in
     ./features/hardware/memory.nix
     ./features/hardware/rasterization.nix
     ./features/hardware/video.nix
+
+    # Optional self-contained networking features
+    ./features/networking/dns.nix
+    ./features/networking/ntp.nix
+    ./features/networking/webrtc.nix
 
     # Optional self-contained privacy features
     ./features/privacy/identity.nix
