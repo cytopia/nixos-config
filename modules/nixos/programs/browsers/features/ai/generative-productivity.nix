@@ -14,7 +14,6 @@
           ###
           options.features.ai.generativeProductivity = {
 
-            # [ATOMIC] The Global GenAI Switch
             disableMasterGenAiSwitch = lib.mkOption {
               type = lib.types.bool;
               default = false;
@@ -24,7 +23,6 @@
               '';
             };
 
-            # [ATOMIC] Multi-Tab Context Engine
             disableContextSharing = lib.mkOption {
               type = lib.types.bool;
               default = false;
@@ -34,7 +32,6 @@
               '';
             };
 
-            # [ATOMIC] General AI UI Mode
             disableAiMode = lib.mkOption {
               type = lib.types.bool;
               default = false;
@@ -44,7 +41,6 @@
               '';
             };
 
-            # [ATOMIC] History Search
             disableAiHistorySearch = lib.mkOption {
               type = lib.types.bool;
               default = false;
@@ -53,7 +49,6 @@
               '';
             };
 
-            # [ATOMIC] Tab Compare
             disableTabCompare = lib.mkOption {
               type = lib.types.bool;
               default = false;
@@ -62,7 +57,6 @@
               '';
             };
 
-            # [ATOMIC] Help Me Write
             disableHelpMeWrite = lib.mkOption {
               type = lib.types.bool;
               default = false;
@@ -71,7 +65,6 @@
               '';
             };
 
-            # [ATOMIC] Web Annotations
             disableWebAnnotations = lib.mkOption {
               type = lib.types.bool;
               default = false;
@@ -81,7 +74,6 @@
               '';
             };
 
-            # [ATOMIC] Contextual Search
             disableContextualSearch = lib.mkOption {
               type = lib.types.bool;
               default = false;

@@ -9,6 +9,9 @@
           cfg = config.features.ai.developer;
         in
         {
+          ###
+          ### 1. FEATURE OPTIONS
+          ###
           options.features.ai.developer = {
             disableDevAi = lib.mkOption {
               type = lib.types.bool;
@@ -21,6 +24,9 @@
             };
           };
 
+          ###
+          ### 2. CONFIGURATION
+          ###
           config = {
             internal.policies = lib.mkMerge [
               (lib.mkIf cfg.disableDevAi {

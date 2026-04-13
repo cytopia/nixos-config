@@ -9,6 +9,9 @@
           cfg = config.features.ai.creativeUi;
         in
         {
+          ###
+          ### 1. FEATURE OPTIONS
+          ###
           options.features.ai.creativeUi = {
             disableGenAiThemes = lib.mkOption {
               type = lib.types.bool;
@@ -21,6 +24,9 @@
             };
           };
 
+          ###
+          ### 2. CONFIGURATION
+          ###
           config = {
             internal.policies = lib.mkMerge [
               (lib.mkIf cfg.disableGenAiThemes {

@@ -9,6 +9,9 @@
           cfg = config.features.ai.onDevice;
         in
         {
+          ###
+          ### 1. FEATURE OPTIONS
+          ###
           options.features.ai.onDevice = {
 
             disableLocalAiModels = lib.mkOption {
@@ -30,6 +33,9 @@
             };
           };
 
+          ###
+          ### 2. CONFIGURATION
+          ###
           config = {
             internal.policies = lib.mkMerge [
               (lib.mkIf cfg.disableLocalAiModels {
