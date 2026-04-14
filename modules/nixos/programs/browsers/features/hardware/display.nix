@@ -29,13 +29,25 @@
               '';
             };
 
-            forcePipeWire = lib.mkOption {
+            enablePipeWire = lib.mkOption {
               type = lib.types.bool;
               default = true;
               description = ''
-                Forces Wayland native screen sharing.
+                Enables Wayland native screen sharing via PipeWire.
                 Ensures Wayland uses the modern, efficient PipeWire backend instead of legacy
                 X11 screen grabbing, which often results in black screens on modern compositors.
+              '';
+            };
+
+            enableWaylandIme = lib.mkOption {
+              type = lib.types.bool;
+              default = true;
+              description = ''
+                Enables native Wayland Input Method Editor (IME) support.
+                Required for typing CJK characters or using input frameworks like Fcitx5/IBus
+                natively under a Wayland compositor.
+
+                Note: This flag is only injected when displayServer is set to "wayland".
               '';
             };
           };
@@ -50,13 +62,18 @@
                 "--ozone-platform=wayland"
                 "--ozone-platform-hint=wayland"
               ])
+
+              (lib.mkIf (cfg.displayServer == "wayland" && cfg.enableWaylandIme) [
+                "--enable-wayland-ime=true"
+              ])
+
               (lib.mkIf (cfg.displayServer == "xwayland") [
                 "--ozone-platform=x11"
               ])
             ];
 
             internal.enableFeatures = lib.mkMerge [
-              (lib.optionals cfg.forcePipeWire [
+              (lib.optionals cfg.enablePipeWire [
                 "WebRTCPipeWireCapturer"
               ])
               (lib.mkIf (cfg.displayServer == "wayland") [

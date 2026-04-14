@@ -72,9 +72,10 @@
           ###
           config = {
             internal.policies = lib.mkMerge [
-              (lib.mkIf cfg.disableMasterGenAiSwitch {
-                "GenAiDefaultSettings" = 1;
-              })
+              # Ignored because the policy is not set by a cloud source.
+              #(lib.mkIf cfg.disableMasterGenAiSwitch {
+              #  "GenAiDefaultSettings" = 2;
+              #})
 
               (lib.mkIf cfg.disableContextSharing {
                 "SearchContentSharingSettings" = 1;

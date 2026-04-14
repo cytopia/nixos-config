@@ -59,6 +59,8 @@ in
     # Optional self-contained networking features
     ./features/networking/dns.nix
     ./features/networking/ntp.nix
+    ./features/networking/intranet.nix
+    ./features/networking/prefetching.nix
     ./features/networking/webrtc.nix
 
     # Optional self-contained privacy features

@@ -31,6 +31,16 @@
               '';
             };
 
+            disableIntranetRedirectChecks = lib.mkOption {
+              type = lib.types.bool;
+              default = false;
+              description = ''
+                Disables DNS interception checks for intranet domains.
+                Reduces startup queries and prevents the browser from phoning home to
+                check if your ISP is hijacking local single-word DNS requests (like http://router/).
+              '';
+            };
+
             enableEncryptedClientHello = lib.mkOption {
               type = lib.types.bool;
               default = true;
@@ -95,6 +105,12 @@
                 # network is hijacking DNS. When using dnscrypt-proxy, this hijacking
                 # is intentional and desired.
                 "DNSInterceptionChecksEnabled" = false;
+              })
+
+              (lib.mkIf cfg.disableIntranetRedirectChecks {
+                # 1 (Disable) completely prevents the browser from testing if your local network
+                # hijacked search queries intended for the intranet.
+                "IntranetRedirectBehavior" = 1;
               })
 
               (lib.mkIf cfg.doh.enable {
