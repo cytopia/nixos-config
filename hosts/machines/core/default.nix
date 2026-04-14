@@ -360,13 +360,60 @@ in
     };
   };
 
+  ###
+  ### Browser: Google Chrome
+  ###
+  cytopia.programs.browsers.google-chrome = {
+    enable = true;
 
-    #  mySystem.programs.chromium = {
+    # Settings
+    features.preferences = browserSettings.preferences;
+    features.scaling = browserSettings.scaling;
+    features.search = browserSettings.search;
+
+    features.extensions.forceInstall = [
+      "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
+      "ddkjiahejlhfcafbddmgiahcphecmpfh" # uBlock Origin Lite
+      "jpmkfafbacpgapdghgdpembnojdlgkdl" # AWS Extend Roles
+      "aeblfdkhhhdcdjpifhhbdiojplfjncoa" # 1Password
+    ];
+
+    # Hardening
+    features.security = browserSettings.security;
+    features.privacy = browserSettings.privacy;
+    features.ai = browserSettings.ai;
+
+    # Networking
+    features.networking = browserSettings.networkingWithWebRtc;
+    features.certificates = browserSettings.certificates;
+
+    # Graphics
+    features.hardware.graphics = {
+      backend = "vulkan";
+      skiaGraphite = false;
+      treesInViz = true;
+      forceHardwareMesa = true;
+      hideVulkanLoader = false;
+      # Block OBS from injecting into the browser
+      disabledVulkanLayers = [
+        "VK_LAYER_OBS_vkcapture_32"
+        "VK_LAYER_OBS_vkcapture_64"
+      ];
+    };
+    features.hardware.video = {
+      decodingBackend = "vaapi";
+      useMultiPlaneFormats = true; # true for Youtube, false for Google Meet
+      blockSoftwareEncoders = true;
+    };
+  };
+
+    #  mySystem.programs.google-chrome = {
     #    enable = true;
-    #    browser = "chromium";
+    #    browser = "google-chrome";
     #    scalingFactor = appScaleFactor;
     #    waylandFractionalScalingSupport = true;
     #    gpu.engine.displayServer = "wayland";
+    #    gpu.engine.backend = "gl";
     #
     #    # Ensure all Vulkan layers (e.g. OBS are removed)
     #    startup.extraEnvVars = {
@@ -378,34 +425,10 @@ in
     #    extensions = [
     #      "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
     #      "ddkjiahejlhfcafbddmgiahcphecmpfh" # uBlock Origin Lite
-    #      "ckkdlimhmcjmikdlpkmbgfkaikojcbjk" # Markdown Viewer
-    #      "mnjggcdmjocbbbhaepdhchncahnbgone" # SponsorBlock for YouTube
-    #      "gebbhagfogifgggkldgodflihgfeippi" # Return YouTube Dislike
+    #      "jpmkfafbacpgapdghgdpembnojdlgkdl" # AWS Extend Roles
+    #      "aeblfdkhhhdcdjpifhhbdiojplfjncoa" # 1Password
     #    ];
     #  };
-
-  mySystem.programs.google-chrome = {
-    enable = true;
-    browser = "google-chrome";
-    scalingFactor = appScaleFactor;
-    waylandFractionalScalingSupport = true;
-    gpu.engine.displayServer = "wayland";
-    gpu.engine.backend = "gl";
-
-    # Ensure all Vulkan layers (e.g. OBS are removed)
-    startup.extraEnvVars = {
-      "VK_LOADER_LAYERS_DISABLE" = "VK_LAYER_OBS_vkcapture_32,VK_LAYER_OBS_vkcapture_64";
-    };
-    # Use dnscrypt-proxy as a local DoH resolver?
-    extraPolicies = bowserSettingsWithLocalDoh.extraPolicies;
-    customCaCerts = bowserSettingsWithLocalDoh.customCaCerts;
-    extensions = [
-      "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
-      "ddkjiahejlhfcafbddmgiahcphecmpfh" # uBlock Origin Lite
-      "jpmkfafbacpgapdghgdpembnojdlgkdl" # AWS Extend Roles
-      "aeblfdkhhhdcdjpifhhbdiojplfjncoa" # 1Password
-    ];
-  };
 
   mySystem.programs.thunderbird = {
     enable = true;

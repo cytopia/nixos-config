@@ -14,7 +14,7 @@ let
   policyPaths = {
     "chromium" = "chromium";
     "brave" = "brave";
-    "google-chrome" = "opt/google/chrome";
+    "google-chrome" = "opt/chrome";
   };
 
   # -------------------------------------------------------------
