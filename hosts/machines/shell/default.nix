@@ -8,6 +8,13 @@
 }:
 let
 
+  browserSettings =
+    (import ../../common/vars-browsers.nix {
+      inherit appScaleFactor;
+      dohServer = "https://127.0.0.1:3000/dns-query";
+      dohCertPath = "/run/local-doh-ca/rootCA.pem";
+    }).settings;
+
   dnscryptLocalDoh = {
     enable = true;
     port = 3000;
@@ -194,7 +201,6 @@ in
     };
   };
 
-
   ###
   ### My Modules: Services
   ###
@@ -256,59 +262,173 @@ in
   mySystem.programs.podman.enable = true;
   mySystem.programs.vim.enable = true;
 
+  ###
+  ### Browser: Brave
+  ###
   cytopia.programs.browsers.brave = {
     enable = true;
-    features.scaling = {
-      factor = appScaleFactor;
-      waylandFractionalScaling = true;
-    };
-  };
 
-  mySystem.programs.chromium = {
-    enable = true;
-    browser = "chromium";
-    scalingFactor = appScaleFactor;
-    waylandFractionalScalingSupport = true;
-    gpu.engine.displayServer = "wayland";
+    # Settings
+    features.preferences = browserSettings.preferences;
+    features.scaling = browserSettings.scaling;
+    features.search = browserSettings.search;
 
-    # Ensure all Vulkan layers (e.g. OBS are removed)
-    startup.extraEnvVars = {
-      "VK_LOADER_LAYERS_DISABLE" = "VK_LAYER_OBS_vkcapture_32,VK_LAYER_OBS_vkcapture_64";
-    };
-    # Use dnscrypt-proxy as a local DoH resolver?
-    extraPolicies = bowserSettingsWithLocalDoh.extraPolicies;
-    customCaCerts = bowserSettingsWithLocalDoh.customCaCerts;
-    extensions = [
+    features.extensions.forceInstall = [
       "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
       "ddkjiahejlhfcafbddmgiahcphecmpfh" # uBlock Origin Lite
       "ckkdlimhmcjmikdlpkmbgfkaikojcbjk" # Markdown Viewer
       "mnjggcdmjocbbbhaepdhchncahnbgone" # SponsorBlock for YouTube
       "gebbhagfogifgggkldgodflihgfeippi" # Return YouTube Dislike
     ];
+
+    # Hardening
+    features.security = browserSettings.security;
+    features.privacy = browserSettings.privacy;
+    features.ai = browserSettings.ai;
+
+    # Networking
+    # TODO: WebRTC is currently disabled, this should make meetings imperformant/laggy
+    features.networking = browserSettings.networking;
+    features.certificates = browserSettings.certificates;
+
+    # Graphics
+    features.hardware.graphics = {
+      backend = "gles";
+      skiaGraphite = false;
+      treesInViz = true;
+      forceHardwareMesa = true;
+      hideVulkanLoader = true;
+      # Block OBS from injecting into the browser
+      disabledVulkanLayers = [
+        "VK_LAYER_OBS_vkcapture_32"
+        "VK_LAYER_OBS_vkcapture_64"
+      ];
+    };
+    features.hardware.video = {
+      decodingBackend = "vaapi";
+      useMultiPlaneFormats = true; # true for Youtube, false for Google Meet
+      blockSoftwareEncoders = true;
+    };
   };
 
-  mySystem.programs.google-chrome = {
+  ###
+  ### Browser: Chromium
+  ###
+  cytopia.programs.browsers.chromium = {
     enable = true;
-    browser = "google-chrome";
-    scalingFactor = appScaleFactor;
-    waylandFractionalScalingSupport = true;
-    gpu.engine.displayServer = "wayland";
-    gpu.engine.backend = "gl";
 
-    # Ensure all Vulkan layers (e.g. OBS are removed)
-    startup.extraEnvVars = {
-      "VK_LOADER_LAYERS_DISABLE" = "VK_LAYER_OBS_vkcapture_32,VK_LAYER_OBS_vkcapture_64";
+    # Settings
+    features.preferences = browserSettings.preferences;
+    features.scaling = browserSettings.scaling;
+    features.search = browserSettings.search;
+
+    features.extensions.forceInstall = [
+      "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
+      "ddkjiahejlhfcafbddmgiahcphecmpfh" # uBlock Origin Lite
+      "ckkdlimhmcjmikdlpkmbgfkaikojcbjk" # Markdown Viewer
+      "mnjggcdmjocbbbhaepdhchncahnbgone" # SponsorBlock for YouTube
+      "gebbhagfogifgggkldgodflihgfeippi" # Return YouTube Dislike
+    ];
+
+    # Hardening
+    features.security = browserSettings.security;
+    features.privacy = browserSettings.privacy;
+    features.ai = browserSettings.ai;
+
+    # Networking
+    # TODO: WebRTC is currently disabled, this should make meetings imperformant/laggy
+    features.networking = browserSettings.networking;
+    features.certificates = browserSettings.certificates;
+
+    # Graphics
+    features.hardware.graphics = {
+      backend = "vulkan";
+      skiaGraphite = false;
+      treesInViz = true;
+      forceHardwareMesa = true;
+      hideVulkanLoader = false;
+      # Block OBS from injecting into the browser
+      disabledVulkanLayers = [
+        "VK_LAYER_OBS_vkcapture_32"
+        "VK_LAYER_OBS_vkcapture_64"
+      ];
     };
-    # Use dnscrypt-proxy as a local DoH resolver?
-    extraPolicies = bowserSettingsWithLocalDoh.extraPolicies;
-    customCaCerts = bowserSettingsWithLocalDoh.customCaCerts;
-    extensions = [
+    features.hardware.video = {
+      decodingBackend = "vaapi";
+      useMultiPlaneFormats = true; # true for Youtube, false for Google Meet
+      blockSoftwareEncoders = true;
+    };
+  };
+
+  ###
+  ### Browser: Google Chrome
+  ###
+  cytopia.programs.browsers.google-chrome = {
+    enable = true;
+
+    # Settings
+    features.preferences = browserSettings.preferences;
+    features.scaling = browserSettings.scaling;
+    features.search = browserSettings.search;
+
+    features.extensions.forceInstall = [
       "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
       "ddkjiahejlhfcafbddmgiahcphecmpfh" # uBlock Origin Lite
       "jpmkfafbacpgapdghgdpembnojdlgkdl" # AWS Extend Roles
       "aeblfdkhhhdcdjpifhhbdiojplfjncoa" # 1Password
     ];
+
+    # Hardening
+    features.security = browserSettings.security;
+    features.privacy = browserSettings.privacy;
+    features.ai = browserSettings.ai;
+
+    # Networking
+    features.networking = browserSettings.networkingWithWebRtc;
+    features.certificates = browserSettings.certificates;
+
+    # Graphics
+    features.hardware.graphics = {
+      backend = "vulkan";
+      skiaGraphite = false;
+      treesInViz = true;
+      forceHardwareMesa = true;
+      hideVulkanLoader = false;
+      # Block OBS from injecting into the browser
+      disabledVulkanLayers = [
+        "VK_LAYER_OBS_vkcapture_32"
+        "VK_LAYER_OBS_vkcapture_64"
+      ];
+    };
+    features.hardware.video = {
+      decodingBackend = "vaapi";
+      useMultiPlaneFormats = true; # true for Youtube, false for Google Meet
+      blockSoftwareEncoders = true;
+    };
   };
+
+    #  mySystem.programs.google-chrome = {
+    #    enable = true;
+    #    browser = "google-chrome";
+    #    scalingFactor = appScaleFactor;
+    #    waylandFractionalScalingSupport = true;
+    #    gpu.engine.displayServer = "wayland";
+    #    gpu.engine.backend = "gl";
+    #
+    #    # Ensure all Vulkan layers (e.g. OBS are removed)
+    #    startup.extraEnvVars = {
+    #      "VK_LOADER_LAYERS_DISABLE" = "VK_LAYER_OBS_vkcapture_32,VK_LAYER_OBS_vkcapture_64";
+    #    };
+    #    # Use dnscrypt-proxy as a local DoH resolver?
+    #    extraPolicies = bowserSettingsWithLocalDoh.extraPolicies;
+    #    customCaCerts = bowserSettingsWithLocalDoh.customCaCerts;
+    #    extensions = [
+    #      "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
+    #      "ddkjiahejlhfcafbddmgiahcphecmpfh" # uBlock Origin Lite
+    #      "jpmkfafbacpgapdghgdpembnojdlgkdl" # AWS Extend Roles
+    #      "aeblfdkhhhdcdjpifhhbdiojplfjncoa" # 1Password
+    #    ];
+    #  };
 
   mySystem.programs.thunderbird = {
     enable = true;

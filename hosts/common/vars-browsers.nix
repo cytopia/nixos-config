@@ -154,6 +154,34 @@ let
       disableMediaRouter = true;
     };
   };
+  networkingWithWebRtc = {
+    webrtc = {
+      preventIpLeaks = false;
+    };
+    ntp = {
+      disableNetworkTimeSync = true;
+    };
+    dns = {
+      enableBuiltInDns = true;
+      disableInterceptionChecks = true;
+      disableIntranetRedirectChecks = true;
+      enableEncryptedClientHello = true;
+      enableAdditionalQueryTypes = true;
+      doh = {
+        enable = true;
+        mode = "secure";
+        template = dohServer;
+      };
+    };
+    prefetching = {
+      disableNetworkPrediction = true;
+    };
+    intranet = {
+      blockPublicToPrivateRouting = true;
+      disableMediaRouter = true;
+    };
+  };
+
 
   ###
   ### Certificate Settings
@@ -199,6 +227,7 @@ in
     privacy = privacy;
     ai = ai;
     networking = networking;
+    networkingWithWebRtc = networkingWithWebRtc;
     certificates = certificates;
     search = search;
     scaling = scaling;

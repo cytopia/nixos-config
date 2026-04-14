@@ -23,18 +23,40 @@ let
       # Deprecated ChromeOS decoder that Nixpkgs specifically disables
       "UseChromeOSDirectVideoDecoder"
     ];
+    policies = {
+      # Web3, Crypto, & Rewards
+      "BraveRewardsDisabled" = true;
+      "BraveWalletDisabled" = true;
+      # Privacy and Security
+      "BraveVPNDisabled" = true;
+      "TorDisabled" = true;
+      # AI & Content Features
+      "BraveAIChatEnabled" = false;
+      "BraveNewsDisabled" = true;
+      "BravePlaylistEnabled" = false;
+      "BraveSpeedreaderEnabled" = false;
+      "BraveTalkDisabled" = true;
+      "BraveWaybackMachineEnabled" = false;
+      # Telemetry, Analytics, & Sync
+      "BraveP3AEnabled" = false;
+      "BraveStatsPingEnabled" = false;
+      "BraveWebDiscoveryEnabled" = false;
+      "BraveSyncUrl" = "https://no-brave-sync.invalid";
+    };
   };
 
   chromeDefaults = {
     flags = [ ]; # Flags are always additive
     enableFeatures = [ ];
     disableFeatures = [ ];
+    policies = { };
   };
 
   chromiumDefaults = {
     flags = [ ]; # Flags are always additive
     enableFeatures = [ ];
     disableFeatures = [ ];
+    policies = { };
   };
 
 in
@@ -57,6 +79,7 @@ in
             internal.flags = defaults.flags;
             internal.enableFeatures = defaults.enableFeatures;
             internal.disableFeatures = defaults.disableFeatures;
+            internal.policies = defaults.policies;
           };
         }
       )
