@@ -112,7 +112,7 @@
 
               (lib.mkIf cfg.disableAbTesting {
                 # Disables field trials (A/B testing) pushed from the server.
-                "ChromeVariations" = 1;
+                "ChromeVariations" = 2;
               })
 
               (lib.mkIf cfg.disableEnterpriseReporting {
@@ -124,10 +124,7 @@
                 "ReportVersionData" = false;
                 # Kills consent flow prompts for collecting unmanaged device signals.
                 "UnmanagedDeviceSignalsConsentFlowEnabled" = false;
-                # Blocks URL-keyed telemetry metrics uploads.
-                "UrlKeyedMetricsAllowed" = false;
               })
-
             ];
           };
         }

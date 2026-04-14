@@ -66,33 +66,44 @@
             ];
 
             # Map to Initial Preferences (First Run)
-            internal.initialPreferences = {
-              "browser" = lib.mkMerge [
-                {
+            internal.initialPreferences = lib.mkMerge [
+              {
+                "browser" = {
                   "show_home_button" = false;
                   "custom_chrome_frame" = false;
                 }
-                (lib.mkIf (cfg.showBookmarksBar != null) {
+                // lib.optionalAttrs (cfg.showBookmarksBar != null) {
                   "show_bookmarks_bar" = cfg.showBookmarksBar;
-                })
-              ];
-              "bookmarks" = lib.mkIf (cfg.showBookmarksBar != null) {
-                "show_on_all_tabs" = cfg.showBookmarksBar;
-              };
-              "extensions" = lib.mkIf (cfg.systemTheme != null) {
-                "theme" = {
-                  "id" = "";
-                  "system_theme" =
-                    if cfg.systemTheme == "system" then 1 else (if cfg.systemTheme == "dark" then 2 else 3);
                 };
-              };
-              "distribution" = {
-                "do_not_create_desktop_shortcut" = true;
-                "do_not_create_quick_launch_shortcut" = true;
-                "import_bookmarks" = false;
-                "import_history" = false;
-              };
-            };
+
+                "bookmarks" =
+                  if (cfg.showBookmarksBar != null) then
+                    {
+                      "show_on_all_tabs" = cfg.showBookmarksBar;
+                    }
+                  else
+                    { };
+
+                "extensions" =
+                  if (cfg.systemTheme != null) then
+                    {
+                      "theme" = {
+                        "id" = "";
+                        "system_theme" =
+                          if cfg.systemTheme == "system" then 1 else (if cfg.systemTheme == "dark" then 2 else 3);
+                      };
+                    }
+                  else
+                    { };
+
+                "distribution" = {
+                  "do_not_create_desktop_shortcut" = true;
+                  "do_not_create_quick_launch_shortcut" = true;
+                  "import_bookmarks" = false;
+                  "import_history" = false;
+                };
+              }
+            ];
           };
         }
       )

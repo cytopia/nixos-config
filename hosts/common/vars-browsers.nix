@@ -137,6 +137,7 @@ let
     dns = {
       enableBuiltInDns = true;
       disableInterceptionChecks = true;
+      disableIntranetRedirectChecks = true;
       enableEncryptedClientHello = true;
       enableAdditionalQueryTypes = true;
       doh = {
@@ -144,6 +145,13 @@ let
         mode = "secure";
         template = dohServer;
       };
+    };
+    prefetching = {
+      disableNetworkPrediction = true;
+    };
+    intranet = {
+      blockPublicToPrivateRouting = true;
+      disableMediaRouter = true;
     };
   };
 
