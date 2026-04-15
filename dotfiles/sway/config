@@ -575,6 +575,14 @@ bindsym $mod+Shift+c exec cliphist wipe
 # Get info about currently selected window
 # sleep 3; swaymsg -t get_tree | jq -r '..|try select(.focused == true)'
 
+###
+### OpenSnitch
+###
+for_window [app_id="opensnitch_ui" title="Firewall"] floating enable
+for_window [app_id="opensnitch_ui" title="Preferences"] floating enable
+for_window [app_id="opensnitch_ui" title="Rule"] floating enable
+for_window [app_id="opensnitch_ui" title="Exclude service"] floating enable
+
 # Thunderbird
 #for_window [app_id="thunderbird"] floating enable
 #for_window [app_id="thunderbird" title=".*Mozilla Thunderbird"] floating disable

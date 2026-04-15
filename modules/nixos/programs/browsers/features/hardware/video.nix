@@ -32,18 +32,7 @@
               '';
             };
 
-            useMultiPlaneFormats = lib.mkOption {
-              type = lib.types.bool;
-              default = true;
-              description = ''
-                CRITICAL for Intel xe: Allows the compositor to read raw NV12 hardware formats natively.
-                IMPORTANT: This causes issues with Google Meet background blur, but vastly improves
-                the playback speed of YouTube videos and saves battery life.
-                Disable this specifically for "Meet Profiles".
-              '';
-            };
-
-            blockSoftwareEncoders = lib.mkOption {
+           blockSoftwareEncoders = lib.mkOption {
               type = lib.types.bool;
               default = true;
               description = ''
@@ -60,15 +49,6 @@
           ### 2. CONFIGURATION
           ###
           config = {
-
-            internal.flags = lib.mkMerge [
-              (lib.optionals (cfg.useMultiPlaneFormats && cfg.decodingBackend != "none") [
-                # Think of a video frame as having separate layers (planes) for brightness and color.
-                # This flag tells the browser to send those layers directly to the screen
-                # exactly as the GPU outputs them, without wasting CPU time combining them first.
-                "--use-multi-plane-format-for-hardware-video"
-              ])
-            ];
 
             internal.enableFeatures = lib.mkMerge [
               # --- MASTER HARDWARE GREEN LIGHTS ---
