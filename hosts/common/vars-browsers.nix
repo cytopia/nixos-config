@@ -127,7 +127,7 @@ let
   ###
   ### Networking Settings
   ###
-  networking = {
+  networkingBlockWebRtc = {
     webrtc = {
       preventIpLeaks = true;
     };
@@ -154,7 +154,7 @@ let
       disableMediaRouter = true;
     };
   };
-  networkingWithWebRtc = {
+  networkingAllowWebRtc = {
     webrtc = {
       preventIpLeaks = false;
     };
@@ -181,7 +181,6 @@ let
       disableMediaRouter = true;
     };
   };
-
 
   ###
   ### Certificate Settings
@@ -220,17 +219,59 @@ let
     systemTheme = "system";
     cleanUi = true;
   };
+
+  ###
+  ### Hardware Settings (Vulkan)
+  ###
+  hardwareVulkan = {
+    graphics = {
+      backend = "vulkan";
+      skiaGraphite = false;
+      treesInViz = true;
+      forceHardwareMesa = true;
+      hideVulkanLoader = false;
+      # Block OBS from injecting into the browser
+      disabledVulkanLayers = [
+        "VK_LAYER_OBS_vkcapture_32"
+        "VK_LAYER_OBS_vkcapture_64"
+      ];
+    };
+    video = {
+      decodingBackend = "vaapi";
+      blockSoftwareEncoders = true;
+    };
+  };
+  hardwareGles = {
+    graphics = {
+      backend = "gles";
+      skiaGraphite = false;
+      treesInViz = true;
+      forceHardwareMesa = true;
+      hideVulkanLoader = true;
+      # Block OBS from injecting into the browser
+      disabledVulkanLayers = [
+        "VK_LAYER_OBS_vkcapture_32"
+        "VK_LAYER_OBS_vkcapture_64"
+      ];
+    };
+  };
+
 in
 {
   settings = {
+    scaling = scaling;
+    preferences = preferences;
+    search = search;
+
     security = security;
     privacy = privacy;
     ai = ai;
-    networking = networking;
-    networkingWithWebRtc = networkingWithWebRtc;
+
+    networkingAllowWebRtc = networkingAllowWebRtc;
+    networkingBlockWebRtc = networkingBlockWebRtc;
     certificates = certificates;
-    search = search;
-    scaling = scaling;
-    preferences = preferences;
+
+    hardwareVulkan = hardwareVulkan;
+    hardwareGles = hardwareGles;
   };
 }

@@ -32,8 +32,6 @@
 
     # Programs
     ./programs/browsers/default.nix
-    ./programs/chromium.nix
-    ./programs/google-chrome.nix
     ./programs/obs.nix
     ./programs/podman.nix
     ./programs/thunar.nix

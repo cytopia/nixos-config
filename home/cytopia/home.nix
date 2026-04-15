@@ -113,6 +113,10 @@
     custom.colorpicker
     burpsuite
 
+    # Start via:  QT_FONT_DPI=124 opensnitch-ui
+    pkgs-unstable.opensnitch-ui
+    #opensnitch-ui
+
     # media
     vlc
     mpv
