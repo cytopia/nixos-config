@@ -98,18 +98,51 @@
                     NSSBIN="${pkgs.nssTools}/bin/certutil"
                     ALIAS="NixOS-Managed-${cert.name}"
 
+                    # 1. DATABASE INITIALIZATION
+                    # If the NSS database directory doesn't exist (e.g., brand new user profile),
+                    # we need to create the directory and initialize an empty database.
                     if [ ! -d "$NSSDB" ]; then
+                      echo "Initializing empty database"
                       mkdir -p "$NSSDB"
+
+                      # [NSSBIN COMMAND EXPLANATION]: Initialize Database
+                      # $NSSBIN           : Calls the 'certutil' binary.
+                      # -d sql:$NSSDB     : Specifies the database directory, telling it to use the modern SQLite format ('sql:').
+                      # -N                : Tells certutil to create a New database.
+                      # --empty-password  : Initializes the database with no master password so it doesn't prompt the user.
+                      # 2>/dev/null       : Discards any non-critical error messages to keep the systemd logs clean.
                       $NSSBIN -d sql:$NSSDB -N --empty-password 2>/dev/null
                     fi
 
-                    # Handle missing physical file (e.g. dnscrypt-proxy disabled DoH)
+                    # 2. MISSING FILE HANDLING (WITH DEBOUNCE)
+                    # Handle the scenario where the physical file is gone (e.g., dnscrypt-proxy disabled DoH,
+                    # or the daemon is just temporarily restarting).
                     if [ ! -f "$CERT" ]; then
-                      $NSSBIN -d sql:$NSSDB -D -n "$ALIAS" 2>/dev/null || true
-                      exit 0
-                    fi
+                      # Pause execution for 2 seconds before reacting. This acts as a debounce
+                      # to prevent ripping the cert out of running browsers during a quick daemon restart.
+                      echo "$CERT not found, waiting 2 seconds..."
+                      sleep 2
+                      # Check a second time. If the file is STILL missing after 2 seconds,
+                      # it was a genuine deletion, not a temporary restart glitch.
+                      if [ ! -f "$CERT" ]; then
+                        # [NSSBIN COMMAND EXPLANATION]: Delete Certificate
+                        # -d sql:$NSSDB : Target the user's NSS database.
+                        # -D            : Delete a certificate.
+                        # -n "$ALIAS"   : Delete the specific certificate that matches this nickname.
+                        # || true       : If the cert isn't in the DB to begin with, certutil throws an error.
+                        #                 This catches the error so the script exits successfully (code 0).
+                        echo "$CERT still not found, deleting '$ALIAS' from NSSDB..."
+                        $NSSBIN -d sql:$NSSDB -D -n "$ALIAS" 2>/dev/null || true
 
+                        # Exit the script, as the certificate is gone and after DB deletion we exit
+                        exit 0
+                      fi
+                    fi
+                    # Delete cert in case it is old/changed/expired
+                    echo "Deleting cert '$ALIAS' from NSSDB"
                     $NSSBIN -d sql:$NSSDB -D -n "$ALIAS" 2>/dev/null || true
+                    # Add & Trust Certificate
+                    echo "ReAdding cert '$ALIAS' to NSSDB"
                     $NSSBIN -d sql:$NSSDB -A -t "CT,C,C" -n "$ALIAS" -i "$CERT"
                   '';
                 };

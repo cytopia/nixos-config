@@ -63,39 +63,42 @@ in
 
       # Tell systemd to create the RAM-backed directory
       systemd.services.dnscrypt-proxy.serviceConfig = {
-      # =====================================================================================
-      # SYSTEMD RUNTIME DIRECTORY EXPLANATION
-      # =====================================================================================
-      # 1. Why RuntimeDirectory and why copy it every reboot?
-      # The private keys and actual certificates live persistently in `/var/lib/dnscrypt-proxy/certs`.
-      # For security, that directory is highly restricted (owned solely by the dnscrypt user).
-      # However, your browser running as your standard desktop user needs to read the public
-      # *Root CA* to trust the local DoH server.
-      # `RuntimeDirectory` tells systemd to dynamically create folders inside `/run`. Because
-      # `/run` is a `tmpfs` (a temporary filesystem in RAM), it gets completely wiped every
-      # time the computer powers down. When you boot up, systemd creates the empty folder,
-      # and our `preStart` script automatically copies the public cert into it. This gives us
-      # a safe, temporary place to expose the public cert without compromising the strict
-      # file permissions of the persistent `/var` directory.
+        # =====================================================================================
+        # SYSTEMD RUNTIME DIRECTORY EXPLANATION
+        # =====================================================================================
+        # 1. Why RuntimeDirectory and why copy it every reboot?
+        # The private keys and actual certificates live persistently in `/var/lib/dnscrypt-proxy/certs`.
+        # For security, that directory is highly restricted (owned solely by the dnscrypt user).
+        # However, your browser running as your standard desktop user needs to read the public
+        # *Root CA* to trust the local DoH server.
+        # `RuntimeDirectory` tells systemd to dynamically create folders inside `/run`. Because
+        # `/run` is a `tmpfs` (a temporary filesystem in RAM), it gets completely wiped every
+        # time the computer powers down. When you boot up, systemd creates the empty folder,
+        # and our `preStart` script automatically copies the public cert into it. This gives us
+        # a safe, temporary place to expose the public cert without compromising the strict
+        # file permissions of the persistent `/var` directory.
 
-      # 2. Why do we include "dnscrypt-proxy" in the string?
-      # As per troubleshooting, the "dnscrypt-proxy" directory was empty and unused by the
-      # daemon. We removed it to reduce clutter. The comment below is preserved for history.]
-      # `RuntimeDirectory` accepts a space-separated list of folders. By default, the upstream
-      # NixOS module for dnscrypt-proxy expects `/run/dnscrypt-proxy` to exist...
-      #
-      # 3. Why lib.mkForce?
-      # Re-added lib.mkForce. The upstream NixOS dnscrypt-proxy module defines
-      # RuntimeDirectory="dnscrypt-proxy". Without mkForce, Nix will throw a collision error.]
-      # In the NixOS module system, if two different files try to define the exact same
-      # `serviceConfig` string, NixOS doesn't combine them...
-      #TODO: Come back to this and check with Gemini: https://gemini.google.com/app/cd54190755a4c523
-      RuntimeDirectory = lib.mkForce caDirName;
+        # 2. Why do we include "dnscrypt-proxy" in the string?
+        # As per troubleshooting, the "dnscrypt-proxy" directory was empty and unused by the
+        # daemon. We removed it to reduce clutter. The comment below is preserved for history.]
+        # `RuntimeDirectory` accepts a space-separated list of folders. By default, the upstream
+        # NixOS module for dnscrypt-proxy expects `/run/dnscrypt-proxy` to exist...
+        #
+        # 3. Why lib.mkForce?
+        # Re-added lib.mkForce. The upstream NixOS dnscrypt-proxy module defines
+        # RuntimeDirectory="dnscrypt-proxy". Without mkForce, Nix will throw a collision error.]
+        # In the NixOS module system, if two different files try to define the exact same
+        # `serviceConfig` string, NixOS doesn't combine them...
+        #TODO: Come back to this and check with Gemini: https://gemini.google.com/app/cd54190755a4c523
+        RuntimeDirectory = lib.mkForce caDirName;
 
-      # Why RuntimeDirectoryMode = "0755"?
-      #   This ensures that your regular desktop user (Firefox/Chrome) is
-      #   allowed to navigate into `/run/local-doh-ca/` and read the `rootCA.pem` file.
-      RuntimeDirectoryMode = "0755";
+        # Why RuntimeDirectoryMode = "0755"?
+        #   This ensures that your regular desktop user (Firefox/Chrome) is
+        #   allowed to navigate into `/run/local-doh-ca/` and read the `rootCA.pem` file.
+        RuntimeDirectoryMode = "0755";
+
+        # Prevent systemd from wiping the /run directory on a service restart
+        #RuntimeDirectoryPreserve = "restart";
       };
 
       # The Generation Script
@@ -105,9 +108,14 @@ in
         # =================================================================
         CERT_DIR="/var/lib/dnscrypt-proxy/certs"
         mkdir -p "$CERT_DIR"
-        chgrp dnscrypt "$CERT_DIR"
-        chmod 750 "$CERT_DIR"
-
+        # Only change group if it's not already 'dnscrypt'
+        if [ "$(stat -c '%G' "$CERT_DIR")" != "dnscrypt" ]; then
+          chgrp dnscrypt "$CERT_DIR"
+        fi
+        # Only change permissions if they are not already '750'
+        if [ "$(stat -c '%a' "$CERT_DIR")" != "750" ]; then
+          chmod 750 "$CERT_DIR"
+        fi
         export CAROOT="$CERT_DIR"
 
         # A. Generate Custom Root CA
@@ -135,9 +143,20 @@ in
           chgrp dnscrypt "$CERT_DIR/localhost-key.pem"
         fi
 
+        # C. Expose the public Root CA into the shared RAM disk
+        # We manually create the directory to bypass systemd's /run/private/ sandboxing.
+        # Wrapped in a check to ensure it remains completely inotify-silent on restarts.
+        if [ ! -d "${caDir}" ]; then
+          mkdir -p "${caDir}"
+          chmod 755 "${caDir}"
+        fi
+
         # C. Expose the public Root CA via the RAM-backed RuntimeDirectory
-        cp "$CERT_DIR/rootCA.pem" "${cfg.certs.caCertPath}"
-        chmod 644 "${cfg.certs.caCertPath}"
+        if ! ${pkgs.diffutils}/bin/cmp -s "$CERT_DIR/rootCA.pem" "${cfg.certs.caCertPath}"; then
+          echo "Copying CA to ${cfg.certs.caCertPath}..."
+          cp "$CERT_DIR/rootCA.pem" "${cfg.certs.caCertPath}"
+          chmod 644 "${cfg.certs.caCertPath}"
+        fi
       '';
     })
 
