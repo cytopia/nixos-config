@@ -15,6 +15,16 @@ let
       inherit uid;
     }).rules;
 
+  ntpRules =
+    (import ./vars-opensnitch-rules/ntp.nix {
+      inherit rulePrefix;
+    }).rules;
+
+  dhcpRules =
+    (import ./vars-opensnitch-rules/dhcp.nix {
+      inherit rulePrefix;
+    }).rules;
+
   browserRules =
     (import ./vars-opensnitch-rules/browsers.nix {
       inherit lib;
@@ -59,6 +69,8 @@ in
 {
   rules = { }
     // dnsRules
+    // dhcpRules
+    // ntpRules
     // browserRules
     // thunderbirdRules
     // signalRules
