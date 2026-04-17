@@ -9,6 +9,12 @@
 }:
 
 let
+  dnsRules =
+    (import ./vars-opensnitch-rules/dns.nix {
+      inherit rulePrefix;
+      inherit uid;
+    }).rules;
+
   browserRules =
     (import ./vars-opensnitch-rules/browsers.nix {
       inherit lib;
@@ -25,16 +31,39 @@ let
       inherit uid;
     }).rules;
 
-  dnsRules =
-    (import ./vars-opensnitch-rules/dns.nix {
+  signalRules =
+    (import ./vars-opensnitch-rules/signal.nix {
       inherit rulePrefix;
       inherit uid;
     }).rules;
+
+  telegramRules =
+    (import ./vars-opensnitch-rules/telegram.nix {
+      inherit rulePrefix;
+      inherit uid;
+    }).rules;
+
+  slackRules =
+    (import ./vars-opensnitch-rules/slack.nix {
+      inherit rulePrefix;
+      inherit uid;
+    }).rules;
+
+  awsVpnClientRules =
+    (import ./vars-opensnitch-rules/awsvpnclient.nix {
+      inherit rulePrefix;
+      inherit uid;
+    }).rules;
+
 in
 {
   rules = { }
+    // dnsRules
     // browserRules
     // thunderbirdRules
-    // dnsRules
+    // signalRules
+    // telegramRules
+    // slackRules
+    // awsVpnClientRules
     ;
 }
