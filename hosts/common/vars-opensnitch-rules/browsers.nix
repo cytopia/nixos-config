@@ -71,7 +71,7 @@ let
       precedence = true;
       created = "2026-01-01T00:00:00+00:00";
       updated = "2026-01-01T00:00:00+00:00";
-      name = "100      ${browserName} [${toString uid}] -> firebaseremoteconfig.googleapis.com:443 [TCP]";
+      name = "100      ${browserName} [${toString uid}] -> firebaseremoteconfig.googleapis.com:80|443 [TCP|UDP]";
       enabled = true;
       duration = "always";
       operator = {
@@ -89,9 +89,9 @@ let
             data = "${toString uid}";
           }
           {
-            type = "simple";
+            type = "regexp";
             operand = "protocol";
-            data = "tcp";
+            data = "^(TCP|UDP)$";
           }
           {
             type = "simple";
@@ -99,9 +99,9 @@ let
             data = "firebaseremoteconfig.googleapis.com";
           }
           {
-            type = "simple";
+            type = "regexp";
             operand = "dest.port";
-            data = "443";
+            data = "^(80|443)$";
           }
         ];
       };

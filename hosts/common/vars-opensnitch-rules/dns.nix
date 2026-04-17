@@ -27,7 +27,7 @@ let
       precedence = true;
       created = "2026-01-01T00:00:00+00:00";
       updated = "2026-01-01T00:00:00+00:00";
-      name = "000      ${name} -> *:8443 [UDP]  (DNSCrypt)";
+      name = "000      ${name} -> *:8443 [TCP|UDP]  (DNSCrypt)";
       enabled = true;
       duration = "always";
       operator = {
@@ -40,9 +40,9 @@ let
             data = regexPath;
           }
           {
-            type = "simple";
+            type = "regexp";
             operand = "protocol";
-            data = "udp";
+            data = "^(TCP|UDP)$";
           }
           {
             type = "simple";
@@ -95,7 +95,7 @@ let
       precedence = true;
       created = "2026-01-01T00:00:00+00:00";
       updated = "2026-01-01T00:00:00+00:00";
-      name = "000      ${name} [${toString uid}] -> localhost:5353 [TCP]  (DNS)";
+      name = "000      ${name} [${toString uid}] -> localhost:5353 [TCP-UDP]  (DNS)";
       enabled = true;
       duration = "always";
       operator = {
