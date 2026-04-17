@@ -46,6 +46,17 @@ let
         inherit (mySettings.dnsOverHttps) enable port path;
       };
     }).settings;
+
+  opensnitchRules =
+    (import ../../common/vars-opensnitch-rules.nix {
+      inherit lib;
+      rulePrefix = "os333"; # adjust to reimport all rules
+      enableBrave = true;
+      enableChrome = true;
+      enableChromium = true;
+      uid = 1000;
+    }).rules;
+
 in
 {
   imports = [
@@ -332,6 +343,7 @@ in
       Firewall = "nftables";
       #ProcMonitorMethod = "proc"; # Fallback to /proc instead of compiling eBPF
     };
+    rules =  opensnitchRules;
   };
 
   ###
