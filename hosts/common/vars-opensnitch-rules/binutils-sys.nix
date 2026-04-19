@@ -8,12 +8,12 @@ let
   gitRemoteHttp = {
     name = "git-remote-http";
     regPath = "^/nix/store/[^/]+-git-.*/libexec/git-core/git-remote-http$";
-    uid = "${toString uid}";
+    uid_user = "${toString uid}";
   };
   ssh = {
     name = "ssh";
     regPath = "^/nix/store/[^/]+-openssh-.*/bin/ssh$";
-    uid = "${toString uid}";
+    uid_user = "${toString uid}";
   };
 
 
@@ -103,9 +103,7 @@ let
 in
 {
   rules = { }
-    // mkGitRemoteHttps gitRemoteHttp.name gitRemoteHttp.regPath gitRemoteHttp.uid
-    // mkGitSsh ssh.name ssh.regPath ssh.uid
+    // mkGitRemoteHttps gitRemoteHttp.name gitRemoteHttp.regPath gitRemoteHttp.uid_user
+    // mkGitSsh ssh.name ssh.regPath ssh.uid_user
   ;
 }
-
-

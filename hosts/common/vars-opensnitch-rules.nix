@@ -76,6 +76,12 @@ let
       inherit rulePrefix;
       inherit uid;
     }).rules;
+  binUtilsUserRules =
+    (import ./vars-opensnitch-rules/binutils-user.nix {
+      inherit rulePrefix;
+      inherit uid;
+    }).rules;
+
 
 
 in
@@ -92,5 +98,6 @@ in
     // awsVpnClientRules
     // nixRules
     // binUtilsSysRules
+    // binUtilsUserRules
     ;
 }
