@@ -89,13 +89,13 @@ let
   ###
   ### SystemdResolved
   ###
-  mkResolvedDns = name: regexPath: uid: {
+  mkSystemdResolvedQueryDns = name: regexPath: uid: {
     "${rulePrefix}-${name}-localhost-5353" = {
       action = "allow";
       precedence = true;
       created = "2026-01-01T00:00:00+00:00";
       updated = "2026-01-01T00:00:00+00:00";
-      name = "000      ${name} [${toString uid}] -> localhost:5353 [TCP-UDP]  (DNS)";
+      name = "000      ${name} [${toString uid}] -> localhost:5353 [TCP|UDP]  (DNS)";
       enabled = true;
       duration = "always";
       operator = {
@@ -126,6 +126,44 @@ let
       };
     };
   };
+
+  ###
+  ### Allow everything to query Systemd Resolved for DNS
+  ###
+  mkAllQueryResolvedDns = {
+    "${rulePrefix}-all-query-dns-127_0_0_53-53" = {
+      action = "allow";
+      precedence = true;
+      created = "2026-01-01T00:00:00+00:00";
+      updated = "2026-01-01T00:00:00+00:00";
+      name = "zzz      (all) -> 127.0.0.53:53 [UDP|TCP]  (DNS)";
+      enabled = true;
+      duration = "always";
+      operator = {
+        type = "list";
+        operand = "list";
+        list = [
+          {
+            type = "regexp";
+            operand = "protocol";
+            data = "^(TCP|UDP)$";
+          }
+          {
+            type = "simple";
+            operand = "dest.port";
+            data = "53";
+          }
+          {
+            type = "simple";
+            operand = "dest.ip";
+            data = "127.0.0.53";
+          }
+        ];
+      };
+    };
+  };
+
+
 
   ###
   ### Denies
@@ -193,7 +231,8 @@ in
   rules = { }
     // mkDnscryptDnscrypt name.dnscrypt procRegex.dnscrypt
     // mkDnscryptHttps name.dnscrypt procRegex.dnscrypt
-    // mkResolvedDns name.resolved procRegex.resolved svc_uid.resolved
+    // mkSystemdResolvedQueryDns name.resolved procRegex.resolved svc_uid.resolved
+    // mkAllQueryResolvedDns
     // mkDenyCloudflare "dns" "${toString uid}"
     // mkDenyGoogle "dns" "${toString uid}"
   ;
