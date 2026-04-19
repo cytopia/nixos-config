@@ -65,6 +65,19 @@ let
       inherit uid;
     }).rules;
 
+  nixRules =
+    (import ./vars-opensnitch-rules/nix.nix {
+      inherit rulePrefix;
+      inherit uid;
+    }).rules;
+
+  binUtilsSysRules =
+    (import ./vars-opensnitch-rules/binutils-sys.nix {
+      inherit rulePrefix;
+      inherit uid;
+    }).rules;
+
+
 in
 {
   rules = { }
@@ -77,5 +90,7 @@ in
     // telegramRules
     // slackRules
     // awsVpnClientRules
+    // nixRules
+    // binUtilsSysRules
     ;
 }
