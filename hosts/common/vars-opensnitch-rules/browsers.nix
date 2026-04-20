@@ -232,6 +232,9 @@ let
   ###
   ### WebRTC STUN-TURN [UDP]
   ###
+  ### Stun: Session Negotiation: 3478
+  ### Turn: Fallback Media Relay: 5349
+  ###
   mkInternetWebRcStunTurnUdp = browserName: regexPath: uid: {
     "${rulePrefix}-${browserName}-internet-3478-5349-udp-webrtc-stun-turn" = {
       action = "allow";
@@ -270,15 +273,15 @@ let
     };
   };
   ###
-  ### WebRTC Media
+  ### WebRTC Google Fallback STUN
   ###
-  mkInternetWebRcMedia = browserName: regexPath: uid: {
-    "${rulePrefix}-${browserName}-internet-udp-webrtc-media" = {
+  mkInternetWebRcGoogleFallbackStun = browserName: regexPath: uid: {
+    "${rulePrefix}-${browserName}-internet-udp-webrtc-google-fallback-stun" = {
       action = "allow";
       precedence = true;
       created = "2026-01-01T00:00:00+00:00";
       updated = "2026-01-01T00:00:00+00:00";
-      name = "${browserName} [${toString uid}] -> *:1930[2-9] [TCP-UDP]  (WebRTC - Media)";
+      name = "${browserName} [${toString uid}] -> *:1930[2-9] [UDP]  (WebRTC - Google Fallback STUN)";
       enabled = true;
       duration = "always";
       operator = {
@@ -296,9 +299,9 @@ let
             data = "${toString uid}";
           }
           {
-            type = "regexp";
+            type = "simple";
             operand = "protocol";
-            data = "^(TCP|UDP)$";
+            data = "UDP";
           }
           {
             type = "regexp";
@@ -309,6 +312,89 @@ let
       };
     };
   };
+
+  ###
+  ### WebRTC Jitsi [UDP]
+  ###
+  mkInternetWebRcJitsiUdp = browserName: regexPath: uid: {
+    "${rulePrefix}-${browserName}-internet-3478-5349-udp-webrtc-jitsi" = {
+      action = "allow";
+      precedence = true;
+      created = "2026-01-01T00:00:00+00:00";
+      updated = "2026-01-01T00:00:00+00:00";
+      name = "${browserName} [${toString uid}] -> *:10000 [UDP]  (WebRTC - Jitsi)";
+      enabled = true;
+      duration = "always";
+      operator = {
+        type = "list";
+        operand = "list";
+        list = [
+          {
+            type = "regexp";
+            operand = "process.path";
+            data = regexPath;
+          }
+          {
+            type = "simple";
+            operand = "user.id";
+            data = "${toString uid}";
+          }
+          {
+            type = "simple";
+            operand = "protocol";
+            data = "udp";
+          }
+          {
+            type = "simple";
+            operand = "dest.port";
+            data = "10000";
+          }
+        ];
+      };
+    };
+  };
+
+  ###
+  ### WhatsApp TCP 5222
+  ###
+  mkAllowWhatsApp5222 = browserName: regexPath: uid: {
+    "${rulePrefix}-${browserName}-allow-whatsapp-5222-tcp" = {
+      action = "allow";
+      precedence = true;
+      created = "2026-01-01T00:00:00+00:00";
+      updated = "2026-01-01T00:00:00+00:00";
+      name = "${browserName} [${toString uid}] -> *:5222 [TCP] (WhatsApp)";
+      enabled = true;
+      duration = "always";
+      operator = {
+        type = "list";
+        operand = "list";
+        list = [
+          {
+            type = "regexp";
+            operand = "process.path";
+            data = regexPath;
+          }
+          {
+            type = "simple";
+            operand = "user.id";
+            data = "${toString uid}";
+          }
+          {
+            type = "simple";
+            operand = "protocol";
+            data = "tcp";
+          }
+          {
+            type = "simple";
+            operand = "dest.port";
+            data = "5222";
+          }
+        ];
+      };
+    };
+  };
+
 
 
 in
@@ -340,7 +426,11 @@ in
 
     # WebRTC
     // lib.optionalAttrs enableChrome (mkInternetWebRcStunTurnUdp name.chrome procRegex.chrome uid)
-    // lib.optionalAttrs enableChrome (mkInternetWebRcMedia name.chrome procRegex.chrome uid)
+    // lib.optionalAttrs enableChrome (mkInternetWebRcGoogleFallbackStun name.chrome procRegex.chrome uid)
+    // lib.optionalAttrs enableChrome (mkInternetWebRcJitsiUdp name.chrome procRegex.chrome uid)
+
+    # WhatsApp
+    // lib.optionalAttrs enableChromium (mkAllowWhatsApp5222 name.chromium procRegex.chromium uid)
 
   ;
 }
