@@ -59,6 +59,8 @@
               (lib.mkIf cfg.disablePasswordManager {
                 "PasswordManagerEnabled" = false;
                 "PasswordManagerPasskeysEnabled" = false;
+                "AutomatedPasswordChangeSettings" = 0;
+                "DeletingUndecryptablePasswordsEnabled" = false;
                 "PasswordManagerBlocklist" = [ "*" ];
               })
 

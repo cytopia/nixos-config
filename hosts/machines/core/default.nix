@@ -213,6 +213,7 @@ in
       mako # Lightweight notification daemon
       libnotify # Provides 'notify-send'
       glib # Provides 'gsettings'
+      wlprop
 
       waybar
       pkgs-unstable.ironbar
@@ -261,6 +262,7 @@ in
         "ckkdlimhmcjmikdlpkmbgfkaikojcbjk" # Markdown Viewer
         "mnjggcdmjocbbbhaepdhchncahnbgone" # SponsorBlock for YouTube
         "gebbhagfogifgggkldgodflihgfeippi" # Return YouTube Dislike
+        "ghmbeldphafepmbegfdlkpapadhbakde" # Proton Pass
       ];
     };
   };

@@ -518,8 +518,8 @@ bindsym $ctrl+grave exec makoctl restore
 # IDLE manager
 # EXPLAINING THE COMMANDS:
 # 1. exec swayidle -w : Starts the idle daemon. '-w' (wait) ensures commands finish.
-# 2. timeout 600 : After 10 mins of no input, lock the screen (Safety first).
-# 3. timeout 610 : After 10 mins 10sec of no input, turn off the screen
+# 2. timeout 910 : After 15 mins 10sec of no input, lock the screen (Safety first).
+# 3. timeout 900 : After 15 mins of no input, turn off the screen
 # 3. timeout 1200 : After 20 mins, trigger the hardware sleep.
 #    Note: This is shorter than logind (30m) so Sway 'wins' for faster power saving.
 # 4. resume : Turns the screen back on
@@ -527,8 +527,8 @@ bindsym $ctrl+grave exec makoctl restore
 #    If you close the lid, this line runs IMMEDIATELY before power is cut.
 # 6. lock : If you manually run 'loginctl lock-session', this ensures audio is also muted.
 exec swayidle -w \
-  timeout 600 'loginctl lock-session' \
-  timeout 610 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
+  timeout 910 'loginctl lock-session' \
+  timeout 900 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
   timeout 1200 'systemctl suspend-then-hibernate' \
   before-sleep 'loginctl lock-session' \
   lock '$mute; $lock;'
@@ -651,6 +651,13 @@ assign [class="Signal"] workspace $WS6
 ###
 assign [app_id="google-chrome"] workspace $WS9
 assign [class="Google-chrome"] workspace $WS9
+
+###
+### Workspace 0
+###
+assign [app_id="brave-browser"] workspace $WS10
+#assign [class="Google-chrome"] workspace $WS0
+
 
 
 
