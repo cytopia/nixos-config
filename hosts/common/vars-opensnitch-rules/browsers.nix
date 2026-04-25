@@ -230,18 +230,17 @@ let
   };
 
   ###
-  ### WebRTC STUN-TURN [UDP]
+  ### WebRTC STUN-TURN
   ###
-  ### Stun: Session Negotiation: 3478
-  ### Turn: Fallback Media Relay: 5349
-  ###
-  mkInternetWebRcStunTurnUdp = browserName: regexPath: uid: {
-    "${rulePrefix}-${browserName}-internet-3478-5349-udp-webrtc-stun-turn" = {
+  ### Standard NAT traversal. Allows WebRTC to discover your public IP (STUN) or relay media
+  ### in plaintext (TURN) when direct P2P fails.
+  mkInternetWebRcStunTurn = browserName: regexPath: uid: {
+    "${rulePrefix}-${browserName}-internet-3478-3479-webrtc-stun-turn" = {
       action = "allow";
       precedence = true;
       created = "2026-01-01T00:00:00+00:00";
       updated = "2026-01-01T00:00:00+00:00";
-      name = "${browserName} [${toString uid}] -> *:3478|5349 [UDP]  (WebRTC - STUN-TURN)";
+      name = "${browserName} [${toString uid}] -> *:3478|3479 [TCP|UDP]  (WebRTC - STUN-TURN)";
       enabled = true;
       duration = "always";
       operator = {
@@ -259,14 +258,55 @@ let
             data = "${toString uid}";
           }
           {
-            type = "simple";
+            type = "regexp";
             operand = "protocol";
-            data = "udp";
+            data = "^(TCP|UDP)$";
           }
           {
             type = "regexp";
             operand = "dest.port";
-            data = "^(3478|5349)$";
+            data = "^(3478|3479)$";
+          }
+        ];
+      };
+    };
+  };
+  ###
+  ### WebRTC STUN-TURN (Secure)
+  ###
+  ### SSL variants of STUN/TURN
+  mkInternetWebRcStunTurnSecure = browserName: regexPath: uid: {
+    "${rulePrefix}-${browserName}-internet-5349-webrtc-stun-turn-secure" = {
+      action = "allow";
+      precedence = true;
+      created = "2026-01-01T00:00:00+00:00";
+      updated = "2026-01-01T00:00:00+00:00";
+      name = "${browserName} [${toString uid}] -> *:5349 [TCP|UDP]  (WebRTC - STUN-TURN SSL)";
+      enabled = true;
+      duration = "always";
+      operator = {
+        type = "list";
+        operand = "list";
+        list = [
+          {
+            type = "regexp";
+            operand = "process.path";
+            data = regexPath;
+          }
+          {
+            type = "simple";
+            operand = "user.id";
+            data = "${toString uid}";
+          }
+          {
+            type = "regexp";
+            operand = "protocol";
+            data = "^(TCP|UDP)$";
+          }
+          {
+            type = "simple";
+            operand = "dest.port";
+            data = "5349";
           }
         ];
       };
@@ -281,7 +321,7 @@ let
       precedence = true;
       created = "2026-01-01T00:00:00+00:00";
       updated = "2026-01-01T00:00:00+00:00";
-      name = "${browserName} [${toString uid}] -> *:1930[2-9] [UDP]  (WebRTC - Google Fallback STUN)";
+      name = "${browserName} [${toString uid}] -> *:1930[2-9] [TCP|UDP]  (WebRTC - Google Fallback STUN)";
       enabled = true;
       duration = "always";
       operator = {
@@ -299,9 +339,9 @@ let
             data = "${toString uid}";
           }
           {
-            type = "simple";
+            type = "regexp";
             operand = "protocol";
-            data = "UDP";
+            data = "^(TCP|UDP)$";
           }
           {
             type = "regexp";
@@ -348,6 +388,48 @@ let
             type = "simple";
             operand = "dest.port";
             data = "10000";
+          }
+        ];
+      };
+    };
+  };
+  ###
+  ### WebRTC Ephemeral (P2P)
+  ###
+  mkInternetWebRcEphemeral = browserName: regexPath: uid: {
+    "${rulePrefix}-${browserName}-internet-webrtc-ephemeral-p2p" = {
+      action = "allow";
+      precedence = true;
+      created = "2026-01-01T00:00:00+00:00";
+      updated = "2026-01-01T00:00:00+00:00";
+      name = "${browserName} [${toString uid}] -> *:10000-65535 [UDP]  (WebRTC - Ephemeral|P2P)";
+      enabled = true;
+      duration = "always";
+      operator = {
+        type = "list";
+        operand = "list";
+        list = [
+          {
+            type = "regexp";
+            operand = "process.path";
+            data = regexPath;
+          }
+          {
+            type = "simple";
+            operand = "user.id";
+            data = "${toString uid}";
+          }
+          {
+            type = "simple";
+            operand = "protocol";
+            data = "udp";
+          }
+          {
+            type = "regexp";
+            operand = "dest.port";
+            # Matches exactly 10000 through 65535
+            # TODO: Update to 'range' once using OpenSnitch > v1.90
+            data = "^(1[0-9]{4}|[2-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$";
           }
         ];
       };
@@ -425,9 +507,11 @@ in
     // lib.optionalAttrs enableChromium (mkInternetHttps name.chromium procRegex.chromium uid)
 
     # WebRTC
-    // lib.optionalAttrs enableChrome (mkInternetWebRcStunTurnUdp name.chrome procRegex.chrome uid)
+    // lib.optionalAttrs enableChrome (mkInternetWebRcStunTurn name.chrome procRegex.chrome uid)
+    // lib.optionalAttrs enableChrome (mkInternetWebRcStunTurnSecure name.chrome procRegex.chrome uid)
     // lib.optionalAttrs enableChrome (mkInternetWebRcGoogleFallbackStun name.chrome procRegex.chrome uid)
     // lib.optionalAttrs enableChrome (mkInternetWebRcJitsiUdp name.chrome procRegex.chrome uid)
+    // lib.optionalAttrs enableChrome (mkInternetWebRcEphemeral name.chrome procRegex.chrome uid)
 
     # WhatsApp
     // lib.optionalAttrs enableChromium (mkAllowWhatsApp5222 name.chromium procRegex.chromium uid)
