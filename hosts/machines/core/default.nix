@@ -208,6 +208,7 @@ in
       swaylock-effects # Screen locker (Base PAM service in wayland.nix)
       swayidle # Idle management daemon
       sway-audio-idle-inhibit # Prevent sleep whenever audio is played
+      swaytools
       fuzzel # App launcher/Menu
       foot # Fast, Wayland-native terminal
       mako # Lightweight notification daemon
@@ -298,12 +299,32 @@ in
     enable = true;
 
     features = {
-      inherit (browserSettings) scaling search preferences;
-      inherit (browserSettings) security privacy ai;
-      inherit (browserSettings) certificates;
-
-      networking = browserSettings.networkingAllowWebRtc;
-      hardware.graphics = browserSettings.hardwareVulkan.graphics;
+      # Hardware Acceleration
+      startup.extraEnvVars = {
+        LIBVA_DRIVER_NAME = "iHD";
+        LIBVA_DRIVERS_PATH = "/run/opengl-driver/lib/dri";
+      };
+      hardware.graphics.backend = "gles";
+      hardware.graphics.disabledVulkanLayers = [
+        "VK_LAYER_OBS_vkcapture_32"
+        "VK_LAYER_OBS_vkcapture_64"
+      ];
+      # Scaling
+      scaling.factor = appScaleFactor;
+      scaling.waylandFractionalScaling = true;
+      # WebRTC
+      networking.webrtc.preventIpLeaks = false;
+      # DNS
+      networking.dns.enableBuiltInDns = mySettings.dnsOverHttps.enable;
+      networking.dns.doh.enable = mySettings.dnsOverHttps.enable;
+      networking.dns.doh.template = mySettings.dnsOverHttps.url;
+      # SSL Certiciate for DNS over HTTPS server
+      certificates.customCaCerts = [
+        {
+          name = "dnscrypt-proxy";
+          path = mySettings.dnsOverHttps.caCertPath;
+        }
+      ];
 
       extensions.forceInstall = [
         "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
@@ -312,6 +333,23 @@ in
         "aeblfdkhhhdcdjpifhhbdiojplfjncoa" # 1Password
       ];
     };
+
+    #features = {
+    #  inherit (browserSettings) scaling search preferences;
+    #  inherit (browserSettings) security ai;
+    #  inherit (browserSettings) certificates;
+    #  privacy = browserSettings.privacyKeepReferrers;
+
+    #  networking = browserSettings.networkingAllowWebRtc;
+    #  hardware.graphics = browserSettings.hardwareVulkan.graphics;
+
+    #  extensions.forceInstall = [
+    #    "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
+    #    "ddkjiahejlhfcafbddmgiahcphecmpfh" # uBlock Origin Lite
+    #    "jpmkfafbacpgapdghgdpembnojdlgkdl" # AWS Extend Roles
+    #    "aeblfdkhhhdcdjpifhhbdiojplfjncoa" # 1Password
+    #  ];
+    #};
   };
 
   mySystem.programs.thunderbird = {
@@ -345,7 +383,7 @@ in
       Firewall = "nftables";
       #ProcMonitorMethod = "proc"; # Fallback to /proc instead of compiling eBPF
     };
-    rules =  opensnitchRules;
+    rules = opensnitchRules;
   };
 
   ###

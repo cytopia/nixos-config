@@ -9,7 +9,7 @@ let
     nix = {
       lsp = [ pkgs.nixd ];
       linter = [ pkgs.statix ];
-      formatter = [ pkgs.nixfmt-rfc-style ];
+      formatter = [ pkgs.nixfmt ];
     };
     lua = {
       lsp = [ pkgs.lua-language-server ];
@@ -112,6 +112,10 @@ in
   programs.neovim = {
     enable = true;
     defaultEditor = true;
+
+    # Forces Home Manager to pass provider paths via the binary wrapper
+    # and leaves your ~/.config/nvim/init.lua completely alone.
+    sideloadInitLua = true;
 
     # aliases
     viAlias = false;

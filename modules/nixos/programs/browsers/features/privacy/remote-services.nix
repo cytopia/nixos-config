@@ -16,7 +16,7 @@
 
             disableAutofillPredictions = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Disables autofill predictions. Prevents the browser from sending
                 form field names to Google for "make searches and browsing better" features.
@@ -25,7 +25,7 @@
 
             disablePaymentMethodQueries = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Disables payment method queries to Google's backend.
               '';
@@ -33,7 +33,7 @@
 
             disableSafeBrowsing = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Enforces no Safe Browsing protection and disables the local heuristic engine
                 that scans page DOMs for phishing. Disables uploading files to Google for deep
@@ -43,7 +43,7 @@
 
             disableDownloadEvaluations = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Prioritizes privacy by ensuring Chrome does not evaluate files or query
                 Google during downloads. Allows all downloads without restrictions.
@@ -52,7 +52,7 @@
 
             disableCloudSpellcheck = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Disables local and cloud-enhanced spellchecking entirely.
                 Prevents the browser from sending typed text to Google's cloud-enhanced
@@ -62,7 +62,7 @@
 
             disableLiveTranslation = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Disables the built-in Google Translate prompt, live caption translation,
                 and the local Translation Javascript API. Stops page content from being
@@ -72,7 +72,7 @@
 
             disablePasswordLeakChecks = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Disables sending password hashes to Google to check for breaches.
                 Also disables password reuse warnings (which require telemetry to evaluate).
@@ -81,7 +81,7 @@
 
             disableImageAccessibility = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Disables sending images to Google to generate accessibility descriptions (Image Labels).
               '';

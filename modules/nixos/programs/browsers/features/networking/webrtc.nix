@@ -16,7 +16,7 @@
 
             preventIpLeaks = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Forces WebRTC to only use proxied connections.
                 Strictly prevents WebRTC from leaking your local LAN IP and your real ISP IP

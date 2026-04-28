@@ -16,7 +16,7 @@
 
             disableBrowserSync = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Explicitly disables browser sign-in and stops background account token generation.
                 Disables Google Sync for passwords, bookmarks, history, and settings to prevent
@@ -26,7 +26,7 @@
 
             blockFederatedLogins = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Blocks federated login prompts (like "Sign in with Google") to prevent
                 identity tracking across third-party domains.
@@ -35,7 +35,7 @@
 
             disablePhoneHubIntegration = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Disables Google ecosystem integrations that leak local state.
                 Kills "Click to Call" (sending numbers to your phone).
@@ -44,7 +44,7 @@
 
             disableDeveloperProfileLinking = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Stops Developer Tools from linking to a Google Developer Profile.
               '';
@@ -52,7 +52,7 @@
 
             disableFamilyPasswordSharing = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Disables sharing passwords with a Google Family group.
               '';
@@ -60,7 +60,7 @@
 
             disableCloudShopping = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Kills the built-in price tracking and cloud-synced shopping cart features.
               '';
@@ -68,7 +68,7 @@
 
             hardKillApis = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Hard-blocks Google API services by injecting invalid API keys into the environment.
                 Acts as a kill-switch. Even if telemetry policies fail, Chrome's requests to Google's backend

@@ -16,7 +16,7 @@
 
             disableOsKeyring = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Severs integration with the host OS keyring (GNOME Keyring/KWallet).
                 Forces Chrome to use a dummy basic password store to prevent dbus exploits.
@@ -25,7 +25,7 @@
 
             disableRemoteAccess = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Completely disables Chrome Remote Desktop connections, remote firewall
                 traversal, and remote developer debugging ports. Severs external takeover vectors.
@@ -34,7 +34,7 @@
 
             strictExternalProtocols = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Prevents users from checking the "Always allow" box when a website tries
                 to open an external application (like Zoom or xdg-open). Forces a security
@@ -45,7 +45,7 @@
 
             blockExternalExtensions = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Prevents external software on your OS from silently side-loading
                 browser extensions into your profile without your consent.
@@ -54,7 +54,7 @@
 
             disableBackgroundMode = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Strictly prevents Chrome from silently running background processes, apps,
                 or extensions after the last visible browser window is explicitly closed.
@@ -63,7 +63,7 @@
 
             enforceSecurityWarnings = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Ensures the browser displays a prominent warning banner if it was
                 launched with dangerously degraded command-line flags (like --disable-web-security).

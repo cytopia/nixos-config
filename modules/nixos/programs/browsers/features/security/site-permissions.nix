@@ -16,7 +16,7 @@
 
           strictGeolocation = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Forces a prompt (Ask) before granting access to Location (Geolocation API).
                 Also injects `--lso-url=https://no-thanks.invalid` to actively prevent
@@ -27,7 +27,7 @@
 
             strictHardwarePermissions = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Forces a prompt (Ask) before granting access to Location, Bluetooth, HID, USB,
                 and Serial devices.
@@ -36,7 +36,7 @@
 
             blockSensors = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Strictly blocks access to raw device Sensors (accelerometer, gyroscope, etc).
               '';
@@ -44,7 +44,7 @@
 
             strictOsPermissions = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Forces a prompt (Ask) before granting access to Window Management, Local Fonts,
                 and File System (Read/Write).
@@ -53,7 +53,7 @@
 
             blockIdleDetection = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Strictly blocks Idle Detection tracking.
               '';
@@ -61,7 +61,7 @@
 
             strictClipboardAccess = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Forces a prompt (Ask) before allowing websites to read the clipboard.
                 Also strictly prevents reading cross-device synced clipboard history.
@@ -70,7 +70,7 @@
 
             blockSilentPrinting = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Prevents websites from bypassing the print dialog (silent printing).
                 Stops a malicious site from silently dumping files to your local printer.
@@ -79,7 +79,7 @@
 
             strictNotifications = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Forces a prompt (Ask) for web notifications.
               '';
@@ -87,7 +87,7 @@
 
             blockPopups = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Strictly denies/blocks popups.
               '';
@@ -95,7 +95,7 @@
 
             preventCrossSiteAuth = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Prevents phishing attacks by strictly blocking HTTP Basic Auth
                 prompts that are triggered by cross-origin subresources or iframes.
@@ -104,7 +104,7 @@
 
             blockDirectSockets = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Strictly blocks websites from opening raw TCP/UDP sockets (Direct Sockets API).
               '';
@@ -112,7 +112,7 @@
 
             disableAutoplay = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Blocks HTML5 media from auto-playing globally, preventing drive-by audio/video
                 parser exploits. Exceptions can be configured via the autoplayWhitelist option.

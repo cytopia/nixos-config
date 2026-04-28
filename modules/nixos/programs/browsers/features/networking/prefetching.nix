@@ -16,7 +16,7 @@
 
             disableNetworkPrediction = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Disables DNS prefetching and TCP pre-connection (Preloading).
                 Prevents the browser from silently resolving domains and opening connections

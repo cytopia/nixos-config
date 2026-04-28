@@ -296,35 +296,36 @@ in
     services.resolved = {
       enable = true;
 
-      # PREVENT LOCAL LEAKS:
-      # Disable legacy Microsoft and Apple local discovery protocols. If you typo a URL,
-      # these protocols will loudly broadcast your typo to everyone on your local Wi-Fi.
-      llmnr = "false";
-      extraConfig = ''
-        MulticastDNS=no
-        # Disable caching here to prevent desynchronization, since dnscrypt-proxy caches.
-        Cache=no
-        CacheFromLocalhost=no
-      '';
+      settings = {
+        Resolve = {
+          # PREVENT LOCAL LEAKS:
+          # Disable legacy Microsoft and Apple local discovery protocols. If you typo a URL,
+          # these protocols will loudly broadcast your typo to everyone on your local Wi-Fi.
+          LLMNR = "no";
+          MulticastDNS = "no";
+          # Disable caching here to prevent desynchronization, since dnscrypt-proxy caches.
+          Cache = "no";
+          CacheFromLocalhost = "no";
 
-      # PREVENT SERVFAIL:
-      # dnscrypt-proxy is already fully validating DNSSEC signatures. If resolved tries
-      # to validate them a second time, it often strips the signatures and breaks the connection.
-      dnssec = "false";
-      dnsovertls = "false";
+          # PREVENT SERVFAIL:
+          # dnscrypt-proxy is already fully validating DNSSEC signatures. If resolved tries
+          # to validate them a second time, it often strips the signatures and breaks the connection.
+          DNSSEC = "no";
+          DNSOverTLS = "no";
 
-      # THE CATCH-ALL ROUTE:
-      # The "~." means "root of the internet". This forces systemd-resolved to intercept
-      # ALL global DNS queries and send them to the 'networking.nameservers' defined above,
-      # which is dnscrypt-proxy.
-      # It acts as a safety net ensuring no app bypasses the proxy.
-      domains = [ "~." ];
+          # THE CATCH-ALL ROUTE:
+          # The "~." means "root of the internet". This forces systemd-resolved to intercept
+          # ALL global DNS queries and send them to the 'networking.nameservers' defined above,
+          # which is dnscrypt-proxy.
+          # It acts as a safety net ensuring no app bypasses the proxy.
+          Domains = [ "~." ];
 
-      # FAIL CLOSED:
-      # Emptying this list prevents resolved from silently falling back to Google or
-      # Cloudflare in plaintext.
-      fallbackDns = [ ];
+          # FAIL CLOSED:
+          # Emptying this list prevents resolved from silently falling back to Google or
+          # Cloudflare in plaintext.
+          FallbackDNS = "";
+        };
+      };
     };
   };
-
 }

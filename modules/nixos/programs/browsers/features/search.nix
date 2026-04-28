@@ -24,12 +24,12 @@
                   "google"
                 ]
               );
-              default = null;
+              default = "duckduckgo";
               description = "Force a specific default search provider via policy.";
             };
             disableSearchSuggestions = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Disables live search suggestions in the omnibox.
                 Stops the browser from sending every single keystroke you type to your default

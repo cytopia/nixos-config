@@ -16,7 +16,7 @@
 
             blockPublicToPrivateRouting = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Implements "Private Network Access" (PNA) restrictions.
                 Strictly blocks public internet websites from making Cross-Site Request Forgery (CSRF)
@@ -28,7 +28,7 @@
 
             disableMediaRouter = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Disables the Chromecast and Media Router discovery protocols (mDNS/SSDP).
                 Stops the browser from constantly broadcasting multicast packets to scan
@@ -41,6 +41,13 @@
           ### 2. CONFIGURATION
           ###
           config = {
+            internal.disableFeatures = lib.mkMerge [
+              (lib.optionals cfg.disableMediaRouter [
+                # Prevent the MediaRouter feature right at the start of the browser.
+                "MediaRouter"
+              ])
+            ];
+
             internal.policies = lib.mkMerge [
               (lib.mkIf cfg.blockPublicToPrivateRouting {
                 # Blocks public sites from hitting local IPs
