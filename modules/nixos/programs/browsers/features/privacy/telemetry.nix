@@ -16,7 +16,7 @@
 
             disableUsageAndCrashReports = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Kills "phone-home" traffic, crash reporting, and background analytics.
                 Disables diagnostic data collection (such as WebRTC logs or domain reliability reports)
@@ -26,7 +26,7 @@
 
             disableComponentUpdates = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Stops Chrome from quietly downloading component updates in the background.
                 Note: This can break DRM (Widevine) and Certificate Revocation lists.
@@ -35,7 +35,7 @@
 
             disableUrlKeyedAnonymizedData = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Disables sending visited URLs to Google for URL-keyed anonymized data collection.
               '';
@@ -43,7 +43,7 @@
 
             disableHyperlinkPings = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Disables HTML5 <a ping> attributes globally across the browser.
                 Prevents silent background POST requests to trackers when you click a link.
@@ -52,7 +52,7 @@
 
             disableAbTesting = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Disables field trials (A/B testing) pushed from the server.
               '';
@@ -60,7 +60,7 @@
 
             disableEnterpriseReporting = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Disables Chrome Enterprise machine and user reporting.
                 Stops the browser from uploading system metadata, machine IDs, installed extension lists,

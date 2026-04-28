@@ -16,7 +16,7 @@
 
             spoofLocale = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Normalizes date, time, number, and currency formatting to US English.
                 Hides your specific regional OS settings from websites, blending your
@@ -26,7 +26,7 @@
 
             stripReferrers = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Blocks the "Referer" header across different domains.
                 Prevents destination websites from knowing which website you clicked the link from,
@@ -36,7 +36,7 @@
 
             reduceFingerprinting = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Strips details from the User Agent string and Javascript APIs.
                 Stops websites from seeing your exact CPU model or specific Linux distro version,
@@ -47,7 +47,7 @@
 
             blockPrivacySandbox = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Disables the "Privacy Sandbox" (FLoC/Topics) to stop Chrome from locally
                 profiling your interests for ads.
@@ -56,7 +56,7 @@
 
             blockThirdPartyCookies = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Enforces a strict ban on all third-party tracking cookies.
                 Prevents advertisers from following your session state across unrelated websites.
@@ -65,7 +65,7 @@
 
             blockIntrusiveAds = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Strictly blocks ads on sites known to have intrusive or abusive ad practices.
               '';
@@ -73,7 +73,7 @@
 
             disableMediaRouterTracking = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Disables media recommendations which can send viewing habits to backend servers.
               '';

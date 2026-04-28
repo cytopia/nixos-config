@@ -15,7 +15,7 @@
           options.features.ai.gemini = {
             disableGemini = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 [REMOTE/CLOUD] Strictly blocks the Gemini assistant app integration in the side panel
                 and browser UI. Prevents Gemini from "acting on web pages" (reading your

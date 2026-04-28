@@ -15,7 +15,7 @@
           options.features.ai.developer = {
             disableDevAi = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 [REMOTE/CLOUD] Disables AI help inside the Developer Tools (F12). This stops Chrome
                 from offering AI-generated explanations for coding errors, network

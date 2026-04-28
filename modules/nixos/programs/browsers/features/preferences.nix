@@ -16,13 +16,13 @@
 
             restoreLastSession = lib.mkOption {
               type = lib.types.nullOr lib.types.bool;
-              default = null;
+              default = true;
               description = "Restore tabs from the previous session on startup.";
             };
 
             showBookmarksBar = lib.mkOption {
               type = lib.types.nullOr lib.types.bool;
-              default = null;
+              default = false;
               description = "Show the bookmarks bar by default.";
             };
 
@@ -34,13 +34,13 @@
                   "light"
                 ]
               );
-              default = null;
+              default = "system";
               description = "Enforce browser UI theme.";
             };
 
             cleanUi = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Disables annoying visual clutter, such as the Google Search Side Panel
                 and promotional "What's New" UI popups.

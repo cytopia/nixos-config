@@ -96,6 +96,49 @@ let
       disableMediaRouterTracking = true;
     };
   };
+  privacyKeepReferrers = {
+    identity = {
+      disableBrowserSync = true;
+      blockFederatedLogins = true;
+      disablePhoneHubIntegration = true;
+      disableDeveloperProfileLinking = true;
+      disableFamilyPasswordSharing = true;
+      disableCloudShopping = true;
+      hardKillApis = true;
+    };
+    localState = {
+      forceBlankNewTabPage = true;
+      limitDataRetention = false;
+      disableLocalDataScraping = true;
+    };
+    remoteServices = {
+      disableAutofillPredictions = true;
+      disablePaymentMethodQueries = true;
+      disableSafeBrowsing = true;
+      disableDownloadEvaluations = true;
+      disableCloudSpellcheck = true;
+      disableLiveTranslation = true;
+      disablePasswordLeakChecks = true;
+      disableImageAccessibility = true;
+    };
+    telemetry = {
+      disableUsageAndCrashReports = true;
+      disableComponentUpdates = true;
+      disableUrlKeyedAnonymizedData = true;
+      disableHyperlinkPings = true;
+      disableAbTesting = true;
+      disableEnterpriseReporting = true;
+    };
+    webTracking = {
+      spoofLocale = true;
+      stripReferrers = false;
+      reduceFingerprinting = true;
+      blockPrivacySandbox = true;
+      blockThirdPartyCookies = true;
+      blockIntrusiveAds = true;
+      disableMediaRouterTracking = true;
+    };
+  };
 
   ###
   ### AI Settings
@@ -265,6 +308,7 @@ in
 
     security = security;
     privacy = privacy;
+    privacyKeepReferrers = privacyKeepReferrers;
     ai = ai;
 
     networkingAllowWebRtc = networkingAllowWebRtc;

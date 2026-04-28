@@ -16,7 +16,7 @@
 
             forceStrictTls = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Strictly blocks mixed insecure (HTTP) content on secure pages.
                 Additionally, it explicitly routes the TLS pre-master secret log to /dev/null,

@@ -484,11 +484,11 @@ in
   rules =
     { }
     # Deny
+    // lib.optionalAttrs enableChrome (mkDenyTcp5288 name.brave procRegex.brave uid)
     // lib.optionalAttrs enableChrome (mkDenyTcp5288 name.chrome procRegex.chrome uid)
     // lib.optionalAttrs enableChrome (mkDenyTcp5288 name.chromium procRegex.chromium uid)
 
     // lib.optionalAttrs enableBrave (mkDeny_firebaseRemoteConfig name.brave procRegex.brave uid)
-    // lib.optionalAttrs enableChrome (mkDeny_firebaseRemoteConfig name.chrome procRegex.chrome uid)
     // lib.optionalAttrs enableChromium (mkDeny_firebaseRemoteConfig name.chromium procRegex.chromium uid)
 
     # Localhost

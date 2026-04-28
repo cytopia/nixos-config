@@ -25,7 +25,7 @@ in
     programs.thunar = {
       enable = true;
       # ADDITION: volman is best handled here as a plugin for auto-mounting UI integration
-      plugins = with pkgs.xfce; [
+      plugins = with pkgs; [
         thunar-archive-plugin
         thunar-media-tags-plugin
         thunar-volman
@@ -71,7 +71,7 @@ in
       # The archive-plugin is useless without a backend.
       # We install 'file-roller' (GNOME) or 'ark' (KDE) or 'engrampa' (MATE).
       # Engrampa is the most 'Thunar-native' feeling archiver.
-      pkgs.mate.engrampa
+      pkgs.engrampa
     ];
   };
 }

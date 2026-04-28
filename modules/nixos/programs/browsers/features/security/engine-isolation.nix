@@ -16,7 +16,7 @@
 
             strictProcessIsolation = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Enforces strict site-per-process isolation and cross-origin checks.
                 Prevents compromised iframes or cross-site scripting from leaking memory.
@@ -30,7 +30,7 @@
 
             sandboxSystemServices = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Forces the browser's internal Audio processing engine and Network
                 service stack into dedicated, strict OS-level sandboxes. Prevents media
@@ -72,10 +72,10 @@
                 "StrictOriginIsolation"
               ])
 
-              (lib.optionals cfg.sandboxSystemServices [
-                # Runs the internal browser network service in a heavily restricted OS sandbox.
-                "NetworkServiceSandbox"
-              ])
+              #(lib.optionals cfg.sandboxSystemServices [
+              #  # Runs the internal browser network service in a heavily restricted OS sandbox.
+              #  "NetworkServiceSandbox"
+              #])
             ];
 
             internal.policies = lib.mkMerge [
@@ -93,7 +93,7 @@
 
               (lib.mkIf cfg.sandboxSystemServices {
                 "AudioSandboxEnabled" = true;
-                "NetworkServiceSandboxEnabled" = true;
+                #"NetworkServiceSandboxEnabled" = true;
               })
             ];
           };

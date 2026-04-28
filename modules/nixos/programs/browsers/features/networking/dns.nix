@@ -16,13 +16,13 @@
 
             enableBuiltInDns = lib.mkOption {
               type = lib.types.bool;
-              default = true;
+              default = false;
               description = "Enables Chromium's internal asynchronous DNS client.";
             };
 
             disableInterceptionChecks = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Disables Chrome's "DNS Interception" detection probes.
                 This is REQUIRED when using a local DNS proxy like dnscrypt-proxy or Pi-hole.
@@ -33,7 +33,7 @@
 
             disableIntranetRedirectChecks = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Disables DNS interception checks for intranet domains.
                 Reduces startup queries and prevents the browser from phoning home to
@@ -52,8 +52,8 @@
 
             enableAdditionalQueryTypes = lib.mkOption {
               type = lib.types.bool;
-              default = true;
-              description = "Allows Chromium to query HTTPS/SVCB records directly.";
+              default = false;
+              description = "Allows Chromium to query HTTPS/SVCB records directly over insure DNS.";
             };
 
             # --- DNS OVER HTTPS (DoH) ---

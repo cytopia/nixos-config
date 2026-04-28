@@ -111,6 +111,9 @@ in
       gtk2.enable = true;
       gtk3.enable = true;
       gtk4.enable = true;
+      gtk4.theme ={
+        inherit (cfg.theme) name package;
+      };
 
       theme = {
         inherit (cfg.theme) name package;

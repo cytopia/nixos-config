@@ -137,4 +137,9 @@
     btop
     nvtopPackages.intel
   ];
+  home.sessionVariables = {
+    # Disable devbox telemetry:
+    # https://github.com/jetify-com/devbox/blob/main/internal/envir/util.go#L24
+    DO_NOT_TRACK = "1";
+  };
 }

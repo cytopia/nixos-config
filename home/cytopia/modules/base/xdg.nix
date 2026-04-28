@@ -4,6 +4,7 @@
   xdg.userDirs = {
     enable = true;
     createDirectories = true;
+    setSessionVariables = false;
 
     desktop = "${config.home.homeDirectory}/Desktop";
     download = "${config.home.homeDirectory}/Downloads";
@@ -14,7 +15,7 @@
     templates = null;
     videos = "${config.home.homeDirectory}/Videos";
     extraConfig = {
-      XDG_PROJECTS_DIR = "${config.home.homeDirectory}/repo";
+      PROJECTS = "${config.home.homeDirectory}/repo";
     };
   };
   gtk.gtk3.bookmarks = [

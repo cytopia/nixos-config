@@ -99,7 +99,7 @@ in
       wireplumber # Provides 'wpctl' (The modern CLI controller)
       pavucontrol # The gold standard GUI mixer
       pulsemixer # A beautiful TUI (terminal) mixer
-      helvum # A graphical patchbay for PipeWire (great for debugging)
+      crosspipe # A graphical patchbay for PipeWire (great for debugging)
     ];
   };
 }

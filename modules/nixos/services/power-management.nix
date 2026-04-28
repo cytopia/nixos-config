@@ -73,14 +73,16 @@ in
 
     # --- 2. SLEEP LOGIC (systemd-sleep) ---
     # Defines the behavior of 'suspend-then-hibernate'.
-    systemd.sleep.extraConfig = ''
-      HibernateDelaySec=${cfg.hibernateDelay}
+    systemd.sleep.settings = {
+      Sleep = {
+        HibernateDelaySec = "${cfg.hibernateDelay}";
 
-      # systemd v253+ battery estimation logic
-      # Checks battery every 30min to see if we are below 5%.
-      # If yes, hibernates to save remaining charge.
-      SuspendEstimationSec=30min
-    '';
+        # systemd v253+ battery estimation logic
+        # Checks battery every 30min to see if we are below 5%.
+        # If yes, hibernates to save remaining charge.
+        SuspendEstimationSec = "30min";
+      };
+    };
 
     # --- 3. UPOWER (The Safety Watchdog) ---
     services.upower = {

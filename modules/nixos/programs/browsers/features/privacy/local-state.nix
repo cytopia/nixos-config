@@ -16,7 +16,7 @@
 
             forceBlankNewTabPage = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Enforces about:blank on new tabs to prevent leaking recently visited pages
                 or search history thumbnails to shoulder surfers or local background scripts.
@@ -34,7 +34,7 @@
 
             disableLocalDataScraping = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Stops the browser from scraping bookmarks and history from other browsers
                 on your hard drive during the first run.

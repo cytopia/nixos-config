@@ -15,7 +15,7 @@
           options.features.ai.creativeUi = {
             disableGenAiThemes = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 [REMOTE/CLOUD] Disables the "Create with AI" button in the browser's appearance settings.
                 This stops the browser from using AI to generate custom window colors

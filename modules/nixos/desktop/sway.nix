@@ -26,6 +26,7 @@ in
       default = with pkgs; [
         swaylock # Screen locker (Base PAM service in wayland.nix)
         swayidle # Idle management daemon
+        swaytools # Provides 'swayinfo'
         fuzzel # App launcher/Menu
         foot # Fast, Wayland-native terminal
         mako # Lightweight notification daemon

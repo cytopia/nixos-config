@@ -16,7 +16,7 @@
 
             disableNetworkTimeSync = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Stops Chrome from silently making background network requests to Google's
                 time servers to sync the browser clock.

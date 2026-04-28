@@ -7,9 +7,6 @@
   ###
   services.ssh-agent = {
     enable = true;
-    enableZshIntegration = true;
-    enableBashIntegration = true;
-    enableFishIntegration = true;
     # We let KeePassXC handle the ssh keys.
     # Lifetime should be null so that ssh keys are available
     # as long as the database is unlocked.

@@ -16,7 +16,7 @@
 
             disablePasswordManager = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Hardens the local browser profile by disabling the built-in Chrome password manager
                 and passkeys. Guarantees malware cannot extract credentials from local SQLite databases.
@@ -25,7 +25,7 @@
 
             disableAutofill = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Hardens the local browser profile by disabling form autofill for addresses
                 and credit cards. Prevents malicious scripts from triggering hidden autofills.
@@ -34,7 +34,7 @@
 
             disableBrowserLabs = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Turns off experimental Chrome features (Browser Labs/chrome://flags) that lack full security audits.
               '';
@@ -42,7 +42,7 @@
 
             disablePwaInstallation = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 Strictly prevents the installation of Progressive Web Apps (PWAs) by the user,
                 reducing persistent local attack surfaces.

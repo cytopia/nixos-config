@@ -16,7 +16,7 @@
 
             disableLocalAiModels = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 [LOCAL/ON-DEVICE] Hard-blocks the background download of foundational AI models to the local disk.
                 Disables the Javascript APIs that allow websites to use the on-device
@@ -26,7 +26,7 @@
 
             disableHistoryClusters = lib.mkOption {
               type = lib.types.bool;
-              default = false;
+              default = true;
               description = ''
                 [LOCAL/ML] Kills the traditional ML-driven grouping of your history into "Journeys/Clusters."
               '';
