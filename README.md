@@ -49,7 +49,7 @@ nix-collect-garbage -d
 ### System info
 ```bash
 # Get latest build kernel
- ls -lap /run/current-system/kernel
+ls -lap /run/current-system/kernel
 ```
 
 ## Credits
