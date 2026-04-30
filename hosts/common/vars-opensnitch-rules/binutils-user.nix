@@ -26,7 +26,12 @@ let
     uidUser = "${toString uid}";
     destHost = "^(.*\\.)?amazonaws\\.com$";
   };
-  terraform = {
+ sops = {
+    name = "sops";
+    regPath = "^/nix/store/[^/]+sops-.*/bin/sops$";
+    uidUser = "${toString uid}";
+  };
+ terraform = {
     name = "terraform";
     regPath = "^/nix/store/[^/]+terraform-.*/bin/terraform$";
     uidUser = "${toString uid}";
@@ -39,6 +44,12 @@ let
   terragrunt = {
     name = "terragrunt";
     regPath = "^/nix/store/[^/]+terragrunt-.*/bin/terragrunt$";
+    uidUser = "${toString uid}";
+    destHost = "^(.*\\.)?amazonaws\\.com$";
+  };
+  terragruntAtlantisConfig = {
+    name = "terragrunt-atlantis-config";
+    regPath = "^/nix/store/[^/]+terragrunt-atlantis-config.*/bin/terragrunt-atlantis-config$";
     uidUser = "${toString uid}";
     destHost = "^(.*\\.)?amazonaws\\.com$";
   };
@@ -178,11 +189,13 @@ in
     // mkBinutilsUserHttps devbox.name devbox.regPath devbox.uidUser
     // mkBinutilsUserHttps podman.name podman.regPath podman.uidUser
     // mkBinutilsUserHttps saml2aws.name saml2aws.regPath saml2aws.uidUser
+    // mkBinutilsUserHttps sops.name sops.regPath sops.uidUser
 
     // mkBinutilsUserHttps terraform.name terraform.regPath terraform.uidUser
     // mkBinutilsUserHttps terraformProvider.name terraformProvider.regPath terraformProvider.uidUser
 
     // mkBinutilsUserHttpsDestHost terragrunt.name terragrunt.regPath terragrunt.uidUser terragrunt.destHost
+    // mkBinutilsUserHttpsDestHost terragruntAtlantisConfig.name terragruntAtlantisConfig.regPath terragruntAtlantisConfig.uidUser terragruntAtlantisConfig.destHost
 
     // mkBinutilsAwsLinkLocal awscli.name awscli.regPath awscli.uidUser
     // mkBinutilsUserHttpsDestHost awscli.name awscli.regPath awscli.uidUser awscli.destHost
