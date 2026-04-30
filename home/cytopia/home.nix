@@ -1,6 +1,5 @@
 {
   pkgs,
-  pkgs-unstable,
   username,
   appScaleFactor,
   stateVersion,
@@ -64,6 +63,7 @@
     enableEza = false;
     enableZoxide = false;
   };
+
   cytopia.cli.fish = {
     enable = true;
     enableCompletion = true;
@@ -79,6 +79,11 @@
 
     enableEza = false;
     enableZoxide = false;
+  };
+
+  cytopia.cli.devbox = {
+    enable = true;
+    enableDirenv = true;
   };
 
   ###
@@ -113,9 +118,7 @@
     custom.colorpicker
     burpsuite
 
-    # Start via:  QT_FONT_DPI=124 opensnitch-ui
-    pkgs-unstable.opensnitch-ui
-    #opensnitch-ui
+    opensnitch-ui
 
     # media
     vlc
@@ -123,23 +126,17 @@
     shotcut
 
     # productive
-    pkgs-unstable.devbox
     gum
     saml2aws
     awscli2
     lens
     freelens-bin
     jq
-    yq
+    yq-go
 
     # Monitoring
     htop
     btop
     nvtopPackages.intel
   ];
-  home.sessionVariables = {
-    # Disable devbox telemetry:
-    # https://github.com/jetify-com/devbox/blob/main/internal/envir/util.go#L24
-    DO_NOT_TRACK = "1";
-  };
 }

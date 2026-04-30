@@ -230,7 +230,6 @@ in
       brightnessctl
       iwmenu
       libappindicator-gtk3
-      #networkmanagerapplet
       blueman
     ];
   };
@@ -368,13 +367,13 @@ in
   };
 
   # Enable the OpenSSH daemon.
-  services.openssh = {
-    enable = true;
-    settings = {
-      PasswordAuthentication = true;
-      AllowUsers = [ "cytopia" ];
-    };
-  };
+  #services.openssh = {
+  #  enable = true;
+  #  settings = {
+  #    PasswordAuthentication = true;
+  #    AllowUsers = [ "cytopia" ];
+  #  };
+  #};
 
   services.opensnitch = {
     enable = true;
