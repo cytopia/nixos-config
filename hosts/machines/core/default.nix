@@ -28,17 +28,6 @@ let
     gpuDeviceId = "9a60";
   };
 
-  ###
-  ### Variable Imports
-  ###
-  browserSettings =
-    (import ../../common/vars-browsers.nix {
-      inherit appScaleFactor;
-      dohEnable = mySettings.dnsOverHttps.enable;
-      dohServer = mySettings.dnsOverHttps.url;
-      dohCertPath = mySettings.dnsOverHttps.caCertPath;
-    }).settings;
-
   dnscryptSettings =
     (import ../../common/vars-dnscrypt-proxy.nix {
       dnscryptQuery = mySettings.dnsQuery;
@@ -249,13 +238,26 @@ in
     enable = true;
 
     features = {
-      inherit (browserSettings) scaling search preferences;
-      inherit (browserSettings) security privacy ai;
-      inherit (browserSettings) certificates;
-
-      networking = browserSettings.networkingBlockWebRtc;
-      hardware.graphics = browserSettings.hardwareGles.graphics;
-
+      # Hardware Acceleration
+      hardware.graphics.backend = "vulkan";
+      hardware.graphics.disabledVulkanLayers = [
+        "VK_LAYER_OBS_vkcapture_32"
+        "VK_LAYER_OBS_vkcapture_64"
+      ];
+      # Scaling
+      scaling.factor = appScaleFactor;
+      scaling.waylandFractionalScaling = true;
+      # DNS
+      networking.dns.enableBuiltInDns = mySettings.dnsOverHttps.enable;
+      networking.dns.doh.enable = mySettings.dnsOverHttps.enable;
+      networking.dns.doh.template = mySettings.dnsOverHttps.url;
+      # SSL Certiciate for DNS over HTTPS server
+      certificates.customCaCerts = [
+        {
+          name = "dnscrypt-proxy";
+          path = mySettings.dnsOverHttps.caCertPath;
+        }
+      ];
       extensions.forceInstall = [
         "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
         "ddkjiahejlhfcafbddmgiahcphecmpfh" # uBlock Origin Lite
@@ -274,13 +276,26 @@ in
     enable = true;
 
     features = {
-      inherit (browserSettings) scaling search preferences;
-      inherit (browserSettings) security privacy ai;
-      inherit (browserSettings) certificates;
-
-      networking = browserSettings.networkingBlockWebRtc;
-      hardware.graphics = browserSettings.hardwareVulkan.graphics;
-
+      # Hardware Acceleration
+      hardware.graphics.backend = "vulkan";
+      hardware.graphics.disabledVulkanLayers = [
+        "VK_LAYER_OBS_vkcapture_32"
+        "VK_LAYER_OBS_vkcapture_64"
+      ];
+      # Scaling
+      scaling.factor = appScaleFactor;
+      scaling.waylandFractionalScaling = true;
+      # DNS
+      networking.dns.enableBuiltInDns = mySettings.dnsOverHttps.enable;
+      networking.dns.doh.enable = mySettings.dnsOverHttps.enable;
+      networking.dns.doh.template = mySettings.dnsOverHttps.url;
+      # SSL Certiciate for DNS over HTTPS server
+      certificates.customCaCerts = [
+        {
+          name = "dnscrypt-proxy";
+          path = mySettings.dnsOverHttps.caCertPath;
+        }
+      ];
       extensions.forceInstall = [
         "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
         "ddkjiahejlhfcafbddmgiahcphecmpfh" # uBlock Origin Lite
@@ -299,11 +314,8 @@ in
 
     features = {
       # Hardware Acceleration
-      startup.extraEnvVars = {
-        LIBVA_DRIVER_NAME = "iHD";
-        LIBVA_DRIVERS_PATH = "/run/opengl-driver/lib/dri";
-      };
       hardware.graphics.backend = "gles";
+      hardware.graphics.hideVulkanLoader = true;
       hardware.graphics.disabledVulkanLayers = [
         "VK_LAYER_OBS_vkcapture_32"
         "VK_LAYER_OBS_vkcapture_64"
@@ -311,6 +323,8 @@ in
       # Scaling
       scaling.factor = appScaleFactor;
       scaling.waylandFractionalScaling = true;
+      # Privacy settings
+      privacy.webTracking.stripReferrers = false;
       # WebRTC
       networking.webrtc.preventIpLeaks = false;
       # DNS
@@ -332,23 +346,6 @@ in
         "aeblfdkhhhdcdjpifhhbdiojplfjncoa" # 1Password
       ];
     };
-
-    #features = {
-    #  inherit (browserSettings) scaling search preferences;
-    #  inherit (browserSettings) security ai;
-    #  inherit (browserSettings) certificates;
-    #  privacy = browserSettings.privacyKeepReferrers;
-
-    #  networking = browserSettings.networkingAllowWebRtc;
-    #  hardware.graphics = browserSettings.hardwareVulkan.graphics;
-
-    #  extensions.forceInstall = [
-    #    "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
-    #    "ddkjiahejlhfcafbddmgiahcphecmpfh" # uBlock Origin Lite
-    #    "jpmkfafbacpgapdghgdpembnojdlgkdl" # AWS Extend Roles
-    #    "aeblfdkhhhdcdjpifhhbdiojplfjncoa" # 1Password
-    #  ];
-    #};
   };
 
   mySystem.programs.thunderbird = {

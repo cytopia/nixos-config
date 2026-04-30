@@ -36,13 +36,6 @@ in
       '';
     };
 
-    # 32 Bit Graphics
-    enable32Bit = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      description = "Enable 32-bit graphics support (Required for Steam/Wine).";
-    };
-
     # Compatibility Driver adjustments for older systems
     vaapiDriver = lib.mkOption {
       type = lib.types.str;
@@ -56,6 +49,22 @@ in
       description = "Install GPU monitoring and diagnostic tools.";
     };
 
+    # 32 Bit Graphics
+    enable32Bit = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Enable 32-bit graphics support (Required for Steam/Wine).";
+    };
+
+    # Legacy Graphics support
+    enableLegacyVdpau = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = ''
+        Enable the libvdpau-va-gl bridge.
+        Useful for legacy applications that require VDPAU for hardware video acceleration instead of VA-API.
+      '';
+    };
   };
 
   ###
@@ -93,10 +102,6 @@ in
 
     # Allow the kernel to load necessary Intel binary blobs (GuC/HuC firmware).
     # This is even MORE critical for the xe driver than i915.
-    #
-    # mkDefault Reason: If you ever enable another hardware module (like a WiFi driver) that also
-    # sets enableRedistributableFirmware = true, NixOS will throw a conflict error.
-    # mkDefault safely merges it without conflicting.
     hardware.enableRedistributableFirmware = lib.mkDefault true;
 
     # --- GRAPHICS FRAMEWORK ---
@@ -104,11 +109,15 @@ in
       enable = true;
       enable32Bit = cfg.enable32Bit;
 
-      extraPackages = with pkgs; [
-        intel-media-driver # VA-API (iHD)
-        vpl-gpu-rt # QuickSync Video (QSV)
-        intel-compute-runtime # OpenCL / Level Zero (NEO)
-      ];
+      extraPackages =
+        with pkgs;
+        [
+          intel-media-driver # VA-API (iHD)
+          vpl-gpu-rt # QuickSync Video (QSV)
+          intel-compute-runtime # OpenCL / Level Zero (NEO)
+          level-zero
+        ]
+        ++ lib.optional cfg.enableLegacyVdpau libvdpau-va-gl;
 
       # If 32-bit is enabled, we need the 32-bit versions of the drivers
       extraPackages32 = lib.mkIf cfg.enable32Bit (
@@ -116,6 +125,7 @@ in
         [
           intel-media-driver
         ]
+        ++ lib.optional cfg.enableLegacyVdpau libvdpau-va-gl
       );
 
     };
@@ -123,22 +133,32 @@ in
     # --- ENVIRONMENT SETTINGS ---
     environment.sessionVariables = {
       LIBVA_DRIVER_NAME = cfg.vaapiDriver;
+    }
+    // lib.optionalAttrs cfg.enableLegacyVdpau {
+      VDPAU_DRIVER = "va_gl";
     };
 
-    # --- TOOLS & DIAGNOSTICS ---
-    environment.systemPackages = lib.mkIf cfg.enableMonitoring (
+    environment.systemPackages =
       with pkgs;
       [
-        # Standard Monitoring
-        intel-gpu-tools # Provides 'intel_gpu_top'
-        nvtopPackages.intel # TTY GPU monitor (shows usage/power/freq)
-
-        # Verification Tools
-        vulkan-tools # vulkaninfo
-        libva-utils # vainfo (verifies video acceleration)
-        mesa-demos # glxinfo (verifies OpenGL)
-        clinfo # clinfo (Verifies OpenCL)
+        # # GStreamer VA-API Plugin (For Linux Native Media Apps)
+        gst_all_1.gst-vaapi
       ]
-    );
+      ++ lib.optionals cfg.enableMonitoring (
+        [
+          # Standard Monitoring
+          nvtopPackages.intel # nvtop
+
+          # Verification Tools
+          vulkan-tools # vulkaninfo
+          libva-utils # vainfo (verifies video acceleration)
+          mesa-demos # glxinfo (verifies OpenGL)
+          clinfo # clinfo (Verifies OpenCL)
+        ]
+        # Legacy tools exclusively for the i915 driver
+        ++ lib.optionals (!cfg.useXeDriver) [
+          intel-gpu-tools # intel_gpu_top
+        ]
+      );
   };
 }
