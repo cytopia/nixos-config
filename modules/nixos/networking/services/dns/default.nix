@@ -82,8 +82,15 @@ in
         default = false;
         description = "Proxy encrypted DNS requests through a middle-server.";
       };
+      timeout = lib.mkOption {
+        type = lib.types.int;
+        default = 5000;
+        description = ''
+          How long a DNS query will wait for a response, in milliseconds.
+          Default is 5000. Not recommended to go below 5000 or above 10000.
+        '';
+      };
     };
-
   };
 
   ###
@@ -131,6 +138,9 @@ in
         # ==========================================================
         # 0 = Debug, 1 = Info, 2 = Notice (Default), 3 = Warning, 4 = Error
         log_level = 2;
+
+        # Timeout for a DNS query
+        timeout = cfg.query.timeout;
 
         cache = true;
         # Allocate RAM for 10,000 domains. This ensures that almost every site
@@ -271,16 +281,14 @@ in
         # where our traffic goes. We exclusively define Quad9's DoH (DNS-over-HTTPS).
         # This will override and irnogre OPTION-A's sources.public-resolvers list and their filters.
 
-
-        # [FIX: Static server names and anonymized_dns are now handled by servers.nix]
-        # [FIX: Local DoH, Monitoring, and Blocklists are handled by their respective feature files]
+        # [INFO: Static server names and anonymized_dns are now handled by servers.nix]
+        # [INFO: Local DoH, Monitoring, and Blocklists are handled by their respective feature files]
       };
 
     };
 
 
-
-###
+    ###
     ### 2. Uplink Routing
     ###
     # This tells systemd-resolved that its uplink is our dnscrypt-proxy server.

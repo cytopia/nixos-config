@@ -23,7 +23,8 @@ let
     };
     dnsQuery = {
       protocol = "dnscrypt";
-      viaProxy = false;
+      viaProxy = true;
+      timeout = 1000;
     };
     gpuDeviceId = "9a60";
   };
