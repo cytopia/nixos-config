@@ -77,38 +77,42 @@ let
   ### Available Relays
   ###
   ### https://status.dnscrypt.info/?type=relay
+  # anon-cs-berlin
+  # anon-cs-de
+  # anon-cs-dus
+  # dnscry.pt-anon-bremen-ipv4
+  # dnscry.pt-anon-dusseldorf-ipv4
+  # dnscry.pt-anon-dusseldorf02-ipv4
+  # dnscry.pt-anon-dusseldorf03-ipv4
+  # dnscry.pt-anon-frankfurt02-ipv4
+  # dnscry.pt-anon-jena-ipv4
+  # dnscry.pt-anon-munich-ipv4
+  # dnscry.pt-anon-nuremberg-ipv4
   ipv4Relays = [
-    { server_name = "quad9-dnscrypt-ip4-filter-ecs-pri"; via = [ "anon-cs-berlin" ]; }
-    { server_name = "quad9-dnscrypt-ip4-filter-ecs-alt"; via = [ "anon-cs-berlin" ]; }
-    { server_name = "quad9-dnscrypt-ip4-filter-ecs-alt2"; via = [ "anon-cs-berlin" ]; }
+    #{ server_name = "quad9-dnscrypt-ip4-filter-ecs-pri"; via = [ "anon-cs-berlin"  ]; }
+    #{ server_name = "quad9-dnscrypt-ip4-filter-ecs-alt"; via = [ "anon-cs-de" ]; }
+    #{ server_name = "quad9-dnscrypt-ip4-filter-ecs-alt2"; via = [ "anon-cs-berlin" ]; }
 
-    { server_name = "quad9-dnscrypt-ip4-filter-pri"; via = [ "dnscry.pt-anon-jena-ipv4" ]; }
-    { server_name = "quad9-dnscrypt-ip4-filter-alt"; via = [ "dnscry.pt-anon-jena-ipv4" ]; }
-    { server_name = "quad9-dnscrypt-ip4-filter-alt2"; via = [ "dnscry.pt-anon-jena-ipv4" ]; }
+    #{ server_name = "quad9-dnscrypt-ip6-filter-ecs-pri"; via = [ "anon-cs-berlin" ]; }
+    #{ server_name = "quad9-dnscrypt-ip6-filter-ecs-alt"; via = [ "anon-cs-berlin" ]; }
+    #{ server_name = "quad9-dnscrypt-ip6-filter-ecs-alt2"; via = [ "anon-cs-berlin" ]; }
 
-    { server_name = "quad9-dnscrypt-ip6-filter-ecs-pri"; via = [ "anon-cs-berlin" ]; }
-    { server_name = "quad9-dnscrypt-ip6-filter-ecs-alt"; via = [ "anon-cs-berlin" ]; }
-    { server_name = "quad9-dnscrypt-ip6-filter-ecs-alt2"; via = [ "anon-cs-berlin" ]; }
+    { server_name = "quad9-dnscrypt-ip4-filter-pri"; via = [ "anon-cs-berlin" "dnscry.pt-anon-jena-ipv4" ]; }
+    { server_name = "quad9-dnscrypt-ip4-filter-alt"; via = [ "anon-cs-de" "dnscry.pt-anon-bremen-ipv4" ]; }
+    { server_name = "quad9-dnscrypt-ip4-filter-alt2"; via = [ "anon-cs-dus" "dnscry.pt-anon-frankfurt02-ipv4" ]; }
 
-    { server_name = "quad9-dnscrypt-ip6-filter-pri"; via = [ "anon-cs-dus" ]; }
-    { server_name = "quad9-dnscrypt-ip6-filter-alt"; via = [ "dnscry.pt-anon-bremen-ipv4" ]; }
-    { server_name = "quad9-dnscrypt-ip6-filter-alt2"; via = [ "dnscry.pt-anon-dusseldorf-ipv4" ]; }
+    { server_name = "quad9-dnscrypt-ip6-filter-pri"; via = [ "dnscry.pt-anon-frankfurt02-ipv4" ]; }
+    { server_name = "quad9-dnscrypt-ip6-filter-alt"; via = [ "dnscry.pt-anon-munich-ipv4" ]; }
+    { server_name = "quad9-dnscrypt-ip6-filter-alt2"; via = [ "dnscry.pt-anon-nuremberg-ipv4" ]; }
 
-    { server_name = "cs-de"; via = [ "dnscry.pt-anon-dusseldorf03-ipv4" ]; }
-    { server_name = "ffmuc.net"; via = [ "dnscry.pt-anon-frankfurt02-ipv4" ]; }
-    { server_name = "ffmuc.net-v6"; via = [ "dnscry.pt-anon-jena-ipv4" ]; }
-    { server_name = "dnscry.pt-frankfurt02-ipv4"; via = [ "dnscry.pt-anon-munich-ipv4" ]; }
-    { server_name = "dnscry.pt-frankfurt02-ipv6"; via = [ "dnscry.pt-anon-nuremberg-ipv4" ]; }
-    { server_name = "*"; via = [ "anon-cs-berlin" ]; }
+    #{ server_name = "cs-de"; via = [ "dnscry.pt-anon-dusseldorf03-ipv4" ]; }
+    #{ server_name = "ffmuc.net"; via = [ "dnscry.pt-anon-frankfurt02-ipv4" ]; }
+    #{ server_name = "ffmuc.net-v6"; via = [ "dnscry.pt-anon-jena-ipv4" ]; }
+    #{ server_name = "dnscry.pt-frankfurt02-ipv4"; via = [ "dnscry.pt-anon-munich-ipv4" ]; }
+    #{ server_name = "dnscry.pt-frankfurt02-ipv6"; via = [ "dnscry.pt-anon-nuremberg-ipv4" ]; }
+
+    #{ server_name = "*"; via = [ "anon-cs-berlin" "anon-cs-de" "dnscry.pt-anon-jena-ipv4" ]; }
   ];
-  # TODO:
-  # High timeout relays:
-  # * dnscry.pt-anon-dusseldorf02-ipv4
-  # * anon-cs-de
-  # Stable relays:
-  # * anon-cs-berlin
-  # * dnscry.pt-anon-frankfurt02-ipv4
-  # * dnscry.pt-anon-bremen-ipv4
 
   relayedServer = builtins.map (x: x.server_name) ipv4Relays;
 
