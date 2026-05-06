@@ -576,6 +576,14 @@ bindsym $mod+Shift+c exec cliphist wipe
 # sleep 3; swaymsg -t get_tree | jq -r '..|try select(.focused == true)'
 
 ###
+### Thunar
+###
+for_window [app_id="thunar" title="^Rename.*"] floating enable
+for_window [app_id="thunar" title="^Confirm.*"] floating enable
+for_window [app_id="thunar" title="File Operation Progress"] floating enable
+
+
+###
 ### OpenSnitch
 ###
 for_window [app_id="opensnitch_ui" title="Firewall"] floating enable

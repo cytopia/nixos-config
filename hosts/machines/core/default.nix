@@ -24,7 +24,8 @@ let
     dnsQuery = {
       protocol = "dnscrypt";
       viaProxy = true;
-      timeout = 1000;
+      timeout = 2000;
+      lbStrategy = "p3";
     };
     gpuDeviceId = "9a60";
   };
