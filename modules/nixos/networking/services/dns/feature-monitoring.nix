@@ -67,7 +67,7 @@ in
 
         # INSIGHT SETTINGS
         enable_query_log = true; # Required to see the live scrolling list
-        max_query_log_entries = 300; # Default is 100
+        max_query_log_entries = 500; # Default is 100
 
         # Privacy Levels:
         # 0 = Show everything (Best for debugging your Chrome/System flow)

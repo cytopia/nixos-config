@@ -90,6 +90,17 @@ in
           Default is 5000. Not recommended to go below 5000 or above 10000.
         '';
       };
+      lbStrategy = lib.mkOption {
+        type = lib.types.enum [
+          "p2"
+          "p3"
+          "p4"
+        ];
+        default = "p2";
+        description = ''
+          Load balancy Strategy.
+        '';
+      };
     };
   };
 
@@ -172,7 +183,7 @@ in
         # LOAD BALANCING:
         # "p2" means it will randomly alternate between the top 2 fastest servers.
         # "lb_estimator" makes it continuously re-evaluate which servers are currently the fastest.
-        lb_strategy = "p2";
+        lb_strategy = cfg.query.lbStrategy;
         lb_estimator = true;
 
         # ==========================================================

@@ -126,6 +126,7 @@
     shotcut
 
     # productive
+    filen-desktop
     gum
     saml2aws
     awscli2

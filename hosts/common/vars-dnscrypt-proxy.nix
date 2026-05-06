@@ -10,12 +10,12 @@ let
   ### DNS Query Settings
   ###
   query = {
-    #protocol = "dnscrypt-ecs";
-    #protocol = "doh";
-    protocol = dnscryptQuery.protocol;
     http3 = true;
     ipv6 = false;
+    protocol = dnscryptQuery.protocol;
     viaProxy = dnscryptQuery.viaProxy;
+    timeout = dnscryptQuery.timeout;
+    lbStrategy = dnscryptQuery.lbStrategy;
   };
 
   ###
