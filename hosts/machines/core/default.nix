@@ -62,26 +62,7 @@ in
 
   #boot.kernelPackages = pkgs.linuxPackages_latest;
   #boot.kernelPackages = pkgs.linuxPackages_xanmod_stable;
-  boot.kernelPackages = pkgs.linuxPackages_latest.extend (
-    lfinal: lprev: {
-      # https://github.com/NixOS/nixpkgs/issues/490127
-      opensnitch-ebpf =
-        (pkgs-unstable.linuxPackages_latest.opensnitch-ebpf.override {
-          # Force the unstable package to build against your current kernel tree
-          kernel = lfinal.kernel;
-        }).overrideAttrs
-          (
-            old:
-            # Keep your existing workaround/assertion
-            assert lib.versionOlder old.version "1.8.1";
-            {
-              preBuild = old.preBuild or "" + ''
-                makeFlagsArray+=(EXTRA_FLAGS="-Wno-microsoft-anon-tag -fms-extensions")
-              '';
-            }
-          );
-    }
-  );
+  boot.kernelPackages = pkgs.linuxPackages_zen;
 
   ###
   ### Booting (ensure aesni_intel and crypd kernel mods are loaded)

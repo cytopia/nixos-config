@@ -554,8 +554,6 @@ exec wlsunset -l 52.5 -L 13.3
 # Clipboard manager
 exec wl-paste --type text --watch cliphist store
 exec wl-paste --type image --watch cliphist store
-# Use stash: prefer images and exlcude keepass
-#exec stash --excluded-apps org.keepassxc.KeePassXC watch --mime-type image
 
 # Open Clipboard history
 bindsym $mod+c exec cliphist list | fuzzel --dmenu --width 100 | cliphist decode | wl-copy
@@ -582,6 +580,10 @@ for_window [app_id="thunar" title="^Rename.*"] floating enable
 for_window [app_id="thunar" title="^Confirm.*"] floating enable
 for_window [app_id="thunar" title="File Operation Progress"] floating enable
 
+###
+### Drawing
+###
+for_window [app_id="com.github.maoschanz.drawing" title="Preferences"] floating enable
 
 ###
 ### OpenSnitch

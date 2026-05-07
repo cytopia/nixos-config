@@ -19,7 +19,7 @@
     };
   };
   gtk.gtk3.bookmarks = [
-    "file://${config.home.homeDirectory}/Desktop Desktop"
+    #"file://${config.home.homeDirectory}/Desktop Desktop"
     "file://${config.home.homeDirectory}/repo repo"
   ];
 

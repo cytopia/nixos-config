@@ -31,10 +31,11 @@
     ./modules/cli/git.nix
     ./modules/cli/zsh.nix
     ./modules/cli/neovim.nix
-    #./modules/cli/stash.nix  # Weired terminal issues
 
     # --- gui: others ---
     ./modules/gui/image.nix
+    ./modules/gui/pdf.nix
+    ./modules/gui/editor.nix
     ./modules/gui/keepassxc.nix
     ./modules/gui/thunderbird.nix
 
@@ -119,11 +120,6 @@
     burpsuite
 
     opensnitch-ui
-
-    # media
-    vlc
-    mpv
-    shotcut
 
     # productive
     filen-desktop
