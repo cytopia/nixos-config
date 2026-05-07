@@ -1,0 +1,6 @@
+disabled = [
+  "manual_inherit" # This assignment is better written with `inherit`
+  "repeated_keys"  # The key `xxx` is first assigned here
+]
+
+ignore = [".direnv"]

@@ -36,6 +36,7 @@
     ./modules/gui/image.nix
     ./modules/gui/pdf.nix
     ./modules/gui/editor.nix
+    ./modules/gui/video.nix
     ./modules/gui/keepassxc.nix
     ./modules/gui/thunderbird.nix
 
