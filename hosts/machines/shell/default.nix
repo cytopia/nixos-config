@@ -395,7 +395,12 @@ in
     wget
     dig
     tree
+    # Disk
+    parted
     lsof
+    util-linux
+    xfsprogs
+    e2fsprogs
 
     # Essentials
     git
