@@ -129,8 +129,6 @@
     awscli2
     lens
     freelens-bin
-    jq
-    yq-go
 
     # Monitoring
     htop

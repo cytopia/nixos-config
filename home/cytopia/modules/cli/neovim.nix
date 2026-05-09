@@ -126,8 +126,6 @@ in
     withPython3 = true;
     withNodeJs = true;
 
-    package = pkgs.custom.neovim-nightly; # custom overlay
-
     extraLuaPackages = luaPkgs: with luaPkgs; [ luarocks ];
     #extraPython3Packages = pyPkgs: with pyPkgs; [ ];
 
@@ -147,7 +145,7 @@ in
 
         # LazyVim nvim-treesitter
         clang
-        custom.tree-sitter
+        tree-sitter
         gnutar
 
         # LazyVim LazyGit
