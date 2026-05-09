@@ -1,4 +1,5 @@
 {
+  lib,
   pkgs,
   pkgs-unstable,
   hostname,
@@ -8,57 +9,44 @@
 }:
 let
 
-  browserSettings =
-    (import ../../common/vars-browsers.nix {
-      inherit appScaleFactor;
-      dohServer = "https://127.0.0.1:3000/dns-query";
-      dohCertPath = "/run/local-doh-ca/rootCA.pem";
+  ###
+  ### Global Settings
+  ###
+  mySettings = {
+    dnsOverHttps = rec {
+      enable = true;
+      host = "127.0.0.1";
+      port = 3000;
+      path = "/dns-query";
+      caCertPath = "/run/local-doh-ca/rootCA.pem";
+      url = "https://${host}:${toString port}${path}";
+    };
+    dnsQuery = {
+      protocol = "dnscrypt";
+      viaProxy = true;
+      timeout = 2000;
+      lbStrategy = "p3";
+    };
+    gpuDeviceId = "9a49";
+  };
+
+  dnscryptSettings =
+    (import ../../common/vars-dnscrypt-proxy.nix {
+      dnscryptQuery = mySettings.dnsQuery;
+      dnscryptLocalDoh = {
+        inherit (mySettings.dnsOverHttps) enable port path;
+      };
     }).settings;
 
-  dnscryptLocalDoh = {
-    enable = true;
-    port = 3000;
-    path = "/dns-query";
-    #caCertPath = "/run/local-doh-ca/rootCA.pem";
-  };
-  dnscryptCerts = {
-    caCertPath = "/run/local-doh-ca/rootCA.pem";
-  };
-
-  bowserSettingsWithLocalDoh = {
-    extraPolicies =
-      if dnscryptLocalDoh.enable then
-        {
-          "BuiltInDnsClientEnabled" = true;
-          "AdditionalDnsQueryTypesEnabled" = true;
-          "EncryptedClientHelloEnabled" = true;
-          # Enable Secure DNS (DoH) so Chromium trusts the connection and enables ECH.
-          "DnsOverHttpsMode" = "secure";
-
-          # Point Chromium strictly to our local dnscrypt-proxy instance using the TLS cert.
-          "DnsOverHttpsTemplates" =
-            "https://127.0.0.1:${toString dnscryptLocalDoh.port}${dnscryptLocalDoh.path}";
-
-          # Bypass DoH for internal/VPN domains.
-          # Chromium will send these to systemd-resolved (plaintext), which will correctly route them to the VPN's nameserver.
-          "DnsOverHttpsExcludedDomains" = [
-            "*.local" # mDNS local domains
-            "*.internal" # Common internal networks
-          ];
-        }
-      else
-        { };
-    customCaCerts =
-      if dnscryptLocalDoh.enable then
-        [
-          {
-            name = "dnscrypt-proxy";
-            path = dnscryptCerts.caCertPath;
-          }
-        ]
-      else
-        [ ];
-  };
+  opensnitchRules =
+    (import ../../common/vars-opensnitch-rules.nix {
+      inherit lib;
+      rulePrefix = "a"; # adjust to reimport all rules
+      enableBrave = true;
+      enableChrome = true;
+      enableChromium = true;
+      uid = 1000;
+    }).rules;
 
 in
 {
@@ -71,7 +59,10 @@ in
   ###
   ### Kernel
   ###
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+
+  #boot.kernelPackages = pkgs.linuxPackages_latest;
+  #boot.kernelPackages = pkgs.linuxPackages_xanmod_stable;
+  boot.kernelPackages = pkgs.linuxPackages_zen;
 
   ###
   ### Booting (ensure aesni_intel and crypd kernel mods are loaded)
@@ -96,7 +87,7 @@ in
     enable32Bit = false;
     enableMonitoring = true;
     useXeDriver = true;
-    deviceId = "9a49";
+    deviceId = mySettings.gpuDeviceId;
   };
   mySystem.hardware.bluetooth = {
     enable = true;
@@ -129,9 +120,8 @@ in
     uid = 1000;
     homeMode = "0700";
     extraGroups = [
-      "wheel" # Sudo privileges
-      "networkmanager" # WiFi/Network control
-      #"podman"          # For podman if enabling docker socket (security issue)
+      "wheel"
+      "networkmanager"
     ];
   };
   mySystem.system.keyring = {
@@ -153,52 +143,13 @@ in
   cytopia.service.dns = {
     enable = true;
     firewall.enable = true;
-    query = {
-      protocol = "dnscrypt-ecs";
-      #protocol = "doh";
-      http3 = true;
-      ipv6 = false;
-      viaProxy = true;
-      #viaProxy = false;
-    };
-    certs = dnscryptCerts;
-
-    # Enable local DoH server (see let..in for options)
-    localDoh = dnscryptLocalDoh;
-
-    localBlockList = {
-      enable = true;
-      urls = [
-        # Info at https://firebog.net/
-        "https://download.dnscrypt.info/blacklists/domains/mybase.txt"
-        "https://v.firebog.net/hosts/AdguardDNS.txt"
-        "https://v.firebog.net/hosts/Admiral.txt"
-        "https://v.firebog.net/hosts/Easylist.txt"
-        "https://v.firebog.net/hosts/Easyprivacy.txt"
-        "https://v.firebog.net/hosts/Prigent-Ads.txt"
-        "https://v.firebog.net/hosts/static/w3kbl.txt"
-        "https://raw.githubusercontent.com/PolishFiltersTeam/KADhosts/master/KADhosts.txt"
-        "https://raw.githubusercontent.com/FadeMind/hosts.extras/master/UncheckyAds/hosts"
-        "https://raw.githubusercontent.com/FadeMind/hosts.extras/master/add.2o7Net/hosts"
-        "https://raw.githubusercontent.com/FadeMind/hosts.extras/master/add.Spam/hosts"
-        "https://raw.githubusercontent.com/anudeepND/blacklist/master/adservers.txt"
-        "https://raw.githubusercontent.com/bigdargon/hostsVN/master/hosts"
-        "https://raw.githubusercontent.com/crazy-max/WindowsSpyBlocker/master/data/hosts/spy.txt"
-        "https://adaway.org/hosts.txt"
-        "https://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&showintro=0&mimetype=plaintext"
-        "https://hostfiles.frogeye.fr/firstparty-trackers-hosts.txt"
-      ];
-    };
-    whitelist = [
-      "ip-api.com"
-      "ogads-pa.clients6.google.com"
-      "csi.gstatic.com"
-      "mail-ads.google.com"
-    ];
-    localMonitoring = {
-      enable = true;
-      port = 4400;
-    };
+    # How to Query DNS
+    inherit (dnscryptSettings) query;
+    # Local DNS over Https Server
+    inherit (dnscryptSettings) localDoh certs;
+    # Misc
+    inherit (dnscryptSettings) localMonitoring;
+    inherit (dnscryptSettings) localBlockList whitelist;
   };
 
   ###
@@ -229,27 +180,33 @@ in
       swaylock-effects # Screen locker (Base PAM service in wayland.nix)
       swayidle # Idle management daemon
       sway-audio-idle-inhibit # Prevent sleep whenever audio is played
-      fuzzel # App launcher/Menu
       foot # Fast, Wayland-native terminal
-      mako # Lightweight notification daemon
-      libnotify # Provides 'notify-send'
       glib # Provides 'gsettings'
 
-      waybar
-      pkgs-unstable.ironbar
-      pkgs-unstable.i3status-rust
-      tofi
-      wmenu
-      pkgs-unstable.wl-clipboard
-      cliphist
       grim
-      slurp
       wf-recorder
       kanshi
       brightnessctl
       iwmenu
+      # Tools
+      slurp  # Region selector for wayland compositor
+      wlprop
+      swaytools  # Provides 'swayinfo'
+      # Clipboard
+      wl-clipboard
+      cliphist
+      # Notifications
+      mako # Lightweight notification daemon
+      libnotify # Provides 'notify-send'
+      # Launcher
+      fuzzel # App launcher/Menu
+      tofi
+      wmenu
+      # Bar / Applets
+      ironbar
+      i3status-rust
+      waybar
       libappindicator-gtk3
-      #networkmanagerapplet
       blueman
     ];
   };
@@ -268,46 +225,35 @@ in
   cytopia.programs.browsers.brave = {
     enable = true;
 
-    # Settings
-    features.preferences = browserSettings.preferences;
-    features.scaling = browserSettings.scaling;
-    features.search = browserSettings.search;
-
-    features.extensions.forceInstall = [
-      "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
-      "ddkjiahejlhfcafbddmgiahcphecmpfh" # uBlock Origin Lite
-      "ckkdlimhmcjmikdlpkmbgfkaikojcbjk" # Markdown Viewer
-      "mnjggcdmjocbbbhaepdhchncahnbgone" # SponsorBlock for YouTube
-      "gebbhagfogifgggkldgodflihgfeippi" # Return YouTube Dislike
-    ];
-
-    # Hardening
-    features.security = browserSettings.security;
-    features.privacy = browserSettings.privacy;
-    features.ai = browserSettings.ai;
-
-    # Networking
-    # TODO: WebRTC is currently disabled, this should make meetings imperformant/laggy
-    features.networking = browserSettings.networking;
-    features.certificates = browserSettings.certificates;
-
-    # Graphics
-    features.hardware.graphics = {
-      backend = "gles";
-      skiaGraphite = false;
-      treesInViz = true;
-      forceHardwareMesa = true;
-      hideVulkanLoader = true;
-      # Block OBS from injecting into the browser
-      disabledVulkanLayers = [
+    features = {
+      # Hardware Acceleration
+      hardware.graphics.backend = "vulkan";
+      hardware.graphics.disabledVulkanLayers = [
         "VK_LAYER_OBS_vkcapture_32"
         "VK_LAYER_OBS_vkcapture_64"
       ];
-    };
-    features.hardware.video = {
-      decodingBackend = "vaapi";
-      useMultiPlaneFormats = true; # true for Youtube, false for Google Meet
-      blockSoftwareEncoders = true;
+      # Scaling
+      scaling.factor = appScaleFactor;
+      scaling.waylandFractionalScaling = true;
+      # DNS
+      networking.dns.enableBuiltInDns = mySettings.dnsOverHttps.enable;
+      networking.dns.doh.enable = mySettings.dnsOverHttps.enable;
+      networking.dns.doh.template = mySettings.dnsOverHttps.url;
+      # SSL Certiciate for DNS over HTTPS server
+      certificates.customCaCerts = [
+        {
+          name = "dnscrypt-proxy";
+          path = mySettings.dnsOverHttps.caCertPath;
+        }
+      ];
+      extensions.forceInstall = [
+        "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
+        "ddkjiahejlhfcafbddmgiahcphecmpfh" # uBlock Origin Lite
+        "ckkdlimhmcjmikdlpkmbgfkaikojcbjk" # Markdown Viewer
+        "mnjggcdmjocbbbhaepdhchncahnbgone" # SponsorBlock for YouTube
+        "gebbhagfogifgggkldgodflihgfeippi" # Return YouTube Dislike
+        "ghmbeldphafepmbegfdlkpapadhbakde" # Proton Pass
+      ];
     };
   };
 
@@ -317,46 +263,34 @@ in
   cytopia.programs.browsers.chromium = {
     enable = true;
 
-    # Settings
-    features.preferences = browserSettings.preferences;
-    features.scaling = browserSettings.scaling;
-    features.search = browserSettings.search;
-
-    features.extensions.forceInstall = [
-      "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
-      "ddkjiahejlhfcafbddmgiahcphecmpfh" # uBlock Origin Lite
-      "ckkdlimhmcjmikdlpkmbgfkaikojcbjk" # Markdown Viewer
-      "mnjggcdmjocbbbhaepdhchncahnbgone" # SponsorBlock for YouTube
-      "gebbhagfogifgggkldgodflihgfeippi" # Return YouTube Dislike
-    ];
-
-    # Hardening
-    features.security = browserSettings.security;
-    features.privacy = browserSettings.privacy;
-    features.ai = browserSettings.ai;
-
-    # Networking
-    # TODO: WebRTC is currently disabled, this should make meetings imperformant/laggy
-    features.networking = browserSettings.networking;
-    features.certificates = browserSettings.certificates;
-
-    # Graphics
-    features.hardware.graphics = {
-      backend = "vulkan";
-      skiaGraphite = false;
-      treesInViz = true;
-      forceHardwareMesa = true;
-      hideVulkanLoader = false;
-      # Block OBS from injecting into the browser
-      disabledVulkanLayers = [
+    features = {
+      # Hardware Acceleration
+      hardware.graphics.backend = "vulkan";
+      hardware.graphics.disabledVulkanLayers = [
         "VK_LAYER_OBS_vkcapture_32"
         "VK_LAYER_OBS_vkcapture_64"
       ];
-    };
-    features.hardware.video = {
-      decodingBackend = "vaapi";
-      useMultiPlaneFormats = true; # true for Youtube, false for Google Meet
-      blockSoftwareEncoders = true;
+      # Scaling
+      scaling.factor = appScaleFactor;
+      scaling.waylandFractionalScaling = true;
+      # DNS
+      networking.dns.enableBuiltInDns = mySettings.dnsOverHttps.enable;
+      networking.dns.doh.enable = mySettings.dnsOverHttps.enable;
+      networking.dns.doh.template = mySettings.dnsOverHttps.url;
+      # SSL Certiciate for DNS over HTTPS server
+      certificates.customCaCerts = [
+        {
+          name = "dnscrypt-proxy";
+          path = mySettings.dnsOverHttps.caCertPath;
+        }
+      ];
+      extensions.forceInstall = [
+        "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
+        "ddkjiahejlhfcafbddmgiahcphecmpfh" # uBlock Origin Lite
+        "ckkdlimhmcjmikdlpkmbgfkaikojcbjk" # Markdown Viewer
+        "mnjggcdmjocbbbhaepdhchncahnbgone" # SponsorBlock for YouTube
+        "gebbhagfogifgggkldgodflihgfeippi" # Return YouTube Dislike
+      ];
     };
   };
 
@@ -366,77 +300,46 @@ in
   cytopia.programs.browsers.google-chrome = {
     enable = true;
 
-    # Settings
-    features.preferences = browserSettings.preferences;
-    features.scaling = browserSettings.scaling;
-    features.search = browserSettings.search;
-
-    features.extensions.forceInstall = [
-      "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
-      "ddkjiahejlhfcafbddmgiahcphecmpfh" # uBlock Origin Lite
-      "jpmkfafbacpgapdghgdpembnojdlgkdl" # AWS Extend Roles
-      "aeblfdkhhhdcdjpifhhbdiojplfjncoa" # 1Password
-    ];
-
-    # Hardening
-    features.security = browserSettings.security;
-    features.privacy = browserSettings.privacy;
-    features.ai = browserSettings.ai;
-
-    # Networking
-    features.networking = browserSettings.networkingWithWebRtc;
-    features.certificates = browserSettings.certificates;
-
-    # Graphics
-    features.hardware.graphics = {
-      backend = "vulkan";
-      skiaGraphite = false;
-      treesInViz = true;
-      forceHardwareMesa = true;
-      hideVulkanLoader = false;
-      # Block OBS from injecting into the browser
-      disabledVulkanLayers = [
+    features = {
+      # Hardware Acceleration
+      hardware.graphics.backend = "gles";
+      hardware.graphics.hideVulkanLoader = true;
+      hardware.graphics.disabledVulkanLayers = [
         "VK_LAYER_OBS_vkcapture_32"
         "VK_LAYER_OBS_vkcapture_64"
       ];
-    };
-    features.hardware.video = {
-      decodingBackend = "vaapi";
-      useMultiPlaneFormats = true; # true for Youtube, false for Google Meet
-      blockSoftwareEncoders = true;
+      # Scaling
+      scaling.factor = appScaleFactor;
+      scaling.waylandFractionalScaling = true;
+      # Privacy settings
+      privacy.webTracking.stripReferrers = false;
+      # WebRTC
+      networking.webrtc.preventIpLeaks = false;
+      # DNS
+      networking.dns.enableBuiltInDns = mySettings.dnsOverHttps.enable;
+      networking.dns.doh.enable = mySettings.dnsOverHttps.enable;
+      networking.dns.doh.template = mySettings.dnsOverHttps.url;
+      # SSL Certiciate for DNS over HTTPS server
+      certificates.customCaCerts = [
+        {
+          name = "dnscrypt-proxy";
+          path = mySettings.dnsOverHttps.caCertPath;
+        }
+      ];
+
+      extensions.forceInstall = [
+        "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
+        "ddkjiahejlhfcafbddmgiahcphecmpfh" # uBlock Origin Lite
+        "jpmkfafbacpgapdghgdpembnojdlgkdl" # AWS Extend Roles
+        "aeblfdkhhhdcdjpifhhbdiojplfjncoa" # 1Password
+      ];
     };
   };
 
-    #  mySystem.programs.google-chrome = {
-    #    enable = true;
-    #    browser = "google-chrome";
-    #    scalingFactor = appScaleFactor;
-    #    waylandFractionalScalingSupport = true;
-    #    gpu.engine.displayServer = "wayland";
-    #    gpu.engine.backend = "gl";
-    #
-    #    # Ensure all Vulkan layers (e.g. OBS are removed)
-    #    startup.extraEnvVars = {
-    #      "VK_LOADER_LAYERS_DISABLE" = "VK_LAYER_OBS_vkcapture_32,VK_LAYER_OBS_vkcapture_64";
-    #    };
-    #    # Use dnscrypt-proxy as a local DoH resolver?
-    #    extraPolicies = bowserSettingsWithLocalDoh.extraPolicies;
-    #    customCaCerts = bowserSettingsWithLocalDoh.customCaCerts;
-    #    extensions = [
-    #      "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
-    #      "ddkjiahejlhfcafbddmgiahcphecmpfh" # uBlock Origin Lite
-    #      "jpmkfafbacpgapdghgdpembnojdlgkdl" # AWS Extend Roles
-    #      "aeblfdkhhhdcdjpifhhbdiojplfjncoa" # 1Password
-    #    ];
-    #  };
-
   mySystem.programs.thunderbird = {
     enable = true;
-
     dnsOverHttps = {
-      enable = dnscryptLocalDoh.enable;
-      url = "https://127.0.0.1:${toString dnscryptLocalDoh.port}${dnscryptLocalDoh.path}";
-      caCertPath = dnscryptCerts.caCertPath;
+      inherit (mySettings.dnsOverHttps) enable url caCertPath;
     };
   };
 
@@ -448,26 +351,35 @@ in
     userName = username;
   };
 
-  # Adds standard Linux paths
-  # e.g. /lib64 and others
-  # TODO: double-check if this is currently required
-  programs.nix-ld.enable = true;
-
-  # TODO: Move this somewhere else
-  programs.awsvpnclient.enable = true;
-
   # Enable the OpenSSH daemon.
-  services.openssh = {
+  #services.openssh = {
+  #  enable = true;
+  #  settings = {
+  #    PasswordAuthentication = true;
+  #    AllowUsers = [ "cytopia" ];
+  #  };
+  #};
+
+  services.opensnitch = {
     enable = true;
+    package = pkgs-unstable.opensnitch;
     settings = {
-      PasswordAuthentication = true;
-      AllowUsers = [ "cytopia" ];
+      Firewall = "nftables";
     };
+    rules = opensnitchRules;
   };
 
   ###
   ### Standard System packages
   ###
+
+  # Adds standard Linux paths
+  # e.g. /lib64 and others
+  programs.nix-ld.enable = true;
+
+  # AWS VPN Client
+  programs.awsvpnclient.enable = true;
+
   environment.systemPackages = with pkgs; [
     # Utilities
     pciutils
@@ -489,6 +401,8 @@ in
     git
     tmux
     gnumake
+    jq
+    yq-go
 
     # *.deb compatibility
     steam-run

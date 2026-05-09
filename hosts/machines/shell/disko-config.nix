@@ -14,7 +14,10 @@
                 type = "filesystem";
                 format = "vfat";
                 mountpoint = "/boot";
-                mountOptions = [ "fmask=0077" "dmask=0077" ];
+                mountOptions = [
+                  "fmask=0077"
+                  "dmask=0077"
+                ];
               };
             };
             luks = {
@@ -23,10 +26,17 @@
                 type = "luks";
                 name = "crypted";
                 settings = {
-                  allowDiscards = true;     # Enables SSD TRIM
-                  bypassWorkqueues = true;  # Reduces latency on fast NVMe drives
+                  allowDiscards = true; # Enables SSD TRIM
+                  bypassWorkqueues = true; # Reduces latency on fast NVMe drives
                 };
-                extraFormatArgs = [ "--type luks2" "--iter-time 2000" ];
+                extraFormatArgs = [
+                  "--type luks2"
+                  "--cipher aes-xts-plain64"
+                  "--key-size 512"
+                  "--pbkdf argon2id"
+                  "--iter-time 5000"
+                  "--sector-size 4096"
+                ];
                 # allowDiscards = true; # Set to true in config.nix for SSD health
                 content = {
                   type = "lvm_pv";
@@ -55,9 +65,24 @@
               type = "btrfs";
               extraArgs = [ "-f" ];
               subvolumes = {
-                "/root" = { mountpoint = "/"; mountOptions = [ "compress=zstd" "noatime" ]; };
-                "/home" = { mountpoint = "/home"; mountOptions = [ "compress=zstd" ]; };
-                "/nix" = { mountpoint = "/nix"; mountOptions = [ "compress=zstd" "noatime" ]; };
+                "/root" = {
+                  mountpoint = "/";
+                  mountOptions = [
+                    "compress=zstd"
+                    "noatime"
+                  ];
+                };
+                "/home" = {
+                  mountpoint = "/home";
+                  mountOptions = [ "compress=zstd" ];
+                };
+                "/nix" = {
+                  mountpoint = "/nix";
+                  mountOptions = [
+                    "compress=zstd"
+                    "noatime"
+                  ];
+                };
               };
             };
           };
