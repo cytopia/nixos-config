@@ -180,27 +180,32 @@ in
       swaylock-effects # Screen locker (Base PAM service in wayland.nix)
       swayidle # Idle management daemon
       sway-audio-idle-inhibit # Prevent sleep whenever audio is played
-      swaytools
-      fuzzel # App launcher/Menu
       foot # Fast, Wayland-native terminal
-      mako # Lightweight notification daemon
-      libnotify # Provides 'notify-send'
       glib # Provides 'gsettings'
-      wlprop
 
-      waybar
-      pkgs-unstable.ironbar
-      pkgs-unstable.i3status-rust
-      tofi
-      wmenu
-      pkgs-unstable.wl-clipboard
-      cliphist
       grim
-      slurp
       wf-recorder
       kanshi
       brightnessctl
       iwmenu
+      # Tools
+      slurp  # Region selector for wayland compositor
+      wlprop
+      swaytools  # Provides 'swayinfo'
+      # Clipboard
+      wl-clipboard
+      cliphist
+      # Notifications
+      mako # Lightweight notification daemon
+      libnotify # Provides 'notify-send'
+      # Launcher
+      fuzzel # App launcher/Menu
+      tofi
+      wmenu
+      # Bar / Applets
+      ironbar
+      i3status-rust
+      waybar
       libappindicator-gtk3
       blueman
     ];
@@ -360,7 +365,6 @@ in
     package = pkgs-unstable.opensnitch;
     settings = {
       Firewall = "nftables";
-      #ProcMonitorMethod = "proc"; # Fallback to /proc instead of compiling eBPF
     };
     rules = opensnitchRules;
   };
@@ -397,6 +401,8 @@ in
     git
     tmux
     gnumake
+    jq
+    yq-go
 
     # *.deb compatibility
     steam-run

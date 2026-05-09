@@ -6,7 +6,6 @@
   ###
   inputs = {
     # NixOS: packages
-    #nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
@@ -20,12 +19,6 @@
       url = "github:nix-community/home-manager/master";  # like nixpkgs-unstable
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    # Custom: stash clipboard Manager
-    stash.url = "github:NotAShelf/stash";
-
-    # Custom: neovim 0.12 overlay (not pinned to nixpkgs)
-    neovim-nightly.url = "github:nix-community/neovim-nightly-overlay";
 
     # Custom: AWS VPN Client flake
     awsvpnclient-nix = {
