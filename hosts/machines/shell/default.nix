@@ -60,9 +60,9 @@ in
   ### Kernel
   ###
 
-  #boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
   #boot.kernelPackages = pkgs.linuxPackages_xanmod_stable;
-  boot.kernelPackages = pkgs.linuxPackages_zen;
+  #boot.kernelPackages = pkgs.linuxPackages_zen;
 
   ###
   ### Booting (ensure aesni_intel and crypd kernel mods are loaded)
