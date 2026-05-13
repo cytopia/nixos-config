@@ -87,7 +87,7 @@ in
       };
       package = mkOption {
         type = types.package;
-        default = pkgs.libsForQt5.breeze-icons;
+        default = pkgs.kdePackages.breeze-icons;
       };
     };
   };
