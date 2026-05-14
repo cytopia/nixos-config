@@ -574,32 +574,32 @@ in
             oifname != "lo" meta skgid != ${proxyGid} ip6 daddr @mullvad_v6 meta l4proto { tcp, udp } th dport { 443, 8443 } log prefix "[DNS-Leak-DoH|Crypt-Mullvad] " ${actionRuleMullvad}
           ''}
           ${lib.optionalString addYandex ''
-            oifname != "lo" meta skgid != ${proxyGid} ip daddr @yandex_v4 meta l4proto { tcp, udp } th dport { 445, 8443 } log prefix "[DNS-Leak-DoH|Crypt-Yandex] " ${actionRuleYandex}
-            oifname != "lo" meta skgid != ${proxyGid} ip6 daddr @yandex_v6 meta l4proto { tcp, udp } th dport { 445, 8443 } log prefix "[DNS-Leak-DoH|Crypt-Yandex] " ${actionRuleYandex}
+            oifname != "lo" meta skgid != ${proxyGid} ip daddr @yandex_v4 meta l4proto { tcp, udp } th dport { 443, 8443 } log prefix "[DNS-Leak-DoH|Crypt-Yandex] " ${actionRuleYandex}
+            oifname != "lo" meta skgid != ${proxyGid} ip6 daddr @yandex_v6 meta l4proto { tcp, udp } th dport { 443, 8443 } log prefix "[DNS-Leak-DoH|Crypt-Yandex] " ${actionRuleYandex}
           ''}
           ${lib.optionalString addAliDNS ''
-            oifname != "lo" meta skgid != ${proxyGid} ip daddr @alidns_v4 meta l4proto { tcp, udp } th dport { 445, 8443 } log prefix "[DNS-Leak-DoH|Crypt-AliDNS] " ${actionRuleAliDNS}
-            oifname != "lo" meta skgid != ${proxyGid} ip6 daddr @alidns_v6 meta l4proto { tcp, udp } th dport { 445, 8443 } log prefix "[DNS-Leak-DoH|Crypt-AliDNS] " ${actionRuleAliDNS}
+            oifname != "lo" meta skgid != ${proxyGid} ip daddr @alidns_v4 meta l4proto { tcp, udp } th dport { 443, 8443 } log prefix "[DNS-Leak-DoH|Crypt-AliDNS] " ${actionRuleAliDNS}
+            oifname != "lo" meta skgid != ${proxyGid} ip6 daddr @alidns_v6 meta l4proto { tcp, udp } th dport { 443, 8443 } log prefix "[DNS-Leak-DoH|Crypt-AliDNS] " ${actionRuleAliDNS}
           ''}
           ${lib.optionalString addDNS114 ''
-            oifname != "lo" meta skgid != ${proxyGid} ip daddr @dns114_v4 meta l4proto { tcp, udp } th dport { 445, 8443 } log prefix "[DNS-Leak-DoH|Crypt-114DNS] " ${actionRuleDNS114}
+            oifname != "lo" meta skgid != ${proxyGid} ip daddr @dns114_v4 meta l4proto { tcp, udp } th dport { 443, 8443 } log prefix "[DNS-Leak-DoH|Crypt-114DNS] " ${actionRuleDNS114}
           ''}
           ${lib.optionalString addTencent ''
-            oifname != "lo" meta skgid != ${proxyGid} ip daddr @tencent_v4 meta l4proto { tcp, udp } th dport { 445, 8443 } log prefix "[DNS-Leak-DoH|Crypt-Tencent] " ${actionRuleTencent}
-            oifname != "lo" meta skgid != ${proxyGid} ip6 daddr @tencent_v6 meta l4proto { tcp, udp } th dport { 445, 8443 } log prefix "[DNS-Leak-DoH|Crypt-Tencent] " ${actionRuleTencent}
+            oifname != "lo" meta skgid != ${proxyGid} ip daddr @tencent_v4 meta l4proto { tcp, udp } th dport { 443, 8443 } log prefix "[DNS-Leak-DoH|Crypt-Tencent] " ${actionRuleTencent}
+            oifname != "lo" meta skgid != ${proxyGid} ip6 daddr @tencent_v6 meta l4proto { tcp, udp } th dport { 443, 8443 } log prefix "[DNS-Leak-DoH|Crypt-Tencent] " ${actionRuleTencent}
           ''}
           ${lib.optionalString addBaidu ''
-            oifname != "lo" meta skgid != ${proxyGid} ip daddr @baidu_v4 meta l4proto { tcp, udp } th dport { 445, 8443 } log prefix "[DNS-Leak-DoH|Crypt-Baidu] " ${actionRuleBaidu}
-            oifname != "lo" meta skgid != ${proxyGid} ip6 daddr @baidu_v6 meta l4proto { tcp, udp } th dport { 445, 8443 } log prefix "[DNS-Leak-DoH|Crypt-Baidu] " ${actionRuleBaidu}
+            oifname != "lo" meta skgid != ${proxyGid} ip daddr @baidu_v4 meta l4proto { tcp, udp } th dport { 443, 8443 } log prefix "[DNS-Leak-DoH|Crypt-Baidu] " ${actionRuleBaidu}
+            oifname != "lo" meta skgid != ${proxyGid} ip6 daddr @baidu_v6 meta l4proto { tcp, udp } th dport { 443, 8443 } log prefix "[DNS-Leak-DoH|Crypt-Baidu] " ${actionRuleBaidu}
           ''}
           ${lib.optionalString addShecan ''
-            oifname != "lo" meta skgid != ${proxyGid} ip daddr @shecan_v4 meta l4proto { tcp, udp } th dport { 445, 8443 } log prefix "[DNS-Leak-DoH|Crypt-Shecan] " ${actionRuleShecan}
+            oifname != "lo" meta skgid != ${proxyGid} ip daddr @shecan_v4 meta l4proto { tcp, udp } th dport { 443, 8443 } log prefix "[DNS-Leak-DoH|Crypt-Shecan] " ${actionRuleShecan}
           ''}
           ${lib.optionalString addOnline403 ''
-            oifname != "lo" meta skgid != ${proxyGid} ip daddr @online403_v4 meta l4proto { tcp, udp } th dport { 445, 8443 } log prefix "[DNS-Leak-DoH|Crypt-403Online] " ${actionRuleOnline403}
+            oifname != "lo" meta skgid != ${proxyGid} ip daddr @online403_v4 meta l4proto { tcp, udp } th dport { 443, 8443 } log prefix "[DNS-Leak-DoH|Crypt-403Online] " ${actionRuleOnline403}
           ''}
           ${lib.optionalString addRadarGame ''
-            oifname != "lo" meta skgid != ${proxyGid} ip daddr @radargame_v4 meta l4proto { tcp, udp } th dport { 445, 8443 } log prefix "[DNS-Leak-DoH|Crypt-RadarGame] " ${actionRuleRadarGame}
+            oifname != "lo" meta skgid != ${proxyGid} ip daddr @radargame_v4 meta l4proto { tcp, udp } th dport { 443, 8443 } log prefix "[DNS-Leak-DoH|Crypt-RadarGame] " ${actionRuleRadarGame}
           ''}
         }
       '';

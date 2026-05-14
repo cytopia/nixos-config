@@ -362,7 +362,7 @@ in
 
   services.opensnitch = {
     enable = true;
-    package = pkgs-unstable.opensnitch;
+    #package = pkgs-unstable.opensnitch;
     settings = {
       Firewall = "nftables";
     };
@@ -375,7 +375,7 @@ in
 
   # Adds standard Linux paths
   # e.g. /lib64 and others
-  programs.nix-ld.enable = true;
+  #programs.nix-ld.enable = true;
 
   # AWS VPN Client
   programs.awsvpnclient.enable = true;
@@ -426,7 +426,7 @@ in
     gnumake          # GNU make
 
     # ─── Compatibility layers ─────────────────────────────────────
-    steam-run        # FHS environment to run non-Nix Linux binaries
+    #steam-run        # FHS environment to run non-Nix Linux binaries
   ];
 
   # Keep
