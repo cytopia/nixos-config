@@ -29,10 +29,17 @@ sudo nixos-rebuild list-generations
 # Delete all generations older than 14 days
 sudo nix-env --profile /nix/var/nix/profiles/system --delete-generations 14d
 
+# Delete all except last 5 generations
+sudo nix-env --profile /nix/var/nix/profiles/system --delete-generations +5
+
 # Delete ALL generations except the current one
 sudo nix-env --profile /nix/var/nix/profiles/system --delete-generations old
 
+# Remove cleaned generations
 sudo nix-collect-garbage -d
+
+# Remove old boot files
+sudo nixos-rebuild boot
 ```
 
 ### Home-Manager
