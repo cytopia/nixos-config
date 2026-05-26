@@ -113,6 +113,11 @@
   };
 
   ###
+  ### PATH
+  ###
+  home.sessionPath = [ "$HOME/bin" ];
+
+  ###
   ### Additional packages
   ###
   home.packages = with pkgs; [
