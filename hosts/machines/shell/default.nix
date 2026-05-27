@@ -86,7 +86,7 @@ in
     enable = true;
     enable32Bit = false;
     enableMonitoring = true;
-    useXeDriver = true;
+    useXeDriver = false;
     deviceId = mySettings.gpuDeviceId;
   };
   mySystem.hardware.bluetooth = {
@@ -362,7 +362,6 @@ in
 
   services.opensnitch = {
     enable = true;
-    package = pkgs-unstable.opensnitch;
     settings = {
       Firewall = "nftables";
     };
@@ -381,36 +380,52 @@ in
   programs.awsvpnclient.enable = true;
 
   environment.systemPackages = with pkgs; [
-    # Utilities
-    pciutils
-    usbutils
-    unzip
-    zip
-    file
-    procps
-    killall
-    unixtools.netstat
-    unixtools.ifconfig
-    curl
-    wget
-    dig
-    tree
-    # Disk
-    parted
-    lsof
-    util-linux
-    xfsprogs
-    e2fsprogs
+    # ─── Hardware inspection ──────────────────────────────────────
+    pciutils         # lspci - PCI device information
+    usbutils         # lsusb - USB device information
+    hdparm           # ATA/SATA drive parameters and identification
+    smartmontools    # smartctl - SMART health monitoring for drives
+    nvme-cli         # NVMe-specific diagnostics
 
-    # Essentials
-    git
-    tmux
-    gnumake
-    jq
-    yq-go
+    # ─── Disk & filesystem tooling ────────────────────────────────
+    parted           # GPT/MBR partitioning
+    util-linux       # fdisk, lsblk, mount, blkid, wipefs, etc.
+    e2fsprogs        # mkfs.ext4, e2fsck, tune2fs
+    xfsprogs         # mkfs.xfs, xfs_repair, xfs_admin
+    btrfs-progs      # btrfs CLI tools (mkfs.btrfs, balance, scrub, send/receive)
+    dosfstools       # FAT/vfat tools (your ESP)
+    cryptsetup       # LUKS operations (luksOpen, luksDump, luksConvertKey, ...)
+    lsof             # list open files & file-using processes
 
-    # *.deb compatibility
-    steam-run
+    # ─── Backup tooling ───────────────────────────────────────────
+    rsync            # used by your timemachine script
+
+    # ─── Process & system inspection ──────────────────────────────
+    procps           # ps, top, free, vmstat, sysctl, kill, uptime
+    killall          # kill processes by name (psmisc)
+
+    # ─── Network tooling ──────────────────────────────────────────
+    curl             # HTTP client
+    wget             # HTTP/FTP downloader
+    dig              # DNS lookups (bind tools)
+
+    # ─── File & archive utilities ─────────────────────────────────
+    file             # detect file type by content
+    tree             # directory tree visualization
+    zip              # create .zip archives
+    unzip            # extract .zip archives
+
+    # ─── Data processing ──────────────────────────────────────────
+    jq               # JSON query/transform
+    yq-go            # YAML query/transform (Go implementation)
+
+    # ─── Development essentials ───────────────────────────────────
+    git              # version control
+    tmux             # terminal multiplexer
+    gnumake          # GNU make
+
+    # ─── Compatibility layers ─────────────────────────────────────
+    #steam-run        # FHS environment to run non-Nix Linux binaries
   ];
 
   # Keep
