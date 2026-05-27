@@ -86,7 +86,7 @@ in
     enable = true;
     enable32Bit = false;
     enableMonitoring = true;
-    useXeDriver = true;
+    useXeDriver = false;
     deviceId = mySettings.gpuDeviceId;
   };
   mySystem.hardware.bluetooth = {
@@ -362,7 +362,6 @@ in
 
   services.opensnitch = {
     enable = true;
-    #package = pkgs-unstable.opensnitch;
     settings = {
       Firewall = "nftables";
     };
