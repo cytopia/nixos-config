@@ -71,6 +71,7 @@ in
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader.systemd-boot.configurationLimit = 10; # Keep 10 generations
 
   # Enable LVM in the initrd so it can find the encrypted partition at boot.
   # Disko created the LVM and NixOS needs to scan for it at boot.
