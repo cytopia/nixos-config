@@ -36,7 +36,7 @@ preload = 2
 [gallery]
 # Size of the thumbnails in pixels
 size = 200
-selected_scale = 1,15
+selected_scale = 1.15
 padding = 5
 # Background color of the selected tile (RGBA)
 select = #404040ff
