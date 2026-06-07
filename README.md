@@ -53,6 +53,11 @@ home-manager expire-generations "-14 days"
 nix-collect-garbage -d
 ```
 
+### Validation
+```bash
+nix store verify --all
+```
+
 ### System info
 ```bash
 # Get latest build kernel
@@ -61,4 +66,4 @@ ls -lap /run/current-system/kernel
 
 ## Credits
 
-Inpsired by [Misterio77](https://github.com/Misterio77/nix-starter-configs)
+Inspired by [Misterio77](https://github.com/Misterio77/nix-starter-configs)
