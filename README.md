@@ -62,6 +62,11 @@ nix store verify --all
 ```bash
 # Get latest build kernel
 ls -lap /run/current-system/kernel
+
+# List all installed system packages
+nix-store -q --references /run/current-system/sw \
+  | sed 's|^/nix/store/[a-z0-9]\{32\}-||' \
+  | sort
 ```
 
 ## Credits
