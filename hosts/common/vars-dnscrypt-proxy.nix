@@ -61,6 +61,8 @@ let
     "ogads-pa.clients6.google.com"
     "csi.gstatic.com"
     "mail-ads.google.com"
+    "newrelic.com"
+    "login.newrelic.com"
   ];
   localMonitoring = {
     enable = true;
