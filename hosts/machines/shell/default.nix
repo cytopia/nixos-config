@@ -60,7 +60,8 @@ in
   ### Kernel
   ###
 
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelPackages = pkgs.linuxPackages_7_0;
+  #boot.kernelPackages = pkgs.linuxPackages_latest;
   #boot.kernelPackages = pkgs.linuxPackages_xanmod_stable;
   #boot.kernelPackages = pkgs.linuxPackages_zen;
 
@@ -250,9 +251,6 @@ in
       extensions.forceInstall = [
         "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
         "ddkjiahejlhfcafbddmgiahcphecmpfh" # uBlock Origin Lite
-        "ckkdlimhmcjmikdlpkmbgfkaikojcbjk" # Markdown Viewer
-        "mnjggcdmjocbbbhaepdhchncahnbgone" # SponsorBlock for YouTube
-        "gebbhagfogifgggkldgodflihgfeippi" # Return YouTube Dislike
         "ghmbeldphafepmbegfdlkpapadhbakde" # Proton Pass
       ];
     };
@@ -375,7 +373,7 @@ in
 
   # Adds standard Linux paths
   # e.g. /lib64 and others
-  programs.nix-ld.enable = true;
+  #programs.nix-ld.enable = true;
 
   # AWS VPN Client
   programs.awsvpnclient.enable = true;
