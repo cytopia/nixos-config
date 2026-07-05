@@ -1,6 +1,17 @@
 # Troubleshooting
 
 
+
+## /boot device full
+
+Clear up space and rebuild to take effect
+```bash
+sudo nix-env --profile /nix/var/nix/profiles/system --delete-generations +5
+nix-collect-garbage -d
+sudo nixos-rebuild switch --flake .#$(hostname)
+```
+
+
 ## Networking
 
 ### NTP
