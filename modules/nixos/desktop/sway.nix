@@ -70,7 +70,20 @@ in
     # configuration provided by the built-in NixOS sway module.
     # We tell the system to use 'wlr' first for Sway, then 'gtk' as a fallback.
     xdg.portal = {
-      wlr.enable = true;
+      wlr = {
+        enable = true;
+        # xdg-desktop-portal-wlr needs an OUTPUT CHOOSER to satisfy
+        # "share entire screen / window" requests. Without one, xdpw probes
+        # wofi/rofi/bemenu/fuzzel (none in the service PATH), fails, and logs
+        # "wlroots: no output found" -> whole-screen share dies. Tab share
+        # bypasses the portal, so only full-screen breaks.
+        # 'simple' + slurp reads the chosen output name from slurp's stdout.
+        settings.screencast = {
+          chooser_type = "simple";
+          chooser_cmd = "${pkgs.slurp}/bin/slurp -f %o -or";
+          max_fps = 30;
+        };
+      };
       #config.sway.default = lib.mkForce [ "wlr" "gtk" ];
       config.sway = {
         default = [ "gtk" ]; # Use GTK for most things (files, settings, themes)
