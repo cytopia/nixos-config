@@ -41,7 +41,7 @@ let
   opensnitchRules =
     (import ../../common/vars-opensnitch-rules.nix {
       inherit lib;
-      rulePrefix = "a"; # adjust to reimport all rules
+      rulePrefix = "abc"; # adjust to reimport all rules
       enableBrave = true;
       enableChrome = true;
       enableChromium = true;
@@ -80,6 +80,24 @@ in
 
   # Better SSD lifespan with encryption (comes with a security risk)
   boot.initrd.luks.devices."crypted".allowDiscards = true;
+
+  ###
+  ### Randomize /etc/machine-id on every boot
+  ###
+  boot.initrd.systemd.enable = true;
+  boot.initrd.systemd.initrdBin = [ pkgs.coreutils ];   # ensures `tr` exists in the initrd
+  boot.initrd.systemd.services.randomize-machine-id = {
+    description = "Write a fresh random machine-id each boot";
+    wantedBy = [ "initrd.target" ];
+    after = [ "sysroot.mount" ];
+    before = [ "initrd-switch-root.target" ];
+    unitConfig.DefaultDependencies = false;
+    serviceConfig.Type = "oneshot";
+    script = ''
+      tr -d - < /proc/sys/kernel/random/uuid > /sysroot/etc/machine-id
+    '';
+  };
+
 
   ###
   ### My Modules: Hardware
