@@ -86,6 +86,44 @@ let
     };
   };
 
+  mkDnscryptLocal = name: regexPath: {
+    "${rulePrefix}-${name}-local-5353" = {
+      action = "allow";
+      precedence = true;
+      created = "2026-01-01T00:00:00+00:00";
+      updated = "2026-01-01T00:00:00+00:00";
+      name = "000      ${name} -> -localhost-5353 [UDP]";
+      enabled = true;
+      duration = "always";
+      operator = {
+        type = "list";
+        operand = "list";
+        list = [
+          {
+            type = "regexp";
+            operand = "process.path";
+            data = regexPath;
+          }
+          {
+            type = "simple";
+            operand = "protocol";
+            data = "UDP";
+          }
+          {
+            type = "simple";
+            operand = "dest.port";
+            data = "5353";
+          }
+          {
+            type = "regexp";
+            operand = "dest.ip";
+            data = "^(::1|127\\.0\\.0\\.1)$";
+          }
+        ];
+      };
+    };
+  };
+
   ###
   ### SystemdResolved
   ###
@@ -231,6 +269,7 @@ in
   rules = { }
     // mkDnscryptDnscrypt name.dnscrypt procRegex.dnscrypt
     // mkDnscryptHttps name.dnscrypt procRegex.dnscrypt
+    // mkDnscryptLocal name.dnscrypt procRegex.dnscrypt
     // mkSystemdResolvedQueryDns name.resolved procRegex.resolved svc_uid.resolved
     // mkAllQueryResolvedDns
     // mkDenyCloudflare "dns" "${toString uid}"
