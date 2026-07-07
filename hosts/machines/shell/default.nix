@@ -82,6 +82,24 @@ in
   boot.initrd.luks.devices."crypted".allowDiscards = true;
 
   ###
+  ### Randomize /etc/machine-id on every boot
+  ###
+  boot.initrd.systemd.enable = true;
+  boot.initrd.systemd.initrdBin = [ pkgs.coreutils ];   # ensures `tr` exists in the initrd
+  boot.initrd.systemd.services.randomize-machine-id = {
+    description = "Write a fresh random machine-id each boot";
+    wantedBy = [ "initrd.target" ];
+    after = [ "sysroot.mount" ];
+    before = [ "initrd-switch-root.target" ];
+    unitConfig.DefaultDependencies = false;
+    serviceConfig.Type = "oneshot";
+    script = ''
+      tr -d - < /proc/sys/kernel/random/uuid > /sysroot/etc/machine-id
+    '';
+  };
+
+
+  ###
   ### My Modules: Hardware
   ###
   mySystem.hardware.intel-gpu = {
