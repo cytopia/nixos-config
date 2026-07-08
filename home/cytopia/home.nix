@@ -132,7 +132,6 @@
     gum
     saml2aws
     awscli2
-    lens
     freelens-bin
 
     # Monitoring
