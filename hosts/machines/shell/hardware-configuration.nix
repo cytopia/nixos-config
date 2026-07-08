@@ -8,12 +8,6 @@
     [ (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
-  # TODO: Implement zRAM
-  # https://gemini.google.com/app/2bda298fcec111c8
-
-  # TODO: re-run: sudo nixos-generate-config --root /mnt --dir /etc/nixos/hosts/shell
-  # With LAN adapter plugged in
-
   boot.initrd.availableKernelModules = [ "xhci_pci" "thunderbolt" "nvme" "usb_storage" "sd_mod" ];
   boot.initrd.kernelModules = [ "dm-snapshot" ];
   boot.kernelModules = [ "kvm-intel" ];
