@@ -1,7 +1,7 @@
 # TODO
 
 * Disable graphical root login
-* ZRAM
+* ~~ZRAM~~ done for 'core' (see ZRAM.md), still open for 'host'/'shell'
 
 
 ## Boot security

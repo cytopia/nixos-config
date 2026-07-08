@@ -148,6 +148,12 @@ in
     enable = true;
     gnomeKeyringEnable = true;
   };
+  mySystem.system.zram = {
+    enable = true;
+    memoryPercent = 50;
+    priority = 100;
+    swappiness = 100;
+  };
 
   ###
   ### My Modules: Networking
