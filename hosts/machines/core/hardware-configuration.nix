@@ -8,9 +8,6 @@
     [ (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
-  # TODO: re-run: sudo nixos-generate-config --root /mnt --dir /etc/nixos/hosts/shell
-  # With LAN adapter plugged in
-
   boot.initrd.availableKernelModules = [ "xhci_pci" "thunderbolt" "nvme" "rtsx_pci_sdmmc" ];
   boot.initrd.kernelModules = [ "dm-snapshot" ];
   boot.kernelModules = [ "kvm-intel" ];
