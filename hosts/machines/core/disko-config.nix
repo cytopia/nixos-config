@@ -52,7 +52,7 @@
         type = "lvm_vg";
         lvs = {
           swap = {
-            size = "36G"; # 41Gi RAM + 5GB buffer for hibernation
+            size = "37G"; # 32Gi RAM + 5GB buffer for hibernation
             content = {
               type = "swap";
               resumeDevice = true;
