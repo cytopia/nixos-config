@@ -8,9 +8,6 @@
     [ (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
-  # TODO: Implement zRAM
-  # ***REMOVED***
-
   # TODO: re-run: sudo nixos-generate-config --root /mnt --dir /etc/nixos/hosts/shell
   # With LAN adapter plugged in
 

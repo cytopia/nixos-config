@@ -15,6 +15,7 @@
     ./system/fonts.nix
     ./system/user.nix
     ./system/keyring.nix
+    ./system/zram.nix
 
     # Networking
     ./networking/simple.nix
