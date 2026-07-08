@@ -164,7 +164,7 @@
   # Adds standard Linux paths
   # e.g. /lib64 and others
   # TODO: double-check if this is currently required
-  programs.nix-ld.enable = true;
+  #programs.nix-ld.enable = true;
 
   # TODO: Move this somewhere else
   programs.awsvpnclient.enable = true;
@@ -192,8 +192,8 @@
     file
     procps
     killall
-    unixtools.netstat
-    unixtools.ifconfig
+    #unixtools.netstat
+    #unixtools.ifconfig
     curl
     wget
     dig
@@ -205,7 +205,7 @@
     #fastfetch
 
     # *.deb compatibility
-    steam-run
+    #steam-run
   ];
 
   # Keep
