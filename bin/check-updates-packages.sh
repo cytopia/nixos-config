@@ -2,15 +2,6 @@
 
 NIXOS_RELEASE="nixos-26.05"
 
-nixos_get_sway_version() {
-  local branch="${1}"
-  curl -fsSL "https://raw.githubusercontent.com/NixOS/nixpkgs/refs/heads/${branch}/pkgs/by-name/sw/sway-unwrapped/package.nix" \
-    | grep -E 'version\s*=\s*".+";' \
-    | awk -F '"' '{print $2}' \
-    | sort -urV \
-    | head -1
-}
-
 channel_age() {
   local branch=$1 json ts now age
   [ -z "$branch" ] && { echo "usage: channel-age <branch>" >&2; return 2; }
@@ -32,6 +23,18 @@ channel_age() {
     printf '%2d min   ago\n' $(( (age + 30) / 60 ))
   fi
 }
+
+nixos_get_sway_version() {
+  local branch="${1}"
+  curl -fsSL "https://raw.githubusercontent.com/NixOS/nixpkgs/refs/heads/${branch}/pkgs/by-name/sw/sway-unwrapped/package.nix" \
+    | grep -E 'version\s*=\s*".+";' \
+    | awk -F '"' '{print $2}' \
+    | sort -urV \
+    | head -1
+}
+
+
+
 
 TIME_NIXPKGS="$( channel_age "nixpkgs-unstable" )"
 TIME_NIXOS="$( channel_age "nixos-unstable" )"

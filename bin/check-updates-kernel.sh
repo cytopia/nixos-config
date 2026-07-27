@@ -80,13 +80,13 @@ echo "NIXPKGS: $( nixos_get_default_kernel_version "nixpkgs-unstable" )  [${TIME
 echo "NIXOS:   $( nixos_get_default_kernel_version "nixos-unstable" )  [${TIME_NIXOS}] (my branch)"
 echo "26.05:   $( nixos_get_default_kernel_version "${NIXOS_RELEASE}" )  [${TIME_RELEASE}]"
 
-echo
-echo "==== NixOS 7.0 Kernel ===="
-echo "STAGING: $( nixos_get_7_0_kernel_version "staging-nixos" )"
-echo "MASTER:  $( nixos_get_7_0_kernel_version "master" )"
-echo "NIXPKGS: $( nixos_get_7_0_kernel_version "nixpkgs-unstable" )  [${TIME_NIXPKGS}]"
-echo "NIXOS:   $( nixos_get_7_0_kernel_version "nixos-unstable" )  [${TIME_NIXOS}] (my branch)"
-echo "26.05:   $( nixos_get_7_0_kernel_version "${NIXOS_RELEASE}" )  [${TIME_RELEASE}]"
+#echo
+#echo "==== NixOS 7.0 Kernel ===="
+#echo "STAGING: $( nixos_get_7_0_kernel_version "staging-nixos" )"
+#echo "MASTER:  $( nixos_get_7_0_kernel_version "master" )"
+#echo "NIXPKGS: $( nixos_get_7_0_kernel_version "nixpkgs-unstable" )  [${TIME_NIXPKGS}]"
+#echo "NIXOS:   $( nixos_get_7_0_kernel_version "nixos-unstable" )  [${TIME_NIXOS}] (my branch)"
+#echo "26.05:   $( nixos_get_7_0_kernel_version "${NIXOS_RELEASE}" )  [${TIME_RELEASE}]"
 
 echo
 echo "==== NixOS latest Kernel ===="
