@@ -41,7 +41,7 @@ let
   opensnitchRules =
     (import ../../common/vars-opensnitch-rules.nix {
       inherit lib;
-      rulePrefix = "a"; # adjust to reimport all rules
+      rulePrefix = "ab"; # adjust to reimport all rules
       enableBrave = true;
       enableChrome = true;
       enableChromium = true;
