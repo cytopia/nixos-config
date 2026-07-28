@@ -141,8 +141,8 @@ in
     environment.systemPackages =
       with pkgs;
       [
-        # # GStreamer VA-API Plugin (For Linux Native Media Apps)
-        gst_all_1.gst-vaapi
+        # GStreamer VA-API features are integrated into gst-plugins-bad in GStreamer 1.28+
+        gst_all_1.gst-plugins-bad
       ]
       ++ lib.optionals cfg.enableMonitoring (
         [
