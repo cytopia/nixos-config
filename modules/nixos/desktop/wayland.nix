@@ -112,7 +112,12 @@ in
       wayland-utils # Provides 'wayland-info' for debugging
       wl-clipboard # Standard Wayland copy/paste CLI (wl-copy/wl-paste)
       libinput # For 'libinput debug-events' and debugging
-      wayprompt # provides wayprompt-ssh-askpass and wayprompt-gpg-pinentry
+      # wayprompt # provides wayprompt-ssh-askpass and wayprompt-gpg-pinentry
+      # Disabled: broken in nixpkgs since wayland 1.26.0 (2026-07-16). wayprompt 0.1.2
+      # pins an old zig-wayland whose scanner fails on the new wayland.xml
+      # ("wayland_server.zig: use of undeclared identifier 'Error'"). Unused here anyway:
+      # gpg uses pinentry-gnome3 and nothing sets SSH_ASKPASS. Re-enable once nixpkgs
+      # bumps wayprompt / its zig-wayland dependency.
       gtk4-layer-shell # library that allows GTK4 applications to use the Wayland Layer Shell protocol
     ];
 
