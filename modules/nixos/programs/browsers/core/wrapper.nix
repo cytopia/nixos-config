@@ -29,17 +29,38 @@ let
       disableFeatureFlag = lib.optional (browserCfg.internal.disableFeatures != [ ])
         "--disable-features=${lib.concatStringsSep "," browserCfg.internal.disableFeatures}";
 
-      baseChrome = pkgs.${name}.override {
-        commandLineArgs = map lib.escapeShellArg (
-          browserCfg.internal.flags ++ enableFeatureFlag ++ disableFeatureFlag
-        );
-      };
+      browserFlags = browserCfg.internal.flags ++ enableFeatureFlag ++ disableFeatureFlag;
+
+      rawPkg = pkgs.${name};
+
+      # Not every browser in Nixpkgs exposes `override` any more: brave is built
+      # through a curried `callPackage ./make-brave.nix { } (pkg // fd)` since the
+      # multi-flavour refactor, and `makeOverridable` attaches `override` to the
+      # intermediate function, not to the resulting derivation.
+      # When upstream accepts `commandLineArgs` we keep letting it bake the flags
+      # into its own wrapper; otherwise we inject them via our wrapper below.
+      hasOverride = rawPkg ? override;
+
+      baseChrome =
+        if hasOverride then
+          rawPkg.override {
+            commandLineArgs = map lib.escapeShellArg browserFlags;
+          }
+        else
+          rawPkg;
 
       envArgs = lib.mapAttrsToList (
         key: value: "--set ${lib.escapeShellArg key} ${lib.escapeShellArg value}"
       ) browserCfg.internal.envVars;
 
-      wrapperEnvArgs = lib.concatStringsSep " " envArgs;
+      # makeWrapper writes `--add-flags` values verbatim into the generated wrapper
+      # script, so every flag is escaped twice: once so the wrapper script quotes it
+      # at runtime, once for the build shell that calls wrapProgram.
+      flagArgs = lib.optionals (!hasOverride) (
+        map (flag: "--add-flags ${lib.escapeShellArg (lib.escapeShellArg flag)}") browserFlags
+      );
+
+      wrapperEnvArgs = lib.concatStringsSep " " (envArgs ++ flagArgs);
 
       # Abstracted the wrap loop so both build methods (chromium/brave & google chrome) can share it.
       # This simple loop finds the executable binary and injects our env vars.
