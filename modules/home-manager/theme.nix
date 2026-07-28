@@ -98,6 +98,7 @@ in
   config = mkIf cfg.enable {
     # --- Cursor ---
     home.pointerCursor = {
+      enable = true;
       inherit (cfg.cursor) name package;
       size = if (cfg.scalingFactor != 1.0) then scaling.cursor else cfg.cursor.size;
       gtk.enable = true;
