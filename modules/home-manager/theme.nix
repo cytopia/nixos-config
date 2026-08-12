@@ -72,18 +72,40 @@ in
     theme = {
       name = mkOption {
         type = types.str;
-        default = "Arc";
+        default = "Colloid-Dark-Nord";
       };
       package = mkOption {
         type = types.package;
-        default = pkgs.arc-theme;
+        # Nord colorscheme, built in all three color variants:
+        # "Colloid-Nord", "Colloid-Light-Nord", "Colloid-Dark-Nord".
+        #
+        # Nord's blue-tinted greys (base #2E3440) are the closest match to the
+        # old Arc-Dark (#383C4A). Stock Colloid-Dark bottoms out near #1F1F1F,
+        # which reads as black. The "black" tweak is deliberately not used for
+        # the same reason.
+        #
+        # Variants are selected via `.override`, and note the two kinds behave
+        # differently. Colorschemes (nord/dracula/gruvbox/everforest/
+        # catppuccin) and accents append a suffix to the directory name, so
+        # `name` above has to match; the style tweaks (black/rimless/normal/
+        # float) only recolor in place and leave the name alone. Example:
+        #   name = "Colloid-Teal-Dark-Nord";
+        #   package = pkgs.colloid-gtk-theme.override {
+        #     themeVariants = [ "teal" ];
+        #     tweaks = [ "nord" ];
+        #   };
+        default = pkgs.colloid-gtk-theme.override {
+          tweaks = [ "nord" ];
+        };
       };
     };
 
     icons = {
       name = mkOption {
         type = types.str;
-        default = "breeze";
+        # "breeze-dark" gives light-stroked monochrome icons, which is the
+        # variant intended for a dark theme. Same package ships both.
+        default = "breeze-dark";
       };
       package = mkOption {
         type = types.package;
@@ -171,7 +193,7 @@ in
         XCURSOR_THEME = cfg.cursor.name;
 
         # Flatpak apps
-        GTK_THEME = "Arc-Dark";
+        GTK_THEME = cfg.theme.name;
         # Java apps
         _JAVA_OPTIONS = "-Dawt.useSystemAAFontSettings=on -Dswing.aatext=true -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel";
       };
@@ -190,7 +212,6 @@ in
       # Icon themes
       hicolor-icon-theme # Provides '/usr/share/icons/hicolor/' as a safety net
       pop-icon-theme
-      arc-icon-theme
       numix-icon-theme
       #papirus-icon-theme
     ];
