@@ -54,7 +54,8 @@ in
 
         # --- WORKFLOW & AUTOMATION ---
         advanced-scene-switcher # "Senior" automation logic
-        obs-move-transition # Aesthetic "Smooth" scene changes
+        #TODO: uncomment once this has been fixed
+        #obs-move-transition # Aesthetic "Smooth" scene changes
 
         # --- UTILITY & SECURITY ---
         obs-composite-blur # Masking sensitive info/keys
