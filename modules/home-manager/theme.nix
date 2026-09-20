@@ -72,31 +72,33 @@ in
     theme = {
       name = mkOption {
         type = types.str;
-        default = "Colloid-Dark-Nord";
+        # The package ships four directories: "Arc", "Arc-Dark", "Arc-Darker"
+        # and "Arc-Lighter". Dark is a separate directory, not a mode: Arc has
+        # no gtk-dark.css, so the gtk-application-prefer-dark-theme settings
+        # further down are no-ops here. "Arc-Dark" is the only dark selector.
+        # "Arc-Darker" is dark chrome with light content areas, not what we
+        # want.
+        #
+        # This used to be "Arc" while GTK_THEME below was hardcoded to
+        # "Arc-Dark". That worked, because GTK_THEME overrides gtk-theme-name,
+        # but it left the two out of sync. Both now derive from this value.
+        default = "Arc-Dark";
       };
       package = mkOption {
         type = types.package;
-        # Nord colorscheme, built in all three color variants:
-        # "Colloid-Nord", "Colloid-Light-Nord", "Colloid-Dark-Nord".
+        # Upstream is the maintained jnsh fork, not the dead horst3180
+        # original.
         #
-        # Nord's blue-tinted greys (base #2E3440) are the closest match to the
-        # old Arc-Dark (#383C4A). Stock Colloid-Dark bottoms out near #1F1F1F,
-        # which reads as black. The "black" tweak is deliberately not used for
-        # the same reason.
+        # Replaces Colloid-Dark-Nord. Nord's palette compresses the whole dark
+        # ramp into #2E3440..#4C566A, and Colloid draws a selected row as a
+        # low-alpha accent overlay, so selected and unselected rows landed
+        # within a few percent luminance of each other. That is unreadable in
+        # the Thunderbird message list and calendar. Arc-Dark paints selection
+        # as solid #5294E2 on #383C4A instead.
         #
-        # Variants are selected via `.override`, and note the two kinds behave
-        # differently. Colorschemes (nord/dracula/gruvbox/everforest/
-        # catppuccin) and accents append a suffix to the directory name, so
-        # `name` above has to match; the style tweaks (black/rimless/normal/
-        # float) only recolor in place and leave the name alone. Example:
-        #   name = "Colloid-Teal-Dark-Nord";
-        #   package = pkgs.colloid-gtk-theme.override {
-        #     themeVariants = [ "teal" ];
-        #     tweaks = [ "nord" ];
-        #   };
-        default = pkgs.colloid-gtk-theme.override {
-          tweaks = [ "nord" ];
-        };
+        # Note this build has no GTK2 assets (upstream dropped gtk2), so GTK2
+        # apps fall back to the stock GTK2 theme.
+        default = pkgs.arc-theme;
       };
     };
 
