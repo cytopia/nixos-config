@@ -63,6 +63,8 @@ let
     "mail-ads.google.com"
     "newrelic.com"
     "login.newrelic.com"
+    "cdn-eu.dynamicyield.com"
+    "st-eu.dynamicyield.com"
   ];
   localMonitoring = {
     enable = true;
