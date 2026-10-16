@@ -22,7 +22,7 @@
 
     # Custom: AWS VPN Client flake
     awsvpnclient-nix = {
-      url = "github:AddG0/awsvpnclient-nix";
+      url = "github:cytopia/awsvpnclient-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };

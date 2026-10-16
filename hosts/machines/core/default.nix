@@ -400,7 +400,7 @@ in
   #programs.nix-ld.enable = true;
 
   # AWS VPN Client
-  programs.awsvpnclient.enable = true;
+  services.awsvpnclient.enable = true;
 
   environment.systemPackages = with pkgs; [
     # ─── Hardware inspection ──────────────────────────────────────
