@@ -6,5 +6,6 @@
     gimp
   ];
 
-  # TODO: once swayimg is on 5.x, also add config
+  # swayimg >= 5.0 is configured via Lua: dotfiles/swayimg/init.lua
+  # (symlinked to ~/.config/swayimg by dotfiles/install.sh).
 }
