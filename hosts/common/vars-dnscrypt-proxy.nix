@@ -65,6 +65,7 @@ let
     "login.newrelic.com"
     "cdn-eu.dynamicyield.com"
     "st-eu.dynamicyield.com"
+    "choose.yeswehack.io"
   ];
   localMonitoring = {
     enable = true;
