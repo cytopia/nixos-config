@@ -152,9 +152,9 @@ local function zoom(mode, factor)
 end
 
 local viewer_help = table.concat({
-  "n/Space/PgDn next   p/PgUp prev   g/Home first   G/End last",
+  "n/Space/PgDn/Right next   p/PgUp/Left prev   g/Home first   G/End last",
   "d/D next/prev dir   R random      o/O next/prev frame   Ctrl+Space animation",
-  "h/j/k/l or arrows pan   +/- zoom   w/W fit width/height   z/Z fit/fill",
+  "h/j/k/l or Up/Down pan   +/-/wheel zoom   w/W fit width/height   z/Z fit/fill",
   "0 real size   Backspace reset   [ ] < > rotate   m/M flip   a antialias",
   "Return gallery   s slideshow   f fullscreen   i/t info   r reload",
   "c skip   Delete remove from list   Shift+Delete delete file   q/Esc quit",
@@ -187,8 +187,8 @@ local function bind_viewer_keys(mode, is_slideshow)
   mode.on_key("r", function() mode.reload() end)
 
   -- navigation (nsxiv style n/p plus the classic swayimg keys)
-  mode.on_key({ "n", "space", "Next" }, function() mode.open("next") end)
-  mode.on_key({ "p", "Prior" }, function() mode.open("prev") end)
+  mode.on_key({ "n", "space", "Next", "Right" }, function() mode.open("next") end)
+  mode.on_key({ "p", "Prior", "Left" }, function() mode.open("prev") end)
   mode.on_key({ "g", "Home" }, function() mode.open("first") end)
   mode.on_key({ "Shift+g", "End" }, function() mode.open("last") end)
   mode.on_key("d", function() mode.open("next_dir") end)
@@ -204,9 +204,10 @@ local function bind_viewer_keys(mode, is_slideshow)
   end)
   mode.on_key("Ctrl+space", function() mode.animation = not mode.animation end)
 
-  -- pan (vim keys and arrows), 10% of the window per step
-  mode.on_key({ "h", "Left" }, function() pan(mode, 1, 0) end)
-  mode.on_key({ "l", "Right" }, function() pan(mode, -1, 0) end)
+  -- pan (vim keys, Up/Down arrows), 10% of the window per step.
+  -- Left/Right arrows are prev/next image (see navigation above).
+  mode.on_key("h", function() pan(mode, 1, 0) end)
+  mode.on_key("l", function() pan(mode, -1, 0) end)
   mode.on_key({ "k", "Up" }, function() pan(mode, 0, 1) end)
   mode.on_key({ "j", "Down" }, function() pan(mode, 0, -1) end)
 
@@ -237,8 +238,18 @@ local function bind_viewer_keys(mode, is_slideshow)
   mode.on_key({ "c", "Delete" }, function() skip_file(mode) end)
   mode.on_key("Shift+Delete", function() delete_file(mode) end)
 
-  -- mouse extras (the defaults keep scroll = pan, Ctrl+scroll = zoom,
-  -- left button = drag, right button = drag-and-drop to other apps)
+  -- mouse wheel: zoom around the pointer (default is pan; Ctrl+scroll still
+  -- zooms as well, left button = drag, right button = drag-and-drop)
+  mode.on_mouse("ScrollUp", function()
+    local mouse = swayimg.get_mouse_pos()
+    mode.set_abs_scale(mode.scale * 1.1, mouse.x, mouse.y)
+  end)
+  mode.on_mouse("ScrollDown", function()
+    local mouse = swayimg.get_mouse_pos()
+    mode.set_abs_scale(mode.scale / 1.1, mouse.x, mouse.y)
+  end)
+
+  -- mouse extras
   mode.on_mouse("Shift+ScrollUp", function() mode.open("prev") end)
   mode.on_mouse("Shift+ScrollDown", function() mode.open("next") end)
   mode.on_mouse("MouseSide", function() mode.open("prev") end)
