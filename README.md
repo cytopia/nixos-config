@@ -1,6 +1,24 @@
 # nixos-config
 
 
+## TL;DR
+```bash
+# Update
+nix flake update
+sudo nixos-rebuild switch --flake .#$(hostname)
+home-manager switch --flake .#cytopia@$(hostname)
+
+# Cleanup System
+sudo nix-env --profile /nix/var/nix/profiles/system --delete-generations +5
+sudo nix-collect-garbage
+sudo /run/current-system/bin/switch-to-configuration boot
+
+# Cleanup Home Manager
+home-manager expire-generations "-14 days"
+nix-collect-garbage
+```
+
+
 ## Updates
 ```bash
 # stage new versions to update
@@ -36,10 +54,13 @@ sudo nix-env --profile /nix/var/nix/profiles/system --delete-generations +5
 sudo nix-env --profile /nix/var/nix/profiles/system --delete-generations old
 
 # Remove cleaned generations
+sudo nix-collect-garbage
+
+# Remove all unlinked generations
 sudo nix-collect-garbage -d
 
 # Remove old boot files
-sudo nixos-rebuild boot
+sudo nixos-rebuild boot --flake .#$(hostname)
 ```
 
 ### Home-Manager
