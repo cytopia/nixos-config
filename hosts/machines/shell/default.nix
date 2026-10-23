@@ -60,8 +60,8 @@ in
   ### Kernel
   ###
 
-  #boot.kernelPackages = pkgs.linuxPackages_7_0;
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  #boot.kernelPackages = pkgs.linuxPackages_7_2;
+  boot.kernelPackages = pkgs.linuxPackages_latest;  # mainline
   #boot.kernelPackages = pkgs.linuxPackages_xanmod_stable;
   #boot.kernelPackages = pkgs.linuxPackages_zen;
 
@@ -400,7 +400,7 @@ in
   #programs.nix-ld.enable = true;
 
   # AWS VPN Client
-  programs.awsvpnclient.enable = true;
+  services.awsvpnclient.enable = true;
 
   environment.systemPackages = with pkgs; [
     # ─── Hardware inspection ──────────────────────────────────────
