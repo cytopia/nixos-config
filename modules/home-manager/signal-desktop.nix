@@ -33,24 +33,27 @@ in
   ###
   config = lib.mkIf cfg.enable {
 
-    home.packages = with pkgs; [
-      signal-desktop
-    ];
-
-    nixpkgs.overlays = [
+    # signal-desktop's `commandLineArgs` override arg was removed (now a hard
+    # throw) in nixpkgs PR #570229. To pass --force-device-scale-factor we wrap
+    # the binary with symlinkJoin + wrapProgram instead. The upstream
+    # signal.desktop launcher uses `Exec=signal-desktop %U` (bare name resolved
+    # via PATH), so both the app launcher and the CLI get the flag, while the
+    # upstream .desktop / icon / MIME handlers stay untouched.
+    home.packages = [
       (
-        final: prev:
-        let
-          commandLineArgs = lib.optionals (cfg.scalingFactor != 1.0) [
-            "--force-device-scale-factor=${builtins.toJSON cfg.scalingFactor}"
-          ];
-        in
-        {
-          # Rewrite the google-chrome package system-wide
-          signal-desktop = prev.signal-desktop.override {
-            commandLineArgs = commandLineArgs;
-          };
-        }
+        if cfg.scalingFactor == 1.0 then
+          pkgs.signal-desktop
+        else
+          pkgs.symlinkJoin {
+            name = "signal-desktop-scaled";
+            paths = [ pkgs.signal-desktop ];
+            nativeBuildInputs = [ pkgs.makeWrapper ];
+            postBuild = ''
+              wrapProgram $out/bin/signal-desktop \
+                --add-flags "--force-device-scale-factor=${builtins.toJSON cfg.scalingFactor}"
+            '';
+            meta.mainProgram = "signal-desktop";
+          }
       )
     ];
   };
