@@ -84,7 +84,6 @@ in
   ###
   ### Randomize /etc/machine-id on every boot
   ###
-  boot.initrd.systemd.enable = true;
   boot.initrd.systemd.initrdBin = [ pkgs.coreutils ];   # ensures `tr` exists in the initrd
   boot.initrd.systemd.services.randomize-machine-id = {
     description = "Write a fresh random machine-id each boot";
