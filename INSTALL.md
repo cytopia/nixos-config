@@ -29,6 +29,12 @@ sudo nix --experimental-features "nix-command flakes" run github:nix-community/d
 # Install System
 sudo mkdir -p /mnt/etc/nixos
 sudo nix-shell -p git --run "git clone https://github.com/cytopia/nixos-config /mnt/etc/nixos"
+
+# Regenerate hardware-configuration.nix for THIS machine.
+sudo nixos-generate-config --no-filesystems --root /mnt
+sudo cp /mnt/etc/nixos/hardware-configuration.nix \
+  /mnt/etc/nixos/hosts/machines/<HOSTNAME>/hardware-configuration.nix
+
 sudo nixos-install --option experimental-features "nix-command flakes" --flake /mnt/etc/nixos#<HOSTNAME>
 
 # Set password
