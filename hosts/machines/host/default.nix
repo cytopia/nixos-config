@@ -27,7 +27,7 @@ let
       timeout = 2000;
       lbStrategy = "p3";
     };
-    gpuDeviceId = "9a60";
+    gpuDeviceId = "b0a0";
   };
 
   dnscryptSettings =
@@ -105,7 +105,7 @@ in
     enable = true;
     enable32Bit = false;
     enableMonitoring = true;
-    useXeDriver = false;
+    useXeDriver = true;
     deviceId = mySettings.gpuDeviceId;
   };
   mySystem.hardware.bluetooth = {
