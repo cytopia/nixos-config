@@ -44,6 +44,7 @@
     ./modules/sway/volume-control.nix
     ./modules/sway/microphone-control.nix
     ./modules/sway/brightness-control.nix
+    ./modules/sway/wallpaper.nix
   ];
 
   ###
