@@ -1,99 +1,150 @@
-# Get a nerd font for these symbols to work (e.g., JetBrainsMono Nerd Font)
+"$schema" = "https://starship.rs/config-schema.json"
+
+add_newline = false
+
+
+# Which is equivalent to
 format = """
-[░▒▓](#7aa2f7)\
-$os\
 $username\
-${custom.tmux}\
-[](bg:#3b4252 fg:#7aa2f7)\
-$directory\
-[](fg:#3b4252 bg:#e0af68)\
-$git_branch\
-$git_status\
-[](fg:#e0af68 bg:#2e3440)\
-$nix_shell\
+$hostname\
+$localip\
+$shlvl\
+$singularity\
 $kubernetes\
+$directory\
+$vcsh\
+$fossil_branch\
+$fossil_metrics\
+$git_branch\
+$git_commit\
+$git_state\
+$git_metrics\
+$git_status\
+$hg_branch\
+$hg_state\
+$pijul_channel\
+$docker_context\
+$package\
+$c\
+$cmake\
+$cobol\
+$daml\
+$dart\
+$deno\
+$dotnet\
+$elixir\
+$elm\
+$erlang\
+$fennel\
+$fortran\
+$gleam\
+$golang\
+$guix_shell\
+$haskell\
+$haxe\
+$helm\
+$java\
+$julia\
+$kotlin\
+$gradle\
+$lua\
+$nim\
+$nodejs\
+$ocaml\
+$opa\
+$perl\
+$php\
+$pulumi\
+$purescript\
+$python\
+$quarto\
+$raku\
+$rlang\
+$red\
+$ruby\
+$rust\
+$scala\
+$solidity\
+$swift\
 $terraform\
+$typst\
+$vlang\
+$vagrant\
+$zig\
+$buf\
+$nix_shell\
+$conda\
+$meson\
+$spack\
+$memory_usage\
 $aws\
-$fill\
+$gcloud\
+$openstack\
+$azure\
+$nats\
+$direnv\
+$env_var\
+$mise\
+$crystal\
+$custom\
+$sudo\
+${custom.aws}\
 $cmd_duration\
+$line_break\
 $jobs\
 $battery\
 $time\
-[ ](fg:#2e3440)\
-\n$character"""
+$status\
+$os\
+$container\
+$netns\
+$shell\
+$character\
+"""
 
-# Move the rest of the prompt to the right
-fill = { symbol = " " }
+right_format="""\
+${custom.aws}\
+$shell\
+"""
 
-[directory]
-style = "bg:#3b4252 fg:#e0af68"
-format = "[ $path ]($style)"
-truncation_length = 3
-truncation_symbol = "…/"
-
-[os]
+[direnv]
 disabled = false
-style = "bg:#7aa2f7 fg:#1d2021"
-symbols = { NixOS = " " }
 
-[username]
-show_always = true
-style_user = "bg:#7aa2f7 fg:#1d2021"
-format = '[$user]($style)'
+[aws]
+#format = 'on [$symbol($profile )(\($region\) )]($style)'
+style = 'bold blue'
+symbol = '🅰 '
+force_display = false
+[aws.profile_aliases]
+#test = 'login'
+#login = 'wwwwooowww'
 
-[git_branch]
-symbol = " "
-style = "bg:#e0af68 fg:#1d2021"
-format = '[ $symbol$branch ]($style)'
+[kubernetes]
+symbol = "󱃾 "
+disabled = true
+style = "fg:#326ce5"
+format = 'at [$symbol$context\($namespace\)]($style) '
+[kubernetes.context_aliases]
+"arn:aws:eks:eu-central-1:608780100653:cluster.*" = "k8s-blues"
+"arn:aws:eks:eu-central-1:558030440183:cluster.*" = "k8s-common"
 
-[git_status]
-style = "bg:#e0af68 fg:#1d2021"
-format = '[$all_status$ahead_behind ]($style)'
 
 [nix_shell]
 symbol = "󱄅 "
 style = "fg:#7ebae4"
-format = 'via [$symbol\($name\)]($style) '
+impure_msg = ""
+pure_msg = "pure "
+unknown_msg = "unknown "
+format = 'via [$symbol$state\($name\)]($style) '
 
-[kubernetes]
-symbol = "󱃾 "
-disabled = false
-style = "fg:#326ce5"
-format = 'at [$symbol$context\($namespace\)]($style) '
-[kubernetes.context_aliases]
-"gke_.*_us-central1-a_prod-cluster" = "gke-prod"
-"dev-cluster-01.k8s.local" = "dev-local"
 
-[terraform]
-symbol = "󱁢 "
-style = "fg:#844fba"
-format = 'via [$symbol$workspace]($style) '
 
-[aws]
-symbol = "󰸏 "
-style = "fg:#ff9900"
-format = 'on [$symbol$profile(\($region\))]($style) '
+[directory]
+truncation_length = 0
+truncate_to_repo = false
 
-[cmd_duration]
-min_time = 500
-style = "fg:#f1fa8c"
-format = "took [$duration]($style) "
-
-[time]
-disabled = false
-time_format = "%R" # 24hr time
-style = "fg:#6272a4"
-#format = "[[ $time ]($style)]"
-format = '\[[ $time ]($style)\]'
-
-[character]
-success_symbol = "[➜](bold green)"
-error_symbol = "[➜](bold red)"
-
-[custom.tmux]
-description = "Check if inside a tmux session"
-# Checks if $TMUX is set; if so, it prints the icon and session name
-command = 'tmux display-message -p "  #S"'
-when = 'test -n "$TMUX"'
-style = "bg:#7aa2f7 fg:#1d2021"
-format = "[$output]($style)"
+[custom.aws]
+command = '/home/cytopia/saml2aws.sh default'
+style = 'dimmed blue'
+format = '[$output]($style) '
+when = true
