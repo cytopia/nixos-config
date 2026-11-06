@@ -1,5 +1,14 @@
 [theme]
 theme = "native"
+# Draw the separator here instead of sway's separator_symbol. All spacing
+# between blocks lives in this string; block formats carry no edge spaces.
+# Never put a space at the start or end of a block text next to an icon:
+# the icons fall back to Symbols Nerd Font, which has no space glyph, and
+# swaybar then draws that space as a small centered dot.
+[theme.overrides]
+separator = " | "
+start_separator = ""
+separator_fg = "#444444"
 
 [icons]
 icons = "material-nf"
@@ -7,15 +16,16 @@ icons = "material-nf"
 [[block]]
 block = "cpu"
 interval = 2
-format = " $icon$frequency ($utilization) "
+format = "$icon$frequency ($utilization)"
 
 [[block]]
 block = "temperature"
-format = " $icon$max "
+format = "$icon$max"
 
 # GPU
 [[block]]
 block = "custom"
+format = "$text.pango-str()"
 interval = 1
 json = true
 command = '''
@@ -44,15 +54,16 @@ echo "{\"text\": \"<span>󰢮 ${cur}MHz</span>\"}"
 
 [[block]]
 block = "memory"
-format = " $icon$mem_used.eng(w:3, p:Gi, prefix_space) ($mem_used_percents) "
+format = "$icon$mem_used.eng(w:3, p:Gi, prefix_space) ($mem_used_percents)"
 
 [[block]]
 block = "disk_space"
 path = "/"
-format = " $icon $used.eng(w:3,p:Gi,hide_unit,hide_prefix)/$total.eng(w:3,p:Gi,prefix_space) "
+format = "$icon $used.eng(w:3,p:Gi,hide_unit,hide_prefix)/$total.eng(w:3,p:Gi,prefix_space)"
 
 [[block]]
 block = "custom"
+format = "$text.pango-str()"
 #command = "echo '\uf0ac '`curl -s --connect-timeout 2 --max-time 3 ip-api.com/line/?fields=query`"
 command = "echo '\uf0ac '`curl -s --connect-timeout 2 --max-time 3  208.95.112.1/line/?fields=query`"
 interval = 10
@@ -61,9 +72,9 @@ interval = 10
 block = "net"
 # If 'wlan0' fails, comment out the device line to auto-detect
 device = "tun0"
-format = " $icon $ip "
+format = "$icon $ip"
 missing_format = ""
-format_alt = " $icon $ip / $ipv6 / NS: $nameserver "
+format_alt = "$icon $ip / $ipv6 / NS: $nameserver"
 [block.theme_overrides]
 idle_bg = "#A86F6F"
 idle_fg = "#FFFFFF"
@@ -73,14 +84,19 @@ idle_fg = "#FFFFFF"
 block = "net"
 # If 'wlan0' fails, comment out the device line to auto-detect
 device = "wlan0"
-format = " $icon $ssid ($signal_strength) "
-format_alt = " $icon $ip ($bitrate) "
+format = "$icon $ssid ($signal_strength)"
+format_alt = "$icon $ip ($bitrate)"
 
 [[block]]
 block = "custom"
 command = ''' i3status-rs-bluetooth.sh '''
 interval = 2
 json = true
+# Set short explicitly: the default short format pads with spaces, and swaybar
+# shows short texts whenever the full status line does not fit.
+[block.format]
+full = "$text.pango-str()"
+short = "$short_text.pango-str()"
 [block.theme_overrides]
 warning_fg = "#A86F6F"
 idle_fg = "#80b3ff"
@@ -88,12 +104,14 @@ good_fg = "#005ce6"
 
 [[block]]
 block = "sound"
+format = "$icon{ $volume.eng(w:2)|}"
 driver = "pulseaudio"
 [block.theme_overrides]
 warning_fg = "#A86F6F"
 
 [[block]]
 block = "sound"
+format = "$icon{ $volume.eng(w:2)|}"
 driver = "pulseaudio"
 device_kind = "source" # This targets your microphone
 [block.theme_overrides]
@@ -101,6 +119,7 @@ warning_fg = "#A86F6F"
 
 [[block]]
 block = "custom"
+format = "$text.pango-str()"
 command = "custom-camera-toggle"
 json = true
 interval = 1
@@ -119,11 +138,13 @@ cmd = "custom-camera-toggle toggle"
 block = "battery"
 driver = "sysfs"
 interval = 1
+format = "$icon $percentage"
+empty_format = "$icon"
 #format = " $icon $percentage {$time_remaining} $power "
-full_format = " $icon $percentage {($time_remaining.dur(hms:true, min_unit:m))|}"
-not_charging_format = " a asd "
-charging_format = " $icon $percentage "
-missing_format = " "
+full_format = "$icon $percentage{ ($time_remaining.dur(hms:true, min_unit:m))|}"
+not_charging_format = "a asd"
+charging_format = "$icon $percentage"
+missing_format = ""
 [block.theme_overrides]
 warning_fg = "#A86F6F"
 critical_bg = "#A86F6F"
@@ -132,6 +153,7 @@ critical_fg = "#FFFFFF"
 
 [[block]]
 block = "custom"
+format = "$text.pango-str()"
 interval = 2
 json = true
 # 1. The Display Logic (checks profile and outputs Icon + Text + Theme Color)
@@ -139,16 +161,16 @@ command = '''
 profile=$(powerprofilesctl get)
 case "$profile" in
   "performance")
-    echo '{"text": "  Performance", "state": "Warning"}' # Yellow
+    echo '{"text": " Performance", "state": "Warning"}' # Yellow
     ;;
   "balanced")
-    echo '{"text": "  Balanced"}'                         # Normal (No state)
+    echo '{"text": " Balanced"}'                         # Normal (No state)
     ;;
   "power-saver")
-    echo '{"text": "  Power Saver", "state": "Good"}'    # Green
+    echo '{"text": " Power Saver", "state": "Good"}'    # Green
     ;;
   *)
-    echo '{"text": " ❓ Unknown", "state": "Idle"}'
+    echo '{"text": "❓ Unknown", "state": "Idle"}'
     ;;
 esac
 '''
@@ -176,11 +198,11 @@ fi
 [[block]]
 block = "time"
 interval = 60
-format = "  $timestamp.datetime(f:'(%V) %a, %d.%m.%Y') "
+format = " $timestamp.datetime(f:'(%V) %a, %d.%m.%Y')"
 
 [[block]]
 block = "time"
 interval = 60
-format = " $timestamp.datetime(f:'%R') "
+format = "$timestamp.datetime(f:'%R')"
 [block.theme_overrides]
 idle_fg = "#ffffff"
