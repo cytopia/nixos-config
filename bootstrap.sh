@@ -54,8 +54,12 @@ banner() {
 [ -n "$HOST" ] || die "usage: bash -s -- <HOSTNAME>"
 
 # This script is normally piped into bash, so stdin is the script itself.
-# Reattach stdin to the terminal so that read, cryptsetup and passwd can prompt.
-exec </dev/tty
+# Do NOT 'exec </dev/tty' here: bash reads the script from stdin when piped,
+# so that would make it read the REST OF THE SCRIPT from the terminal and
+# hang silently with no output. Instead the whole body lives in main(), which
+# bash parses completely before running, and only main's commands (read,
+# cryptsetup, passwd) get /dev/tty as stdin - see the last line of this file.
+main() {
 
 NIX_FLAGS=(--extra-experimental-features "nix-command flakes")
 
@@ -174,3 +178,8 @@ sudo nixos-enter --root /mnt -c "su - $USER_NAME -c '$CONF_DIR/dotfiles/install.
 banner "DONE" \
        "Repo: $CONF_DIR (owner $USER_NAME:users)" \
        "Remove the installer medium and reboot:  sudo reboot"
+
+}
+
+# Run everything with the terminal as stdin so prompts work under 'curl | bash'.
+main "$@" </dev/tty
