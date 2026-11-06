@@ -44,12 +44,12 @@ echo "{\"text\": \"<span>󰢮 ${cur}MHz</span>\"}"
 
 [[block]]
 block = "memory"
-format = " $icon$mem_used.eng(w:3, p:G, prefix_space) ($mem_used_percents) "
+format = " $icon$mem_used.eng(w:3, p:Gi, prefix_space) ($mem_used_percents) "
 
 [[block]]
 block = "disk_space"
 path = "/"
-format = " $icon $used.eng(w:2,hide_unit,hide_prefix)/$available.eng(w:2,prefix_space) "
+format = " $icon $used.eng(w:3,p:Gi,hide_unit,hide_prefix)/$total.eng(w:3,p:Gi,prefix_space) "
 
 [[block]]
 block = "custom"

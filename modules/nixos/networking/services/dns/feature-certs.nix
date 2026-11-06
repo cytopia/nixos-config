@@ -89,7 +89,7 @@ in
         # RuntimeDirectory="dnscrypt-proxy". Without mkForce, Nix will throw a collision error.]
         # In the NixOS module system, if two different files try to define the exact same
         # `serviceConfig` string, NixOS doesn't combine them...
-        #TODO: Come back to this and check with Gemini: https://***REMOVED***
+        #TODO: Come back to this and verify the mkForce reasoning.
         RuntimeDirectory = lib.mkForce caDirName;
 
         # Why RuntimeDirectoryMode = "0755"?
