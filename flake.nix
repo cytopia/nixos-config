@@ -25,6 +25,10 @@
       url = "github:cytopia/awsvpnclient-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # NixOS: declarative Flatpak (module has no inputs, so no nixpkgs follows)
+    # Tag-pinned: nix flake update never moves it. Check for new releases: bin/check-updates-flatpak.sh
+    nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=refs/tags/v0.8.0";
   };
 
 
@@ -96,6 +100,9 @@
 
           # Import the AWS VPN module
           inputs.awsvpnclient-nix.nixosModules.default
+
+          # Module: nix-flatpak (declarative Flatpak, system-wide)
+          inputs.nix-flatpak.nixosModules.nix-flatpak
 
           # Import hosts dynamically
           ./hosts/machines/${hostname}/default.nix

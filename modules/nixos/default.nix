@@ -33,6 +33,8 @@
 
     # Programs
     ./programs/browsers/default.nix
+    ./programs/flatpak/flatpak.nix
+    ./programs/flatpak/flatpaks/geforcenow.nix
     ./programs/obs.nix
     ./programs/podman.nix
     ./programs/thunar.nix

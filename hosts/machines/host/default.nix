@@ -243,6 +243,7 @@ in
   mySystem.programs.obs.enable = true;
   mySystem.programs.podman.enable = true;
   mySystem.programs.vim.enable = true;
+  mySystem.programs.geforcenow.enable = true;
 
   ###
   ### Browser: Brave

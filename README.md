@@ -16,6 +16,9 @@ sudo /run/current-system/bin/switch-to-configuration boot
 # Cleanup Home Manager
 home-manager expire-generations "-14 days"
 nix-collect-garbage
+
+# Flatpak
+sudo flatpak update
 ```
 
 
