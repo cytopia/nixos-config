@@ -30,10 +30,22 @@ in
       '';
     };
 
+    # Only for suspend-then-hibernate action
     hibernateDelay = lib.mkOption {
       type = lib.types.str;
       default = "2h";
       description = "Time before suspending to disk (hibernation) when using 'suspend-then-hibernate'.";
+    };
+
+    # Only for suspend-then-hibernate action
+    hibernateOnACPower = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = ''
+        Whether 'suspend-then-hibernate' may hibernate while on AC power.
+        If false, the system stays suspended on AC and the 'hibernateDelay'
+        countdown only starts once AC power is disconnected.
+      '';
     };
 
     criticalBatteryAction = lib.mkOption {
@@ -54,21 +66,64 @@ in
 
     # --- 1. LOGIN DAEMON (Hardware Events) ---
     services.logind.settings.Login = {
-      # Closing the Lid
-      HandleLidSwitchDocked = "ignore"; # Docked or ext display attached
-      HandleLidSwitchExternalPower = cfg.sleepAction; # AC connected
-      HandleLidSwitch = cfg.sleepAction; # On battery
+      # --- Lid ---
+      # Lid closed while docked: do nothing, on AC or battery.
+      # Docked = external monitor on, or a dock switch reports a dock.
+      HandleLidSwitchDocked = "ignore";
+      # Lid closed on AC power, not docked.
+      HandleLidSwitchExternalPower = cfg.sleepAction;
+      # Lid closed on battery, not docked.
+      HandleLidSwitch = cfg.sleepAction;
+      # If an app asks logind to block sleep, the lid still sleeps (systemd default).
+      # A laptop in a bag must sleep. swayidle lock-before-sleep is a delay lock and is always honoured.
+      LidSwitchIgnoreInhibited = "yes";
+      # After boot and after each resume, lid events are ignored for 30 s (systemd default).
+      HoldoffTimeoutSec = "30s";
 
-      # Idle Action
-      # IMPORTANT: Will be ignored when e.g. swayidle is running
-      IdleAction = cfg.sleepAction;
+      # --- Power key ---
+      # Short press: same as the lid.
+      HandlePowerKey = cfg.sleepAction;
+      # Hold for 5 s: power off.
+      HandlePowerKeyLongPress = "poweroff";
+      # An app that blocks sleep or shutdown also stops the power key (systemd default).
+      PowerKeyIgnoreInhibited = "no";
+
+      # --- Suspend key (XF86Sleep) ---
+      # Key does nothing. Sleep comes from the lid, the power key, idle timers and the sway menu.
+      HandleSuspendKey = "ignore";
+      HandleSuspendKeyLongPress = "ignore";
+      SuspendKeyIgnoreInhibited = "no";
+
+      # --- Hibernate key (XF86Hibernate) ---
+      # Key does nothing. Hibernate comes from suspend-then-hibernate after its timer,
+      # from upower at 5 % and from the sway menu.
+      HandleHibernateKey = "ignore";
+      HandleHibernateKeyLongPress = "ignore";
+      HibernateKeyIgnoreInhibited = "no";
+
+      # --- Reboot key (XF86Reboot) ---
+      # Key does nothing. Reboot via the sway menu only.
+      HandleRebootKey = "ignore";
+      HandleRebootKeyLongPress = "ignore";
+      RebootKeyIgnoreInhibited = "no";
+
+      # --- Secure attention key ---
+      # Only sends a D-Bus signal, no action (systemd default).
+      HandleSecureAttentionKey = "secure-attention-key";
+
+      # --- Idle ---
+      # swayidle owns idle. logind must not sleep on its own. With "ignore" nothing happens here.
+      IdleAction = "ignore";
+      # Unused while IdleAction is "ignore". Kept explicit.
       IdleActionSec = "30m";
 
-      # Ensure lock/mute scripts finish before hardware cuts power
-      # E.g.: swayidle can set 'before-sleep' action
-      LidSwitchIgnoreInhibited = "no";
-      SuspendKeyIgnoreInhibited = "no";
-      HibernateKeyIgnoreInhibited = "no";
+      # --- Inhibitor timing ---
+      # Apps (swayidle lock-before-sleep) may delay a sleep by at most 5 s (systemd default).
+      InhibitDelayMaxSec = "5s";
+
+      # --- Sessions ---
+      # Keep tmux and background jobs alive at logout (NixOS default).
+      KillUserProcesses = false;
     };
 
     # --- 2. SLEEP LOGIC (systemd-sleep) ---
@@ -76,6 +131,10 @@ in
     systemd.sleep.settings = {
       Sleep = {
         HibernateDelaySec = "${cfg.hibernateDelay}";
+
+        # systemd v254+: On AC, stay suspended instead of hibernating.
+        # The HibernateDelaySec countdown restarts until AC is disconnected.
+        HibernateOnACPower = cfg.hibernateOnACPower;
 
         # systemd v253+ battery estimation logic
         # Checks battery every 30min to see if we are below 5%.

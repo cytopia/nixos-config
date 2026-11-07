@@ -52,10 +52,13 @@ set $term_scratch foot -o main.font=monospace:size=8
 set $menu wmenu-run
 
 # Screen lock
-set $lock swaylock --screenshots --effect-pixelate 50 --indicator-caps-lock --daemonize
+set $lock swaylock --image ~/Pictures/wallpapers/current --color 000000 --effect-pixelate 50 --indicator-caps-lock --daemonize
 
 # Mute command
 set $mute my-volume -c mute; my-microphone -c mute
+
+# Suspend command
+set $suspend systemctl suspend-then-hibernate || systemctl suspend
 
 
 
@@ -416,8 +419,8 @@ set $mode_system System (l) lock, (e) logout, (s) suspend, (h) hibernate, (r) re
 mode "$mode_system" {
   bindsym l exec 'loginctl lock-session', mode "default"
   bindsym e exec swaymsg exit,  mode "default"
-  bindsym s exec 'loginctl lock-session; systemctl suspend-then-hibernate',   mode "default"
-  bindsym h exec 'loginctl lock-session; systemctl hibernate', mode "default"
+  bindsym s exec 'loginctl lock-session; $suspend', mode "default"
+  bindsym h exec 'loginctl lock-session; systemctl hibernate || systemctl suspend', mode "default"
   bindsym r exec 'systemctl reboot',   mode "default"
   bindsym p exec 'systemctl poweroff', mode "default"
 #mode "$mode_system" {
@@ -517,31 +520,36 @@ bindsym $ctrl+grave exec makoctl restore
 
 # IDLE manager
 # EXPLAINING THE COMMANDS:
-# 1. exec swayidle -w : Starts the idle daemon. '-w' (wait) ensures commands finish.
-# 2. timeout 910 : After 15 mins 10sec of no input, lock the screen (Safety first).
-# 3. timeout 900 : After 15 mins of no input, turn off the screen
-# 3. timeout 1200 : After 20 mins, trigger the hardware sleep.
-#    Note: This is shorter than logind (30m) so Sway 'wins' for faster power saving.
-# 4. resume : Turns the screen back on
-# 5. before-sleep : CRITICAL. This is the 'Lid Close' hook or whaterver should happen before sleep.
-#    If you close the lid, this line runs IMMEDIATELY before power is cut.
-# 6. lock : If you manually run 'loginctl lock-session', this ensures audio is also muted.
+# 1. exec swayidle -w : Starts the idle daemon. '-w' makes swayidle wait for each command to finish
+#    before it goes on. For before-sleep this holds the logind delay lock until swaylock has requested the session lock.
+#    Times count from the last input. All timers are independent. Any input resets them.
+#    'resume' runs only for the timer it belongs to.
+# 2. timeout 600 : Monitors off. 'resume' turns them on again at the next input.
+# 3. timeout 660 : Asks logind to lock the session (Lock signal). The 'lock' handler (8.) then runs
+#    '$mute; $lock'. The signal also reaches other apps, for example KeePassXC.
+# 4. timeout 900 (battery only) : Sleep. 'systemd-ac-power' exits 0 on AC, so the '||' chain stops there.
+#    On battery '$suspend' runs: suspend-then-hibernate, or plain suspend if hibernate is not possible.
+# 5. timeout 3600 : Sleep on AC too (on battery the machine is already asleep).
+#    On AC systemd stays suspended and never hibernates (HibernateOnACPower=false in power-management.nix).
+#    On battery it hibernates after HibernateDelaySec (1h).
+# 6. before-sleep : Runs on every sleep request (lid, power key, timers, menu keys). Starts the locker
+#    directly. 'loginctl lock-session' is not enough here: it only sends a signal, so the lock would
+#    race the suspend.
+# 7. after-resume : After a wake from sleep, turn the monitors on again. Sleep can start while they are
+#    off (600 s timer), and a wake without input would leave them off.
+# 8. lock : Runs on every logind Lock signal (660 s timer, menu key 'l', 'loginctl lock-session' from
+#    anywhere). Mutes, then locks.
+# 9. Note: logind IdleAction is 'ignore' in power-management.nix, so swayidle is the only idle trigger.
+#    Audio or microphone streams (sway-audio-idle-inhibit) pause all these timers.
 exec swayidle -w \
-  timeout 910 'loginctl lock-session' \
-  timeout 900 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
-  timeout 1200 'systemctl suspend-then-hibernate' \
-  before-sleep 'loginctl lock-session' \
-  lock '$mute; $lock;'
+  timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
+  timeout 660 'loginctl lock-session' \
+  timeout 900 'systemd-ac-power || $suspend' \
+  timeout 3600 '$suspend' \
+  before-sleep '$mute; $lock' \
+  after-resume 'swaymsg "output * power on"' \
+  lock '$mute; $lock'
 
-# loginctl broadcasts an event so that other apps also know about this.
-# This fixes the issue that KeePassXC will also lock, once the session is locked.
-
-#exec swayidle -w \
-#  timeout 300 '$mute; $lock;' \
-#  timeout 310 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
-#  timeout 600 'systemctl suspend-then-hibernate' \
-#  before-sleep '$mute; $lock;' \
-#  lock '$mute; $lock;'
 
 # Prevent IDLE if sound is playing
 exec sway-audio-idle-inhibit
